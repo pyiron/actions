@@ -1,0 +1,58 @@
+# Use CI environment files to build a cached python environment with mamba, and local code with pip install
+
+name: "Setup cached mamba"
+
+inputs:
+  python-version:
+    required: true
+    type: string
+  env-prefix:
+    required: true
+    type: string
+  env-label:
+    required: true
+    type: string
+  base-env-file:
+    default: .ci_support/environment.yml
+    required: false
+    type: string
+  additional-env-file:
+    required: false
+    type: string
+runs:
+  using: "composite"
+  steps:
+  - name: Write environment
+    shell: bash -l {0}
+    run: |
+      if [ "${{ inputs.additional-env-file }}" == "" ]; then
+        cp ${{ inputs.base-env-file }} environment.yml
+      else
+        python $GITHUB_ACTION_PATH/../.support/condamerge.py --base ${{ inputs.base-env-file }} --add ${{ inputs.additional-env-file }} > environment.yml
+      fi
+  - name: Setup Mambaforge
+    uses: conda-incubator/setup-miniconda@v2
+    with:
+      python-version: ${{ inputs.python-version }}
+      miniforge-variant: Mambaforge
+      channels: conda-forge
+      channel-priority: strict
+      activate-environment: my-env
+      use-mamba: true
+  - name: Set cache date and number
+    shell: bash -l {0}
+    run: |
+      echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
+      cat "CACHE_NUMBER=0" >> $GITHUB_ENV
+  - uses: actions/cache@v2
+    with:
+      path: ${{ inputs.env-prefix }}
+      key: ${{ inputs.env-label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+    id: cache
+  - name: Update environment
+    shell: bash -l {0}
+    run: mamba env update -n my-env -f environment.yml
+    if: steps.cache.outputs.cache-hit != 'true'
+  - name: Install local code
+    shell: bash -l {0}
+    run: pip install --no-deps .
