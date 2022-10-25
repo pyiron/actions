@@ -22,6 +22,7 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - uses: actions/checkout@v3
   - name: Write environment
     shell: bash -l {0}
     run: |
