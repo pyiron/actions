@@ -43,7 +43,7 @@ runs:
     shell: bash -l {0}
     run: |
       echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-      cat "CACHE_NUMBER=0" >> $GITHUB_ENV
+      echo "CACHE_NUMBER=0" >> $GITHUB_ENV
   - uses: actions/cache@v2
     with:
       path: ${{ inputs.env-prefix }}
