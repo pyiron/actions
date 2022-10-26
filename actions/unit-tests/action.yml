@@ -25,7 +25,6 @@ inputs:
     required: false
   source-dir:
     description: 'The directory(ies) to pass as sources to coverage (default is repository name, i.e. in my_repo/my_repo'
-    default: ''
     required: false
 #  omitted-files:
 #    description: 'File(s) to omit when finding coverage'
@@ -47,7 +46,8 @@ runs:
     shell: bash -l {0}
     run: |
       GITHUB_REPOSITORY=${{ github.repository }}
-      if [ ${{ inputs.source-dir }} == '' ]; then
+      SOURCE_DIR_VAR=${{ inputs.source-dir }}
+      if [ ${SOURCE_DIR_VAR} ==  ]; then
         SOURCE_DIR=${GITHUB_REPOSITORY##*/}
       else
         SOURCE_DIR=${{ inputs.source-dir }}
