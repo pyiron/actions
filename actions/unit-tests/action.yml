@@ -45,6 +45,7 @@ runs:
   - name: Test
     shell: bash -l {0}
     run: |
+      GITHUB_REPOSITORY=${{ github.repository }}
       if [ ${{ inputs.source-dir }} == '' ]; then
         SOURCE_DIR=${GITHUB_REPOSITORY##*/}
       else
