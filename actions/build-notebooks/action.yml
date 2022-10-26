@@ -1,0 +1,43 @@
+name: 'Build notebooks'
+description: 'Use papermill to build jupyter notebooks'
+
+inputs:
+  python-version:
+    description: 'Which version of the python interpreter to use, e.g. "3.10"'
+    required: true
+  env-prefix:
+    description: 'Prefix to the path to the environment'
+    required: true
+  env-label:
+    description: 'A label for the environment'
+    required: true
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+    default: .ci_support/environment.yml
+    required: false
+  standard-notebooks-env-file:
+    description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
+    default: $GITHUB_ACTION_PATH/../../.support/environment-notebooks.yml
+    required: false
+  notebooks-dir:
+    description: 'The location of the notebooks to build'
+    default: docs
+    required: false
+  exclusion-file:
+    description: 'An optional path to a file containing the names of notebooks to NOT build'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+  - uses: actions/checkout@v3
+  - uses: pyiron/pyiron_github/actions/cached-mamba@main
+    with:
+      python-version: ${{ inputs.python-version }}
+      env-prefix: ${{ inputs.env-prefix }}
+      env-label: ${{ inputs.env-label }}
+      env-files: ${{ inputs.standard-notebooks-env-file }} ${{ inputs.env-files }}
+  - uses: pyiron/pyiron_github/actions/pyiron-config@main
+  - name: Build notebooks
+    shell: bash -l {0}
+    run: $GITHUB_ACTION_PATH/../../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }}
