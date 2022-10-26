@@ -1,0 +1,40 @@
+name: 'Build docs'
+description: 'Use sphinx to build documentation'
+
+inputs:
+  python-version:
+    description: 'Which version of the python interpreter to use, e.g. "3.10"'
+    required: true
+  env-prefix:
+    description: 'Prefix to the path to the environment'
+    required: true
+  env-label:
+    description: 'A label for the environment'
+    required: true
+  docs-dir:
+    description: 'The location of index.rst and conf.py files for sphinx'
+    default: docs
+    required: false
+  docs-env-file:
+    description: 'Additional python environment requirements for sphinx'
+    default: .ci_support/environment-docs.yml
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+  - uses: actions/checkout@v3
+  - uses: pyiron/pyiron_github/actions/cached-mamba@main
+    with:
+      python-version: ${{ inputs.python-version }}
+      env-prefix: ${{ inputs.env-prefix }}
+      env-label: ${{ inputs.env-label }}
+      additional-env-file: ${{ inputs.docs-env-file }}
+  - uses: pyiron/pyiron_github/actions/pyiron-config@main
+  - name: Build sphinx documentation
+    shell: bash -l {0}
+    run: |
+      mkdir public_html
+      cd ${{ inputs.docs-dir }}
+      sphinx-build -b html ./ ../public_html || exit 1;
+      cd ..
