@@ -11,24 +11,17 @@ inputs:
   env-label:
     description: 'A label for the environment'
     required: true
-  base-env-file:
-    description: 'A path to the environment file from which to build the env, default is .ci_support/environment.yml'
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
     default: .ci_support/environment.yml
     required: false
-  additional-env-file:
-    description: 'An optional second environment file to append to the base environment file.'
-    required: false
+
 runs:
   using: "composite"
   steps:
   - name: Write environment
     shell: bash -l {0}
-    run: |
-      if [ "${{ inputs.additional-env-file }}" == "" ]; then
-        cp ${{ inputs.base-env-file }} environment.yml
-      else
-        python $GITHUB_ACTION_PATH/../../.support/condamerge.py --base ${{ inputs.base-env-file }} --add ${{ inputs.additional-env-file }} > environment.yml
-      fi
+    run: python $GITHUB_ACTION_PATH/../../.support/condamerge.py ${{ inputs.env-files }} > environment.yml
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v2
     with:

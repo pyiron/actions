@@ -11,13 +11,17 @@ inputs:
   env-label:
     description: 'A label for the environment'
     required: true
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+    default: .ci_support/environment.yml
+    required: false
+  standard-docs-env-file:
+    description: 'Env files this action thinks are useful (adds nbsphinx package)'
+    default: $GITHUB_ACTION_PATH/../../.support/environment-docs.yml
+    required: false
   docs-dir:
     description: 'The location of index.rst and conf.py files for sphinx'
     default: docs
-    required: false
-  docs-env-file:
-    description: 'Additional python environment requirements for sphinx'
-    default: .ci_support/environment-docs.yml
     required: false
 
 runs:
@@ -29,7 +33,7 @@ runs:
       python-version: ${{ inputs.python-version }}
       env-prefix: ${{ inputs.env-prefix }}
       env-label: ${{ inputs.env-label }}
-      additional-env-file: ${{ inputs.docs-env-file }}
+      env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
   - uses: pyiron/pyiron_github/actions/pyiron-config@main
   - name: Build sphinx documentation
     shell: bash -l {0}
