@@ -52,4 +52,4 @@ runs:
       else
         SOURCE_DIR=${{ inputs.source-dir }}
       fi
-      coverage run --source ${SOURCE_DIR} --omit ${SOURCE_DIR}/_version.py --concurrency mutliprocessing -m unittest discover ${{ inputs.test-dir }}
+      coverage run --source ${SOURCE_DIR} --omit ${SOURCE_DIR}/_version.py --concurrency multiprocessing -m unittest discover ${{ inputs.test-dir }}
