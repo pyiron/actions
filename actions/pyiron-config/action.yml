@@ -1,0 +1,10 @@
+# Configure pyiron to run in the CI environment
+
+name: "Configure pyiron"
+
+runs:
+  using: "composite"
+  steps:
+  - name: Run pyironconfig
+    shell: bash -l {0}
+    run: python $GITHUB_ACTION_PATH/../../.support/pyironconfig.py
