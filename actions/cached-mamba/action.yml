@@ -19,9 +19,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - name: Write environment
-    shell: bash -l {0}
-    run: python $GITHUB_ACTION_PATH/../../.support/condamerge.py ${{ inputs.env-files }} > environment.yml
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v2
     with:
@@ -41,6 +38,9 @@ runs:
       path: ${{ inputs.env-prefix }}
       key: ${{ inputs.env-label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
     id: cache
+  - uses: pyiron/pyiron_github/actions/write-environment@main
+    with:
+      env-files: ${{ inputs.env-files }}
   - name: Update environment
     shell: bash -l {0}
     run: mamba env update -n my-env -f environment.yml

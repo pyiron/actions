@@ -1,0 +1,18 @@
+name: 'Write environment'
+description: 'Merge an arbitrary number of Conda environment yaml files together into one env'
+
+inputs:
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+    required: true
+  output-env-file:
+    description: 'Where to write the merged env file'
+    default: ./environment.yml
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  - name: Write environment
+    shell: bash -l {0}
+    run: python $GITHUB_ACTION_PATH/../../.support/condamerge.py ${{ inputs.env-files }} > ${{ inputs.output-env-file }}
