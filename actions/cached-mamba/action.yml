@@ -35,11 +35,10 @@ runs:
     shell: bash -l {0}
     run: |
       echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-      echo "CACHE_NUMBER=0" >> $GITHUB_ENV
   - uses: actions/cache@v2
     with:
       path: ${{ inputs.env-prefix }}
-      key: ${{ inputs.env-label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}-${{ env.CACHE_NUMBER }}
+      key: ${{ inputs.env-label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}
     id: cache
   - name: Update environment
     shell: bash -l {0}
