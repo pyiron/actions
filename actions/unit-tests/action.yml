@@ -25,6 +25,7 @@ inputs:
     required: false
   source-dir:
     description: 'The directory(ies) to pass as sources to coverage (default is repository name, i.e. in my_repo/my_repo'
+    default: ''
     required: false
 #  omitted-files:
 #    description: 'File(s) to omit when finding coverage'
