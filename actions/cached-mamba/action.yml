@@ -1,29 +1,23 @@
-# Use CI environment files to build a cached python environment with mamba, and local code with pip install
-
-name: "Setup cached mamba"
+name: 'Setup cached mamba'
+description: 'Use CI environment files to build a cached python environment with mamba, and local code with pip install'
 
 inputs:
   python-version:
     description: 'Which version of the python interpreter to use, e.g. "3.10"'
     required: true
-    type: string
   env-prefix:
     description: 'Prefix to the path to the environment'
     required: true
-    type: string
   env-label:
     description: 'A label for the environment'
     required: true
-    type: string
   base-env-file:
     description: 'A path to the environment file from which to build the env, default is .ci_support/environment.yml'
     default: .ci_support/environment.yml
     required: false
-    type: string
   additional-env-file:
     description: 'An optional second environment file to append to the base environment file.'
     required: false
-    type: string
 runs:
   using: "composite"
   steps:
