@@ -28,7 +28,7 @@ runs:
       if [ "${{ inputs.additional-env-file }}" == "" ]; then
         cp ${{ inputs.base-env-file }} environment.yml
       else
-        python $GITHUB_ACTION_PATH/../.support/condamerge.py --base ${{ inputs.base-env-file }} --add ${{ inputs.additional-env-file }} > environment.yml
+        python $GITHUB_ACTION_PATH/../../.support/condamerge.py --base ${{ inputs.base-env-file }} --add ${{ inputs.additional-env-file }} > environment.yml
       fi
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v2
