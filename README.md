@@ -14,6 +14,9 @@ your_module/
 |     |-- conf.py
 |     |-- index.rst
 |-- !environment.yml  # You MUST NOT have 'environment.yml' in your repo root -- our actions write to this location
+|-- tests/  # The directory containing your unittest test files
+|-- your_module/  # The directory for your python module
+|     |-- _version.py  # We will assume you are using versioneer and will ignore this when calculating coverage
 ```
 
 By default, some of our actions add to the environment, e.g. `build-docs` uses the file `.support/environment-docs.yml` in this repository to add `nbsphinx` to the environment with the `standard-docs-env-file` input argument.

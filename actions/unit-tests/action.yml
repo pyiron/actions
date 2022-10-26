@@ -1,0 +1,53 @@
+name: 'Unit tests'
+description: 'Run unittest with coverage'
+
+inputs:
+  python-version:
+    description: 'Which version of the python interpreter to use, e.g. "3.10"'
+    required: true
+  env-prefix:
+    description: 'Prefix to the path to the environment'
+    required: true
+  env-label:
+    description: 'A label for the environment'
+    required: true
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+    default: .ci_support/environment.yml
+    required: false
+  standard-unittests-env-file:
+    description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
+    default: $GITHUB_ACTION_PATH/../../.support/environment-unittests.yml
+    required: false
+  test-dir:
+    description: 'The directory containing the tests'
+    default: tests
+    required: false
+  source-dir:
+    description: 'The directory(ies) to pass as sources to coverage (default is repository name, i.e. in my_repo/my_repo'
+    required: false
+#  omitted-files:
+#    description: 'File(s) to omit when finding coverage'
+#    required: false
+# TODO: Allow omission of additional files with a bash for-loop over source-dir and omitted-files
+
+runs:
+  using: 'composite'
+  steps:
+  - uses: actions/checkout@v3
+  - uses: pyiron/pyiron_github/actions/cached-mamba@main
+    with:
+      python-version: ${{ inputs.python-version }}
+      env-prefix: ${{ inputs.env-prefix }}
+      env-label: ${{ inputs.env-label }}
+      env-files: ${{ inputs.standard-unittests-env-file }} ${{ inputs.env-files }}
+  - uses: pyiron/pyiron_github/actions/pyiron-config@main
+  - name: Test
+    shell: bash -l {0}
+    run: |
+      if [ ${{ inputs.source-dir }} == '' ]; then
+        SOURCE_DIR=${GITHUB_REPOSITORY##*/}
+      else;
+        SOURCE_DIR=${{ inputs.source-dir }}
+      fi
+      coverage run --source ${SOURCE_DIR} --omit ${SOURCE_DIR}/_version.py --concurrency mutliprocessing -m unittest discover ${{ inputs.test-dir }}
