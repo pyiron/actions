@@ -33,8 +33,6 @@ inputs:
 
 runs:
   using: 'composite'
-  env:
-    GITHUB_REPOSITORY: ${{ github.event.repository.name }}
   steps:
   - uses: actions/checkout@v3
   - uses: pyiron/pyiron_github/actions/cached-mamba@main
@@ -48,7 +46,7 @@ runs:
     shell: bash -l {0}
     run: |
       if [ ${{ inputs.source-dir }} ==  ]; then
-        SOURCE_DIR=${GITHUB_REPOSITORY}
+        SOURCE_DIR=${{ github.event.repository.name }}
       else
         SOURCE_DIR=${{ inputs.source-dir }}
       fi
