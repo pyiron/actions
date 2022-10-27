@@ -4,29 +4,24 @@ name: Push or Pull to main
 on:
   workflow_call:
 
-env:
-  PYTHON_VERSION: '3.10'
-  ENV_PREFIX: '/usr/share/miniconda3/envs/my-env'
-  ENV_LABEL: 'linux-64-py-3-10'
-
 jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: pyiron/pyiron_github/actions/build-docs@main
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          env-prefix: ${{ env.ENV_PREFIX }}
-          env-label: ${{ env.ENV_LABEL }}
+          python-version: '3.10'
+          env-prefix: /usr/share/miniconda3/envs/my-env
+          env-label: linux-64-py-3-10
 
   build-notebooks:
     runs-on: ubuntu-latest
     steps:
       - uses: pyiron/pyiron_github/actions/build-notebooks@main
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          env-prefix: ${{ env.ENV_PREFIX }}
-          env-label: ${{ env.ENV_LABEL }}
+          python-version: '3.10'
+          env-prefix: /usr/share/miniconda3/envs/my-env
+          env-label: linux-64-py-3-10
 
   tests-coverage-coveralls-codacy:
     runs-on: ${{ matrix.operating-system }}
@@ -34,19 +29,19 @@ jobs:
       matrix:
         include:
           - operating-system: macos-latest
-            python-version: ${{ env.PYTHON_VERSION }}
+            python-version: '3.10'
             label: osx-64-py-3-10
             prefix: /Users/runner/miniconda3/envs/my-env
 
           - operating-system: windows-latest
-            python-version: ${{ env.PYTHON_VERSION }}
+            python-version: '3.10'
             label: win-64-py-3-10
             prefix: C:\Miniconda3\envs\my-env
 
           - operating-system: ubuntu-latest
-            python-version: ${{ env.PYTHON_VERSION }}
-            env-prefix: ${{ env.ENV_PREFIX }}
-            env-label: ${{ env.ENV_LABEL }}
+            python-version: '3.10'
+            env-prefix: /usr/share/miniconda3/envs/my-env
+            env-label: linux-64-py-3-10
 
           - operating-system: ubuntu-latest
             python-version: 3.9
@@ -85,9 +80,9 @@ jobs:
     steps:
       - uses: pyiron/pyiron_github/actions/pip-check@main
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          env-prefix: ${{ env.ENV_PREFIX }}
-          env-label: ${{ env.ENV_LABEL }}
+          python-version: '3.10'
+          env-prefix: /usr/share/miniconda3/envs/my-env
+          env-label: linux-64-py-3-10
 
   black:
     runs-on: ubuntu-latest
