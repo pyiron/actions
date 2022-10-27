@@ -6,8 +6,8 @@ on:
 
 env:
   PYTHON_VERSION: '3.10'
-  ENV_PREFIX: /usr/share/miniconda3/envs/my-env
-  ENV_LABEL: linux-64-py-3-10
+  ENV_PREFIX: '/usr/share/miniconda3/envs/my-env'
+  ENV_LABEL: 'linux-64-py-3-10'
 
 jobs:
   build-docs:
