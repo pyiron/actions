@@ -24,11 +24,36 @@ In these situations you can always add additional files to the environment in th
 
 Similarly, other defaults like where the docs or notebooks directories are, or even where the final environment file resides can always be overriden for each action.
 
+## Workflows
 
-## Secrets
+Unlike the actions, reusable workflows in the `.github/workflows` directory enforce expectations about repository structure and lean heavily on the default values.
+Some properties, such as which env files to use, are still exposed.
 
-Some actions require secrets to work. 
-You will need to pass these in as arguments, and they will first need to be added to your GitHub repository in the settings page.
+These workflows are named based on the expected `on` values for triggering the workflow and ought to be applicable to any pyiron module.
 
-Requirements:
-- `<some action>`: `<some secret>`
+Further, various workflows rely on the following repository secrets being defined for your repository:
+- `CODACY_PROJECT_TOKEN`
+- `DEPENDABOT_WORKFLOW_TOKEN`
+- `PYPI_PASSWORD` (Organization-wide)
+- `GITHUB_TOKEN` (Don't worry about this, GitHub will produce it automatically)
+
+Thankfully, if you're running these workflows for a pyiron-organization module, all you need to do in your calling workflow is set `secrets: inherit`.
+
+Putting it all together, we get caller scripts that look like this:
+
+```yaml
+# This runs jobs which pyiron modules should run on pushes or PRs to main
+
+name: Push-Pull-main
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  pyiron_github:
+    uses: pyiron/pyiron_github/.github/workflows/push-pull-main.yml@main
+    secrets: inherit
+```
