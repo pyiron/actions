@@ -88,3 +88,12 @@ jobs:
           python-version: env.PYTHON_VERSION
           env-prefix: env.ENV_PREFIX
           env-label: env.ENV_LABEL
+
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+        with:
+          options: "--check --diff"
+          src: ./${{ github.event.repository.name }}
