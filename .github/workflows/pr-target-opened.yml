@@ -1,4 +1,4 @@
-# This runs jobs which pyiron modules should run when a PR is opened
+# This runs jobs which pyiron modules should run when a PR target is opened
 # WARNING: Don't checkout un-authenticated PRs here, i.e. don't use actions/checkout or similar
 #          Reading:
 #           - https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
