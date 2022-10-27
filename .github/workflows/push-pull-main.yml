@@ -4,24 +4,29 @@ name: Push or Pull to main
 on:
   workflow_call:
 
+env:
+  PYTHON_VERSION: '3.10'
+  ENV_PREFIX: /usr/share/miniconda3/envs/my-env
+  ENV_LABEL: linux-64-py-3-10
+
 jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
       - uses: pyiron/pyiron_github/actions/build-docs@main
         with:
-          python-version: '3.10'
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-3-10
+          python-version: env.PYTHON_VERSION
+          env-prefix: env.ENV_PREFIX
+          env-label: env.ENV_LABEL
 
   build-notebooks:
     runs-on: ubuntu-latest
     steps:
       - uses: pyiron/pyiron_github/actions/build-notebooks@main
         with:
-          python-version: '3.10'
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-3-10
+          python-version: env.PYTHON_VERSION
+          env-prefix: env.ENV_PREFIX
+          env-label: env.ENV_LABEL
 
   tests-coverage-coveralls-codacy:
     runs-on: ${{ matrix.operating-system }}
@@ -39,9 +44,9 @@ jobs:
             prefix: C:\Miniconda3\envs\my-env
 
           - operating-system: ubuntu-latest
-            python-version: '3.10'
-            label: linux-64-py-3-10
-            prefix: /usr/share/miniconda3/envs/my-env
+            python-version: env.PYTHON_VERSION
+            env-prefix: env.ENV_PREFIX
+            env-label: env.ENV_LABEL
 
           - operating-system: ubuntu-latest
             python-version: 3.9
@@ -80,6 +85,6 @@ jobs:
     steps:
       - uses: pyiron/pyiron_github/actions/pip-check@main
         with:
-          python-version: '3.10'
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-3-10
+          python-version: env.PYTHON_VERSION
+          env-prefix: env.ENV_PREFIX
+          env-label: env.ENV_LABEL
