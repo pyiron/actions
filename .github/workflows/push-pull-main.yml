@@ -15,18 +15,18 @@ jobs:
     steps:
       - uses: pyiron/pyiron_github/actions/build-docs@main
         with:
-          python-version: env.PYTHON_VERSION
-          env-prefix: env.ENV_PREFIX
-          env-label: env.ENV_LABEL
+          python-version: ${{ env.PYTHON_VERSION }}
+          env-prefix: ${{ env.ENV_PREFIX }}
+          env-label: ${{ env.ENV_LABEL }}
 
   build-notebooks:
     runs-on: ubuntu-latest
     steps:
       - uses: pyiron/pyiron_github/actions/build-notebooks@main
         with:
-          python-version: env.PYTHON_VERSION
-          env-prefix: env.ENV_PREFIX
-          env-label: env.ENV_LABEL
+          python-version: ${{ env.PYTHON_VERSION }}
+          env-prefix: ${{ env.ENV_PREFIX }}
+          env-label: ${{ env.ENV_LABEL }}
 
   tests-coverage-coveralls-codacy:
     runs-on: ${{ matrix.operating-system }}
@@ -34,19 +34,19 @@ jobs:
       matrix:
         include:
           - operating-system: macos-latest
-            python-version: env.PYTHON_VERSION
+            python-version: ${{ env.PYTHON_VERSION }}
             label: osx-64-py-3-10
             prefix: /Users/runner/miniconda3/envs/my-env
 
           - operating-system: windows-latest
-            python-version: env.PYTHON_VERSION
+            python-version: ${{ env.PYTHON_VERSION }}
             label: win-64-py-3-10
             prefix: C:\Miniconda3\envs\my-env
 
           - operating-system: ubuntu-latest
-            python-version: env.PYTHON_VERSION
-            env-prefix: env.ENV_PREFIX
-            env-label: env.ENV_LABEL
+            python-version: ${{ env.PYTHON_VERSION }}
+            env-prefix: ${{ env.ENV_PREFIX }}
+            env-label: ${{ env.ENV_LABEL }}
 
           - operating-system: ubuntu-latest
             python-version: 3.9
@@ -85,9 +85,9 @@ jobs:
     steps:
       - uses: pyiron/pyiron_github/actions/pip-check@main
         with:
-          python-version: env.PYTHON_VERSION
-          env-prefix: env.ENV_PREFIX
-          env-label: env.ENV_LABEL
+          python-version: ${{ env.PYTHON_VERSION }}
+          env-prefix: ${{ env.ENV_PREFIX }}
+          env-label: ${{ env.ENV_LABEL }}
 
   black:
     runs-on: ubuntu-latest
