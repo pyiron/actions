@@ -40,8 +40,8 @@ jobs:
 
           - operating-system: ubuntu-latest
             python-version: '3.10'
-            prefix: /usr/share/miniconda3/envs/my-env
             label: linux-64-py-3-10
+            prefix: /usr/share/miniconda3/envs/my-env
 
           - operating-system: ubuntu-latest
             python-version: 3.9
