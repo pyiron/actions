@@ -1,0 +1,19 @@
+name: 'Update environment'
+description: 'Change the version number in a conda env file based on a dependabot PR'
+
+inputs:
+  conda-yml:
+    description: 'Path to conda environment.yml'
+    default: .ci_support/environment.yml
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+  - name: Ensure yaml module is present
+    # Ubuntu works fine, but both windows and macos wind up complaining that there is no module "yaml"
+    shell: bash -l {0}
+    run: pip install pyyaml
+  - name: Update environment files
+    shell: bash -l {0}
+    run: python $GITHUB_ACTION_PATH/../../.support/update_environment.py ${{ github.event.pull_request.title }} ${{ inputs.conda-env }} $GITHUB_ACTION_PATH/../../.support/pypi_vs_conda_names.json
