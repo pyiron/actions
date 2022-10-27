@@ -3,6 +3,10 @@
 #          Reading:
 #           - https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
 #           - https://nathandavison.com/blog/github-actions-and-the-threat-of-malicious-pull-requests
+# Usage:
+#   on:
+#     pull_request_target:
+#       types: [opened]
 
 name: PR target opened
 

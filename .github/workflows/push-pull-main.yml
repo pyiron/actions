@@ -1,4 +1,11 @@
 # This runs jobs which pyiron modules should run on pushes or PRs to main
+# Usage:
+#   on:
+#     push:
+#       branches: [ main ]
+#     pull_request:
+#       branches: [ main ]
+
 name: Push or Pull to main
 
 on:

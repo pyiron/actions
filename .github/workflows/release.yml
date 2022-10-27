@@ -1,4 +1,8 @@
 # This runs jobs which pyiron modules should run on release
+# Usage:
+#   on:
+#     release:
+
 name: Release
 
 on:
