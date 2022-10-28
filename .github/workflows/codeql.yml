@@ -1,0 +1,36 @@
+# This runs GitHub's codeql security analysis
+# Usage:
+#   on:
+#     schedule:
+#       - cron: '0 23 * * 2'  # Weekly on Tuesdays at 23:00 UTC, for example
+# And/or:
+#   on:
+#     push:
+#       branches: [ main ]
+#     pull_request:
+#       branches: [ main ]
+
+name: Code scanning
+
+on:
+  workflow_call:
+
+jobs:
+  CodeQL-Build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+
+    - run: git checkout HEAD^2
+      if: ${{ github.event_name == 'pull_request' }}
+      
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: python
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2

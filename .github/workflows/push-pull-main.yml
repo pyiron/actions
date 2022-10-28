@@ -99,3 +99,7 @@ jobs:
         with:
           options: "--check --diff"
           src: ./${{ github.event.repository.name }}
+
+  codeql:
+    uses: pyiron/pyiron_github/.github/workflows/codeql.yml@main
+    secrets: inherit
