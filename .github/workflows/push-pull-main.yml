@@ -10,22 +10,27 @@ name: Push or Pull to main
 
 on:
   workflow_call:
-    docs-env-files:
-      description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
-      default: .ci_support/environment.yml
-      required: false
-    notebooks-env-files:
-      description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
-      default: .ci_support/environment.yml
-      required: false
-    notebooks-exclusion-file:
-      description: 'An optional path to a file containing the names of notebooks to NOT build'
-      default: .ci_support/exclude
-      required: false
-    tests-env-files:
-      description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
-      default: .ci_support/environment.yml
-      required: false
+    inputs:
+      docs-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+        default: .ci_support/environment.yml
+        required: false
+      notebooks-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+        default: .ci_support/environment.yml
+        required: false
+      notebooks-exclusion-file:
+        type: string
+        description: 'An optional path to a file containing the names of notebooks to NOT build'
+        default: .ci_support/exclude
+        required: false
+      tests-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+        default: .ci_support/environment.yml
+        required: false
 
 jobs:
   build-docs:
