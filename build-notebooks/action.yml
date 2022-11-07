@@ -17,7 +17,7 @@ inputs:
     required: false
   standard-notebooks-env-file:
     description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
-    default: $GITHUB_ACTION_PATH/../../.support/environment-notebooks.yml
+    default: $GITHUB_ACTION_PATH/../.support/environment-notebooks.yml
     required: false
   notebooks-dir:
     description: 'The location of the notebooks to build'
@@ -40,4 +40,4 @@ runs:
   - uses: pyiron/actions/pyiron-config@main
   - name: Build notebooks
     shell: bash -l {0}
-    run: $GITHUB_ACTION_PATH/../../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }}
+    run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }}

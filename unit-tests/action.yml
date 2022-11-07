@@ -17,11 +17,11 @@ inputs:
     required: false
   standard-unittests-env-file:
     description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
-    default: $GITHUB_ACTION_PATH/../../.support/environment-unittests.yml
+    default: $GITHUB_ACTION_PATH/../.support/environment-unittests.yml
     required: false
   coveralls-codacy-env-file:
     description: 'An extra env file since we usually combine this action with coverage+unittest, and called workflows cannot access their own repo'
-    default: $GITHUB_ACTION_PATH/../../.support/environment-coveralls-codacy.yml
+    default: $GITHUB_ACTION_PATH/../.support/environment-coveralls-codacy.yml
     required: false
   test-dir:
     description: 'The directory containing the tests'
