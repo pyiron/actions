@@ -33,6 +33,21 @@ on:
         required: false
 
 jobs:
+  commit-readthedocs-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: pyiron/actions/write-docs-env@main
+      - name: commit
+        run: |
+          git config --local user.email "pyiron@mpie.de"
+          git config --local user.name "pyiron-runner"
+          git commit -m "Format black" -a
+      - name: push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
+          branch: ${{ github.event.pull_request.head.ref }}
+
   build-docs:
     runs-on: ubuntu-latest
     steps:
