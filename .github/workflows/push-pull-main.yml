@@ -36,6 +36,12 @@ jobs:
   commit-readthedocs-env:
     runs-on: ubuntu-latest
     steps:
+      - name: What do you mean the write target does not exist
+        shell: bash -l {0}
+        run: |
+          pwd
+          ls
+          ls docs
       - uses: pyiron/actions/write-docs-env@main
       - name: commit
         run: |
