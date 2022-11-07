@@ -36,7 +36,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: pyiron/pyiron_github/actions/build-docs@main
+      - uses: pyiron/actions/actions/build-docs@main
         with:
           python-version: '3.10'
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -46,7 +46,7 @@ jobs:
   build-notebooks:
     runs-on: ubuntu-latest
     steps:
-      - uses: pyiron/pyiron_github/actions/build-notebooks@main
+      - uses: pyiron/actions/actions/build-notebooks@main
         with:
           python-version: '3.10'
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -86,7 +86,7 @@ jobs:
             prefix: /usr/share/miniconda3/envs/my-env
 
     steps:
-    - uses: pyiron/pyiron_github/actions/unit-tests@main
+    - uses: pyiron/actions/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
         env-prefix: ${{ matrix.prefix }}
@@ -110,7 +110,7 @@ jobs:
   pip-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: pyiron/pyiron_github/actions/pip-check@main
+      - uses: pyiron/actions/actions/pip-check@main
         with:
           python-version: '3.10'
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -126,5 +126,5 @@ jobs:
           src: ./${{ github.event.repository.name }}
 
   codeql:
-    uses: pyiron/pyiron_github/.github/workflows/codeql.yml@main
+    uses: pyiron/actions/.github/workflows/codeql.yml@main
     secrets: inherit

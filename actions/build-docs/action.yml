@@ -28,13 +28,13 @@ runs:
   using: 'composite'
   steps:
   - uses: actions/checkout@v3
-  - uses: pyiron/pyiron_github/actions/cached-mamba@main
+  - uses: pyiron/actions/actions/cached-mamba@main
     with:
       python-version: ${{ inputs.python-version }}
       env-prefix: ${{ inputs.env-prefix }}
       env-label: ${{ inputs.env-label }}
       env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/pyiron_github/actions/pyiron-config@main
+  - uses: pyiron/actions/actions/pyiron-config@main
   - name: Build sphinx documentation
     shell: bash -l {0}
     run: |
