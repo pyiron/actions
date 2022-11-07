@@ -42,3 +42,8 @@ runs:
       cd ${{ inputs.docs-dir }}
       sphinx-build -b html ./ ../public_html || exit 1;
       cd ..
+  - name: Assemble docs environment  # e.g. to be read by readthedocs
+    uses: pyiron/actions/write-environment@main
+    with:
+      env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
+      output-env-file: ${{ inputs.docs-dir }}/environment.yaml
