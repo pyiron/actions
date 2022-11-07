@@ -1,4 +1,4 @@
-# pyiron_github
+# pyiron actions
 A centralized location for our GitHub actions to perform CI on python modules.
 It includes both custom actions, which we strive to make reusable everywhere (but whose default values are optimized for our repositories), and custom reusable workflows that are tuned specifically for our other pyiron repositories.
 
@@ -53,7 +53,7 @@ on:
     branches: [ main ]
 
 jobs:
-  pyiron_github:
-    uses: pyiron/pyiron_github/.github/workflows/push-pull-main.yml@main
+  pyiron:
+    uses: pyiron/actions/.github/workflows/push-pull-main.yml@main
     secrets: inherit
 ```
