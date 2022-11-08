@@ -45,6 +45,8 @@ jobs:
           ls
           echo "ls .."
           ls ..
+          echo "ls ironflow"
+          ls ironflow
       - uses: pyiron/actions/write-docs-env@main
       - name: commit
         run: |
