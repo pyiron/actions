@@ -39,9 +39,12 @@ jobs:
       - name: What do you mean the write target does not exist
         shell: bash -l {0}
         run: |
+          echo "pwd"
           pwd
+          echo "ls"
           ls
-          ls docs
+          echo "ls .."
+          ls ..
       - uses: pyiron/actions/write-docs-env@main
       - name: commit
         run: |
