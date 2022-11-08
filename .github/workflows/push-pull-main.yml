@@ -36,23 +36,17 @@ jobs:
   commit-readthedocs-env:
     runs-on: ubuntu-latest
     steps:
-      - name: What do you mean the write target does not exist
-        shell: bash -l {0}
-        run: |
-          echo "pwd"
-          pwd
-          echo "ls"
-          ls
-          echo "ls .."
-          ls ..
-          echo "ls ironflow"
-          ls ironflow
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
+          ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
+          fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
       - uses: pyiron/actions/write-docs-env@main
       - name: commit
         run: |
           git config --local user.email "pyiron@mpie.de"
           git config --local user.name "pyiron-runner"
-          git commit -m "Format black" -a
+          git commit -m "Update docs env file" -a
       - name: push
         uses: ad-m/github-push-action@master
         with:
@@ -62,6 +56,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: pyiron/actions/build-docs@main
         with:
           python-version: '3.10'
@@ -72,6 +67,7 @@ jobs:
   build-notebooks:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: pyiron/actions/build-notebooks@main
         with:
           python-version: '3.10'
@@ -112,6 +108,7 @@ jobs:
             prefix: /usr/share/miniconda3/envs/my-env
 
     steps:
+    - uses: actions/checkout@v3
     - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
@@ -136,6 +133,7 @@ jobs:
   pip-check:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: pyiron/actions/pip-check@main
         with:
           python-version: '3.10'
