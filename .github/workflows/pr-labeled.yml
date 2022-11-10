@@ -51,5 +51,5 @@ jobs:
         python-version: '3.10'
         env-prefix: /usr/share/miniconda3/envs/my-env
         env-label: linux-64-py-3-10
-        env-files: ${{ tests-env-files }}
+        env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/integration
