@@ -8,6 +8,12 @@ name: PR labeled
 
 on:
   workflow_call:
+    inputs:
+      tests-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+        default: .ci_support/environment.yml
+        required: false
 
 jobs:
   format-black:
