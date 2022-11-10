@@ -121,6 +121,7 @@ jobs:
         env-prefix: ${{ matrix.prefix }}
         env-label: ${{ matrix.label }}
         env-files: ${{ inputs.tests-env-files }}
+        test-dir: tests/unit
     - name: Coverage
       if: matrix.label == 'linux-64-py-3-10'
       continue-on-error: True
