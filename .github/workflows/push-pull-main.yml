@@ -31,6 +31,11 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
+      benchmark-timeout-minutes:
+        type: number
+        description: 'How many minutes to allow tests in units/benchmark to run for'
+        default: 30
+        required: false
 
 jobs:
   commit-readthedocs-env:
@@ -136,6 +141,20 @@ jobs:
       shell: bash -l {0}
       run: |
         python-codacy-coverage -r coverage.xml
+
+  benchmark-tests:
+    needs: commit-readthedocs-env
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pyiron/actions/unit-tests@main
+      with:
+        python-version: '3.10'
+        env-prefix: /usr/share/miniconda3/envs/my-env
+        env-label: linux-64-py-3-10
+        env-files: tests-env-files
+        test-dir: tests/benchmark
+      timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   pip-check:
     needs: commit-readthedocs-env
