@@ -67,7 +67,10 @@ your_module/
 |     |-- conf.py
 |     |-- index.rst
 |-- !environment.yml  # You MUST NOT have 'environment.yml' in your repo root -- our actions write to this location
-|-- tests/  # The directory containing your unittest test files
+|-- tests/  # The directory containing your test files
+|     |-- benchmark/  # A total test suite under a time limit
+|     |-- integration/  # Expensive tests run on a single system
+|     |-- unit/  # To run on a variety of systems 
 |-- your_module/  # The directory for your python module
 |     |-- _version.py  # We will assume you are using versioneer and will ignore this when calculating coverage
 ```

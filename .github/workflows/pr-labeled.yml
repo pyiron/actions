@@ -34,3 +34,16 @@ jobs:
         with:
           github_token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           branch: ${{ github.event.pull_request.head.ref }}
+
+  integration-tests:
+    if: contains(github.event.pull_request.labels.*.name, 'integration')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pyiron/actions/unit-tests@main
+      with:
+        python-version: '3.10'
+        env-prefix: /usr/share/miniconda3/envs/my-env
+        env-label: linux-64-py-3-10
+        env-files: tests-env-files
+        test-dir: tests/integration
