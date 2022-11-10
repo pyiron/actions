@@ -2,6 +2,7 @@
 # Usage:
 #   on:
 #     release:
+#       types: [published]
 
 name: Release
 
