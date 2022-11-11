@@ -49,7 +49,7 @@ jobs:
       - uses: pyiron/actions/write-docs-env@main
       - uses: pyiron/actions/write-environment@main
         with:
-          env-files: ${{ notebooks-env-files }}
+          env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
       - name: commit
         id: commit-docs-env
