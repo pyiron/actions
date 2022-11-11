@@ -183,5 +183,6 @@ jobs:
 
   codeql:
     needs: commit-updated-env
+    if: github.event_name == 'push'  # This task is pretty time-consuming, so only do it on pushes
     uses: pyiron/actions/.github/workflows/codeql.yml@main
     secrets: inherit
