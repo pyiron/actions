@@ -57,6 +57,7 @@ jobs:
         run: |
           git config --local user.email "pyiron@mpie.de"
           git config --local user.name "pyiron-runner"
+          git add docs/environment.yml .binder/environment.yml
           git commit -m "Update env file" -a
       - name: push
         if: steps.commit-docs-env.outcome == 'success'  # But only push if we made it here without continue-on-error
