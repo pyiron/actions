@@ -61,6 +61,7 @@ To make full use of default values with these actions, your repository should ha
 
 ```
 your_module/
+|-- .binder/  # MyBinder config files (a workflow writes an env file here)
 |-- .ci_support/
 |     |-- environment.yml  # The conda environment file for your module
 |-- docs/  # Necessary files for sphinx to built HTML documentation
