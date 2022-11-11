@@ -57,7 +57,7 @@ jobs:
         run: |
           git config --local user.email "pyiron@mpie.de"
           git config --local user.name "pyiron-runner"
-          git commit -m "Update docs env file" -a
+          git commit -m "Update env file" -a
       - name: push
         if: steps.commit-docs-env.outcome == 'success'  # But only push if we made it here without continue-on-error
         uses: ad-m/github-push-action@master
