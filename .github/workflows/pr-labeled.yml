@@ -54,7 +54,6 @@ jobs:
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests
     - name: Coverage
-      continue-on-error: True
       shell: bash -l {0}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -63,7 +62,6 @@ jobs:
         coveralls --service=github
         coverage xml
     - name: Codacy
-      continue-on-error: True
       shell: bash -l {0}
       run: |
         python-codacy-coverage -r coverage.xml
