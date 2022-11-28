@@ -136,6 +136,8 @@ jobs:
       if: matrix.label == 'linux-64-py-3-10'
       continue-on-error: True
       shell: bash -l {0}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage combine
         coveralls --service=github
