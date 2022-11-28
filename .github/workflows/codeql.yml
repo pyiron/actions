@@ -1,14 +1,12 @@
 # This runs GitHub's codeql security analysis
-# Usage:
+# Recommended usage:
 #   on:
 #     schedule:
 #       - cron: '0 23 * * 2'  # Weekly on Tuesdays at 23:00 UTC, for example
 # And/or:
-#   on:
-#     push:
-#       branches: [ main ]
-#     pull_request:
-#       branches: [ main ]
+# on:
+#   pull_request:
+#     types: [labeled]
 
 name: Code scanning
 
