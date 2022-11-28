@@ -56,6 +56,8 @@ jobs:
     - name: Coverage
       continue-on-error: True
       shell: bash -l {0}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage combine
         coveralls --service=github
