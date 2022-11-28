@@ -132,20 +132,6 @@ jobs:
         env-label: ${{ matrix.label }}
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/unit
-    - name: Coverage
-      if: matrix.label == 'linux-64-py-3-10'
-      continue-on-error: True
-      shell: bash -l {0}
-      run: |
-        coverage combine
-        coveralls --service=github
-        coverage xml
-    - name: Codacy
-      if: matrix.label == 'linux-64-py-3-10' && github.event_name != 'push'
-      continue-on-error: True
-      shell: bash -l {0}
-      run: |
-        python-codacy-coverage -r coverage.xml
 
   benchmark-tests:
     needs: commit-updated-env
