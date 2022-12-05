@@ -42,13 +42,11 @@ jobs:
           branch: ${{ github.event.pull_request.head.ref }}
 
   tests-and-coverage:
-    if: contains(github.event.pull_request.labels.*.name, 'coverage')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    if: contains(github.event.pull_request.labels.*.name, 'run_coverage')
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    secrets: inherit
 
   code-ql:
-    if: contains(github.event.pull_request.labels.*.name, 'CodeQL')
-    runs-on: ubuntu-latest
-    steps:
-    - uses: pyiron/actions/.github/workflows/codeql.yml@main
+    if: contains(github.event.pull_request.labels.*.name, 'run_CodeQL')
+    uses: pyiron/actions/.github/workflows/codeql.yml@main
+    secrets: inherit
