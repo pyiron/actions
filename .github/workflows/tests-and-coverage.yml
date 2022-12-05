@@ -1,0 +1,45 @@
+# This runs GitHub's codeql security analysis
+# Recommended usage:
+#   on:
+#     schedule:
+#       - cron: '0 23 * * *'  # Daily at 23:00 UTC, for example
+# And/or:
+# on:
+#   pull_request:
+#     types: [labeled]
+
+name: Tests and Coverage
+
+on:
+  workflow_call:
+    inputs:
+      tests-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+        default: .ci_support/environment.yml
+        required: false
+
+jobs:
+  Tests-and-Coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pyiron/actions/unit-tests@main
+        with:
+          python-version: '3.10'
+          env-prefix: /usr/share/miniconda3/envs/my-env
+          env-label: linux-64-py-3-10
+          env-files: ${{ inputs.tests-env-files }}
+          test-dir: tests
+      - name: Coverage
+        shell: bash -l {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          coverage combine
+          coveralls --service=github
+          coverage xml
+      - name: Codacy
+        shell: bash -l {0}
+        run: |
+          python-codacy-coverage -r coverage.xml

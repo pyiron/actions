@@ -42,29 +42,10 @@ jobs:
           branch: ${{ github.event.pull_request.head.ref }}
 
   tests-and-coverage:
-    if: contains(github.event.pull_request.labels.*.name, 'tests')
+    if: contains(github.event.pull_request.labels.*.name, 'coverage')
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
-      with:
-        python-version: '3.10'
-        env-prefix: /usr/share/miniconda3/envs/my-env
-        env-label: linux-64-py-3-10
-        env-files: ${{ inputs.tests-env-files }}
-        test-dir: tests
-    - name: Coverage
-      shell: bash -l {0}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        coverage combine
-        coveralls --service=github
-        coverage xml
-    - name: Codacy
-      shell: bash -l {0}
-      run: |
-        python-codacy-coverage -r coverage.xml
+      - uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
 
   code-ql:
     if: contains(github.event.pull_request.labels.*.name, 'CodeQL')
