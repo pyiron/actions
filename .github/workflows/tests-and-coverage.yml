@@ -41,5 +41,7 @@ jobs:
           coverage xml
       - name: Codacy
         shell: bash -l {0}
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           python-codacy-coverage -r coverage.xml
