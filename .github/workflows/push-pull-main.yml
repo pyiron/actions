@@ -183,8 +183,3 @@ jobs:
         with:
           options: "--check --diff"
           src: ./${{ github.event.repository.name }}
-
-  codeql:
-    needs: commit-updated-env
-    uses: pyiron/actions/.github/workflows/codeql.yml@main
-    secrets: inherit

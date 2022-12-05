@@ -53,3 +53,9 @@ jobs:
         env-label: linux-64-py-3-10
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/integration
+
+  code-ql:
+    if: contains(github.event.pull_request.labels.*.name, 'CodeQL')
+    runs-on: ubuntu-latest
+    steps:
+    - uses: pyiron/actions/.github/workflows/codeql.yml@main
