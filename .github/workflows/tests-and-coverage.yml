@@ -36,6 +36,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          if [ ${{ inputs.source-dir }} ==  ]; then
+            SOURCE_DIR=${{ github.event.repository.name }}
+          else
+            SOURCE_DIR=${{ inputs.source-dir }}
+          fi
+          {
+            echo '[run]'
+            echo 'source = ${SOURCE_DIR}'
+            echo 'omit = ${SOURCE_DIR}/_version.py'
+            echo 'concurrency = multiprocessing'
+          } > .coveragerc
           coverage combine
           coveralls --service=github
           coverage xml
