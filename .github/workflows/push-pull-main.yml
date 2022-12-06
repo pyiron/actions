@@ -92,7 +92,7 @@ jobs:
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
 
 
-  tests-coverage-coveralls-codacy:
+  unit-tests:
     needs: commit-updated-env
     runs-on: ${{ matrix.operating-system }}
     strategy:
