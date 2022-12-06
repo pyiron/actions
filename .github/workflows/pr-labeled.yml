@@ -43,7 +43,7 @@ jobs:
 
   tests-and-coverage:
     if: contains(github.event.pull_request.labels.*.name, 'run_coverage')
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@fix_coveragerc
     secrets: inherit
 
   code-ql:
