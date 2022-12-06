@@ -47,4 +47,4 @@ jobs:
           CODACY_USERNAME: $${{ github.repository_owner }}
           CODACY_PROJECT_NAME: ${{ github.event.repository.name }}
         run: |
-          python-codacy-coverage -r coverage.xml
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.xml -p $CODACY_PROJECT_NAME -u $CODACY_USERNAME --organization-provider $CODACY_ORGANIZATION_PROVIDER -a $CODACY_API_TOKEN
