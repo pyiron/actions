@@ -1,4 +1,4 @@
-# This runs GitHub's codeql security analysis
+# This runs coveralls and codacy services for quality/coverage testing
 # Recommended usage:
 #   on:
 #     schedule:
