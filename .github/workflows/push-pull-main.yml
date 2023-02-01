@@ -38,36 +38,7 @@ on:
         required: false
 
 jobs:
-  commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
-          ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
-          fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@main
-      - uses: pyiron/actions/write-environment@main
-        with:
-          env-files: ${{ inputs.notebooks-env-files }}
-          output-env-file: .binder/environment.yml
-      - name: commit
-        id: commit-docs-env
-        continue-on-error: true  # Allow "failure" when there are no changes (the working tree is clean)
-        run: |
-          git config --local user.email "pyiron@mpie.de"
-          git config --local user.name "pyiron-runner"
-          git add docs/environment.yml .binder/environment.yml
-          git commit -m "Update env file" -a
-      - name: push
-        if: steps.commit-docs-env.outcome == 'success'  # But only push if we made it here without continue-on-error
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
-          branch: ${{ github.event.pull_request.head.ref }}
-
   build-docs:
-    needs: commit-updated-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -79,7 +50,6 @@ jobs:
           env-files: ${{ inputs.docs-env-files }}
 
   build-notebooks:
-    needs: commit-updated-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -93,20 +63,24 @@ jobs:
 
 
   unit-tests:
-    needs: commit-updated-env
     runs-on: ${{ matrix.operating-system }}
     strategy:
       matrix:
         include:
           - operating-system: macos-latest
-            python-version: '3.10'
-            label: osx-64-py-3-10
+            python-version: '3.11'
+            label: osx-64-py-3-11
             prefix: /Users/runner/miniconda3/envs/my-env
 
           - operating-system: windows-latest
-            python-version: '3.10'
-            label: win-64-py-3-10
+            python-version: '3.11'
+            label: win-64-py-3-11
             prefix: C:\Miniconda3\envs\my-env
+
+          - operating-system: ubuntu-latest
+            python-version: '3.11'
+            label: linux-64-py-3-11
+            prefix: /usr/share/miniconda3/envs/my-env
 
           - operating-system: ubuntu-latest
             python-version: '3.10'
@@ -131,10 +105,9 @@ jobs:
         env-prefix: ${{ matrix.prefix }}
         env-label: ${{ matrix.label }}
         env-files: ${{ inputs.tests-env-files }}
-        test-dir: tests/unit
+        test-dir: tests
 
   benchmark-tests:
-    needs: commit-updated-env
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -144,11 +117,10 @@ jobs:
         env-prefix: /usr/share/miniconda3/envs/my-env
         env-label: linux-64-py-3-10
         env-files: ${{ inputs.tests-env-files }}
-        test-dir: tests/benchmark
+        test-dir: test_benchmarks
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   pip-check:
-    needs: commit-updated-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -159,7 +131,6 @@ jobs:
           env-label: linux-64-py-3-10
 
   black:
-    needs: commit-updated-env
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
