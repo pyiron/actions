@@ -21,7 +21,7 @@ inputs:
     required: false
   notebooks-dir:
     description: 'The location of the notebooks to build'
-    default: docs
+    default: notebooks
     required: false
   exclusion-file:
     description: 'An optional path to a file containing the names of notebooks to NOT build'
