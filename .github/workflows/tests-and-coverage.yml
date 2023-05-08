@@ -19,9 +19,6 @@ on:
         default: .ci_support/environment.yml
         required: false
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   Tests-and-Coverage:
     runs-on: ubuntu-latest
@@ -36,9 +33,11 @@ jobs:
           test-dir: tests
       - name: Coverage
         shell: bash -l {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           coverage combine
-          coveralls
+          coveralls --service=github
           coverage xml
       - name: Codacy
         shell: bash -l {0}

@@ -133,6 +133,14 @@ jobs:
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/unit
 
+  coveralls-and-codacy:
+    if: github.event_name == 'pull_request'
+    needs: commit-updated-env
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    secrets: inherit
+    with:
+      tests-env-files: ${{ inputs.tests-env-files }}
+
   benchmark-tests:
     needs: commit-updated-env
     runs-on: ubuntu-latest
