@@ -134,7 +134,6 @@ jobs:
         test-dir: tests/unit
 
   coveralls-and-codacy:
-    if: github.event_name == 'pull_request'
     needs: commit-updated-env
     uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
