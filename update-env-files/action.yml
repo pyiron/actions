@@ -16,4 +16,4 @@ runs:
     run: pip install pyyaml
   - name: Update environment files
     shell: bash -l {0}
-    run: python $GITHUB_ACTION_PATH/../.support/update_environment.py ${{ github.event.pull_request.title }} ${{ inputs.conda-env }} $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
+    run: python $GITHUB_ACTION_PATH/../.support/update_environment.py ${{ github.event.pull_request.title }} ${{ inputs.conda-yml }} $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
