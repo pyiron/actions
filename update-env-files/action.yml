@@ -18,4 +18,4 @@ runs:
     env:
       PR_TITLE: ${{ github.event.pull_request.title }}
     shell: bash -l {0}
-    run: python $GITHUB_ACTION_PATH/../.support/update_environment.py $PR_TITLE ${{ inputs.conda-env }} $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
+    run: python $GITHUB_ACTION_PATH/../.support/update_environment.py $PR_TITLE ${{ inputs.conda-yml }} $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
