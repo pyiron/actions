@@ -11,10 +11,12 @@ if [ ${EXCLUSION_FILE} != "" ]; then
 fi
 
 # execute notebooks
+shopt -s globstar
 i=0;
-for notebook in $(ls ${NOTEBOOKS_DIR}/*.ipynb); do
+for notebook in ${NOTEBOOKS_DIR}/**/*.ipynb; do
     papermill ${notebook} ${notebook%.*}-out.${notebook##*.} || i=$((i+1));
 done;
+shopt -u globstar
 
 # push error to next level
 if [ $i -gt 0 ]; then
