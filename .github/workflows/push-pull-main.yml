@@ -109,6 +109,11 @@ jobs:
             prefix: C:\Miniconda3\envs\my-env
 
           - operating-system: ubuntu-latest
+            python-version: '3.11'
+            label: linux-64-py-3-11
+            prefix: /usr/share/miniconda3/envs/my-env
+
+          - operating-system: ubuntu-latest
             python-version: '3.10'
             label: linux-64-py-3-10
             prefix: /usr/share/miniconda3/envs/my-env
@@ -116,11 +121,6 @@ jobs:
           - operating-system: ubuntu-latest
             python-version: 3.9
             label: linux-64-py-3-9
-            prefix: /usr/share/miniconda3/envs/my-env
-
-          - operating-system: ubuntu-latest
-            python-version: 3.8
-            label: linux-64-py-3-8
             prefix: /usr/share/miniconda3/envs/my-env
 
     steps:
