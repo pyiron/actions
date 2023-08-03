@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: pyiron/actions/unit-tests@main
         with:
-          python-version: '3.10'
+          python-version: '3.11'
           env-prefix: /usr/share/miniconda3/envs/my-env
           env-label: linux-64-py-3-10
           env-files: ${{ inputs.tests-env-files }}

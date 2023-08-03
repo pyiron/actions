@@ -3,7 +3,7 @@ description: 'Use sphinx to build documentation'
 
 inputs:
   python-version:
-    description: 'Which version of the python interpreter to use, e.g. "3.10"'
+    description: 'Which version of the python interpreter to use, e.g. "3.11"'
     required: true
   env-prefix:
     description: 'Prefix to the path to the environment'
