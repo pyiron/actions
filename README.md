@@ -16,7 +16,8 @@ These docs wind up getting discarded when the virtual machine (VM) for your job 
 ### `build-notebooks`
 
 Uses [papermill](https://papermill.readthedocs.io) to make sure that selected notebooks in your repository build and execute OK.
-You can exclude a notebook from this check by naming it in an exclusion file (this is empty by default, but for repos inside the pyiron organization using the workflow here that calls this action, the default location is `.ci_support/exclude`)
+You can exclude a notebook from this check by naming it in an exclusion file (this is empty by default, but for repos inside the pyiron organization using the workflow here that calls this action, the default location is `.ci_support/exclude`).
+Notebooks are found in all sub directories of `/notebooks`.  The files listed in the exclusion file must be given as relative paths to that folder.
 
 ### `cached-mamba`
 

@@ -12,7 +12,7 @@ fi
 
 # execute notebooks
 i=0;
-for notebook in $(ls ${NOTEBOOKS_DIR}/*.ipynb); do
+for notebook in $(find ${NOTEBOOKS_DIR} -type f -name '*.ipynb'); do
     papermill ${notebook} ${notebook%.*}-out.${notebook##*.} || i=$((i+1));
 done;
 
