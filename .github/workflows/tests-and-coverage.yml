@@ -37,8 +37,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           coverage combine
-          coveralls --service=github
           coverage xml
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
       - name: Codacy
         shell: bash -l {0}
         env:
