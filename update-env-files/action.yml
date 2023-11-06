@@ -3,7 +3,7 @@ description: 'Change the version number in a conda env file based on a dependabo
 
 inputs:
   conda-yml:
-    description: 'Path to conda environment.yml'
+    description: 'Path(s) to conda environment.yml; space separated for multiple files'
     default: .ci_support/environment.yml
     required: false
 
