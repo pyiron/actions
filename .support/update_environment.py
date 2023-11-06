@@ -99,12 +99,14 @@ def pattern_is_update_requirement_from_to(list_):
 
 
 if pattern_is_bump_from_to(sys.argv):
+    # "bump" PR titles take the form "bump PKG from V1 to V2"
     package_to_update = sys.argv[2]
     from_version = sys.argv[4]
     to_version = sys.argv[6]
     environment_files = sys.argv[7:-1]
     name_mapping_file = sys.argv[-1]
 elif pattern_is_update_requirement_from_to(sys.argv):
+    # "update" PR titles take the form "update PKG requirement from V1 to V2"
     package_to_update = sys.argv[2]
     from_version = sys.argv[5]
     to_version = sys.argv[7]
