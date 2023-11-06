@@ -72,7 +72,7 @@ def ends_in_yml(s):
 
 
 def pattern_is_bump_from_to(list_):
-    if len(list_) != 9: 
+    if len(list_) < 10:
         return False
     return all(
         [
@@ -85,7 +85,7 @@ def pattern_is_bump_from_to(list_):
 
 
 def pattern_is_update_requirement_from_to(list_):
-    if len(list_) != 10:
+    if len(list_) < 11:
         return False
     return all(
         [
@@ -98,18 +98,24 @@ def pattern_is_update_requirement_from_to(list_):
     )
 
 
-def matches_dependabot_pattern_for_yaml_update(list_):
-    return pattern_is_bump_from_to(list_) or pattern_is_update_requirement_from_to(list_)
-
-
-if not matches_dependabot_pattern_for_yaml_update(sys.argv):
+if pattern_is_bump_from_to(sys.argv):
+    # "bump" PR titles take the form "bump PKG from V1 to V2"
+    package_to_update = sys.argv[2]
+    from_version = sys.argv[4]
+    to_version = sys.argv[6]
+    environment_files = sys.argv[7:-1]
+    name_mapping_file = sys.argv[-1]
+elif pattern_is_update_requirement_from_to(sys.argv):
+    # "update" PR titles take the form "update PKG requirement from V1 to V2"
+    package_to_update = sys.argv[2]
+    from_version = sys.argv[5]
+    to_version = sys.argv[7]
+    environment_files = sys.argv[8:-1]
+    name_mapping_file = sys.argv[-1]
+else:
     raise ValueError(f"Title of a dependabot PR 'Bump <package> from <version> to <version>' expected, "
                      f"but got {' '.join(sys.argv[1:])}")
-package_to_update = sys.argv[2]
-from_version = sys.argv[4]
-to_version = sys.argv[6]
-environment_file = sys.argv[7]
-name_mapping_file = sys.argv[8]
 
-updater = EnvironmentUpdater(package_to_update, from_version, to_version, environment_file, name_mapping_file)
-updater.update_dependencies()
+for environment_file in environment_files:
+    updater = EnvironmentUpdater(package_to_update, from_version, to_version, environment_file, name_mapping_file)
+    updater.update_dependencies()
