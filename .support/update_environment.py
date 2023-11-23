@@ -72,7 +72,7 @@ def ends_in_yml(s):
 
 
 def pattern_is_bump_from_to(list_):
-    if len(list_) < 10:
+    if len(list_) < 9:
         return False
     return all(
         [
@@ -85,7 +85,7 @@ def pattern_is_bump_from_to(list_):
 
 
 def pattern_is_update_requirement_from_to(list_):
-    if len(list_) < 11:
+    if len(list_) < 10:
         return False
     return all(
         [
