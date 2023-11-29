@@ -36,6 +36,11 @@ on:
         description: 'How many minutes to allow tests in units/benchmark to run for'
         default: 30
         required: false
+      tests-in-python-path:
+        type: boolean
+        description: 'Whether to add the canonical test dirs (tests/( ,benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
+        default: false
+        required: false
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
@@ -125,6 +130,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - uses: pyiron/actions/add-to-python-path@tests_in_python_path
+      if: ${{ inputs.tests-in-python-path }}
+      with:
+        path-dirs: tests tests/benchmark tests/integration tests/unit
     - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
