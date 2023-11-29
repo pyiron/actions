@@ -144,10 +144,11 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@tests_in_pythonpath
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
+      tests-in-python-path: ${{ inputs.tests-in-python-path }}
 
   benchmark-tests:
     needs: commit-updated-env
