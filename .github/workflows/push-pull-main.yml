@@ -130,7 +130,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@tests_in_python_path
+    - uses: pyiron/actions/add-to-python-path@tests_in_pythonpath
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
