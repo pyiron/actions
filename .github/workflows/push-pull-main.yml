@@ -130,7 +130,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@tests_in_pythonpath
+    - uses: pyiron/actions/add-to-python-path@main
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
@@ -144,7 +144,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@tests_in_pythonpath
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
