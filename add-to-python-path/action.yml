@@ -1,5 +1,5 @@
 name: 'Add to python path'
-description: 'Add local directories to the PYTHONPATH github environment'
+description: 'Add local repo directories to the PYTHONPATH github environment'
 
 inputs:
   path-dirs:
