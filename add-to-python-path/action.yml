@@ -1,0 +1,22 @@
+name: 'Add to python path'
+description: 'Add local repo directories to the PYTHONPATH github environment'
+
+inputs:
+  path-dirs:
+    description: 'Paths to an arbitrary number of (space-separated) directories in the repo'
+    type: string
+    default:
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Add to python path
+      if: ${{ inputs.path-dirs != '' }}
+      shell: bash -l {0}
+      run: |
+        PWD=$(pwd)
+        for dir in ${{ inputs.path-dirs }}; do
+          PYTHONPATH=${PWD}/${dir}:${PYTHONPATH}
+        done
+        echo "PYTHONPATH=${PYTHONPATH}" >> $GITHUB_ENV
