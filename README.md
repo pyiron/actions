@@ -7,6 +7,13 @@ You will need to do this yourself in the calling workflow in order for these act
 
 ## The Actions
 
+### `add-to-python-path`
+
+Adds an arbitrary number of local repo directories to the python path, pre-pending the path to that directory as it is found on the local runner.
+This is sent to the `$GITHUB_ENV` so the expanded path is available in all further steps of the same job.
+
+In a pyiron context, this is important for repos that use `pympipool` in order to be able to use patterns like `python -m unittest discover tests` instead of `cd tests; python -m unittest discover .` by making sure `tests` (and/or sub-directories) are available in the python path.
+
 ### `build-docs`
 
 Combines your code's environment file with a separate environment file for building documentation (`.support/environment-docs.yml` from this repo by default) and uses [sphinx](https://www.sphinx-doc.org) to build a set of HTML documentation.
