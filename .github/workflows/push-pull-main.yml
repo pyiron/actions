@@ -140,29 +140,31 @@ jobs:
             python-version: ${{ inputs.python-version }}
             label: ${{ inputs.runner-alt2 }}-py-main
             prefix: /Users/runner/miniconda3/envs/my-env
+            do_run: ${{ inputs.runner-alt2 != 'exclude' }}
 
           - operating-system: ${{ inputs.runner-alt1 }}
             python-version: ${{ inputs.python-version }}
             label: ${{ inputs.runner-alt1 }}-py-main
             prefix: C:\Miniconda3\envs\my-env
+            do_run: ${{ inputs.runner-alt1 != 'exclude' }}
 
           - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version }}
             label: ${{ inputs.runner }}-py-main
             prefix: /usr/share/miniconda3/envs/my-env
+            do_run: true  # Always run the main runner with the main python version
 
           - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version-alt1 }}
             label: ${{ inputs.runner }}-py-alt1
             prefix: /usr/share/miniconda3/envs/my-env
+            do_run: ${{ inputs.python-version-alt1 != 'exclude' }}
 
           - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version-alt2 }}
             label: ${{ inputs.runner }}-py-alt2
             prefix: /usr/share/miniconda3/envs/my-env
-        exclude:
-          - operating-system: 'exclude'
-          - python-version: 'exclude'
+            do_run: ${{ inputs.python-version-alt2 != 'exclude' }}
 
     steps:
     - uses: actions/checkout@v3
@@ -171,6 +173,8 @@ jobs:
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
     - uses: pyiron/actions/unit-tests@main
+      if: ${{ matrix.do_run }}
+      # It would be more elegant to skip earlier, but I'm not sure how to accomplish that
       with:
         python-version: ${{ matrix.python-version }}
         env-prefix: ${{ matrix.prefix }}
