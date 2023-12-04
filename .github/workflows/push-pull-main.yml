@@ -160,7 +160,7 @@ jobs:
     - name: replace-dot
       shell: bash -l {0}
       run: |
-        pyversion_string="${{ matrix.python-version }}"
+        pyversion_string=${{ matrix.python-version }}
         echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
     - uses: pyiron/actions/unit-tests@main
       with:
