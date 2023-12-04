@@ -177,7 +177,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@flexible_matrix
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
