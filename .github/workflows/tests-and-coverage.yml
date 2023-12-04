@@ -23,6 +23,11 @@ on:
         description: 'Whether to add the canonical test dirs (tests/( ,benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
         default: false
         required: false
+      runner:
+        type: string
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-latest'
+        required: false
       python-version:
         type: string
         description: 'The version of python use'
@@ -31,7 +36,7 @@ on:
 
 jobs:
   Tests-and-Coverage:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
       - uses: pyiron/actions/add-to-python-path@main

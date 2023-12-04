@@ -41,20 +41,20 @@ on:
         description: 'Whether to add the canonical test dirs (tests/( ,benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
         default: false
         required: false
-      tests-osx-version:
+      runner:
         type: string
-        description: 'The runner version for OSX: macos-*'
-        default: 'latest'
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-latest'
         required: false
-      tests-win-version:
+      runner-alt1:
         type: string
-        description: 'The runner version for Windows: windows-*'
-        default: 'latest'
+        description: 'An alternate runner for the unit tests (only on the main python version)'
+        default: 'windows-latest'
         required: false
-      tests-linux-version:
+      runner-alt2:
         type: string
-        description: 'The runner version for Ubuntu: ubuntu-*'
-        default: 'latest'
+        description: 'Another alternate runner for the unit tests (only on the main python version)'
+        default: 'macos-latest'
         required: false
       python-version:
         type: string
@@ -63,19 +63,19 @@ on:
         required: false
       python-version-alt1:
         type: string
-        description: 'An alternate  version of python to test on, used only on linux'
+        description: 'An alternate  version of python to run unit tests on, used only on the main runner'
         default: '3.10'
         required: false
       python-version-alt2:
         type: string
-        description: 'An alternate  version of python to test on, used only on linux'
+        description: 'An alternate  version of python to run unit tests on, used only on the main runner'
         default: '3.9'
         required: false
 
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -104,26 +104,26 @@ jobs:
 
   build-docs:
     needs: commit-updated-env
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
       - uses: pyiron/actions/build-docs@main
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-main
+          env-label: ${{ inputs.runner }}-py-main
           env-files: ${{ inputs.docs-env-files }}
 
   build-notebooks:
     needs: commit-updated-env
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
       - uses: pyiron/actions/build-notebooks@main
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-main
+          env-label: ${{ inputs.runner }}-py-main
           env-files: ${{ inputs.notebooks-env-files }}
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
 
@@ -136,29 +136,29 @@ jobs:
     strategy:
       matrix:
         include:
-          - operating-system: macos-latest
+          - operating-system: ${{ inputs.runner-alt2 }}
             python-version: ${{ inputs.python-version }}
-            label: osx-64-py-main
+            label: ${{ inputs.runner-alt2 }}-py-main
             prefix: /Users/runner/miniconda3/envs/my-env
 
-          - operating-system: windows-latest
+          - operating-system: ${{ inputs.runner-alt1 }}
             python-version: ${{ inputs.python-version }}
-            label: win-64-py-main
+            label: ${{ inputs.runner-alt1 }}-py-main
             prefix: C:\Miniconda3\envs\my-env
 
-          - operating-system: ubuntu-latest
+          - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version }}
-            label: linux-64-py-main
+            label: ${{ inputs.runner }}-py-main
             prefix: /usr/share/miniconda3/envs/my-env
 
-          - operating-system: ubuntu-latest
+          - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version-alt1 }}
-            label: linux-64-py-alt1
+            label: ${{ inputs.runner }}-py-alt1
             prefix: /usr/share/miniconda3/envs/my-env
 
-          - operating-system: ubuntu-latest
+          - operating-system: ${{ inputs.runner }}
             python-version: ${{ inputs.python-version-alt2 }}
-            label: linux-64-py-alt2
+            label: ${{ inputs.runner }}-py-alt2
             prefix: /usr/share/miniconda3/envs/my-env
 
     steps:
@@ -182,36 +182,37 @@ jobs:
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
       tests-in-python-path: ${{ inputs.tests-in-python-path }}
+      runner: ${{ inputs.runner }}
       python-version: ${{ inputs.python-version }}
 
   benchmark-tests:
     needs: commit-updated-env
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
     - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.python-version }}
         env-prefix: /usr/share/miniconda3/envs/my-env
-        env-label: linux-64-py-main
+        env-label: ${{ inputs.runner }}-py-main
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/benchmark
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   pip-check:
     needs: commit-updated-env
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
       - uses: pyiron/actions/pip-check@main
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: linux-64-py-main
+          env-label: ${{ inputs.runner }}-py-main
 
   black:
     needs: commit-updated-env
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
