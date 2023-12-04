@@ -159,7 +159,7 @@ jobs:
         path-dirs: tests tests/benchmark tests/integration tests/unit
     - name: replace-dot
       run: |
-        pyversion_string=${{ matrix.python-version }}
+        pyversion_string="${{ matrix.python-version }}"
         echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
     - uses: pyiron/actions/unit-tests@main
       with:
