@@ -134,37 +134,21 @@ jobs:
     # All three runners for the highest python version
     # Only the main for up to two more versions of python
     strategy:
-      matrix:
-        include:
-          - operating-system: ${{ inputs.runner-alt2 }}
-            python-version: ${{ inputs.python-version }}
-            label: ${{ inputs.runner-alt2 }}-py-main
-            prefix: /Users/runner/miniconda3/envs/my-env
-            do_run: ${{ inputs.runner-alt2 != 'exclude' }}
-
-          - operating-system: ${{ inputs.runner-alt1 }}
-            python-version: ${{ inputs.python-version }}
-            label: ${{ inputs.runner-alt1 }}-py-main
-            prefix: C:\Miniconda3\envs\my-env
-            do_run: ${{ inputs.runner-alt1 != 'exclude' }}
-
-          - operating-system: ${{ inputs.runner }}
-            python-version: ${{ inputs.python-version }}
-            label: ${{ inputs.runner }}-py-main
-            prefix: /usr/share/miniconda3/envs/my-env
-            do_run: true  # Always run the main runner with the main python version
-
-          - operating-system: ${{ inputs.runner }}
-            python-version: ${{ inputs.python-version-alt1 }}
-            label: ${{ inputs.runner }}-py-alt1
-            prefix: /usr/share/miniconda3/envs/my-env
-            do_run: ${{ inputs.python-version-alt1 != 'exclude' }}
-
-          - operating-system: ${{ inputs.runner }}
-            python-version: ${{ inputs.python-version-alt2 }}
-            label: ${{ inputs.runner }}-py-alt2
-            prefix: /usr/share/miniconda3/envs/my-env
-            do_run: ${{ inputs.python-version-alt2 != 'exclude' }}
+      operating-system: [${{ inputs.runner }}, ${{ inputs.runner-alt1 }}, ${{ inputs.runner-alt2 }}]
+      python-version: [${{ inputs.python-version }}, ${{ inputs.python-version-alt1 }}, ${{ inputs.python-version-alt2 }}]
+      exclude:
+        # Get rid of all combinations of alternative runners and alternative python versions
+        - operating-system: ${{ inputs.runner-alt1 }}
+          python-version: ${{ inputs.python-version-alt1 }}
+        - operating-system: ${{ inputs.runner-alt1 }}
+          python-version: ${{ inputs.python-version-alt2 }}
+        - operating-system: ${{ inputs.runner-alt2 }}
+          python-version: ${{ inputs.python-version-alt1 }}
+        - operating-system: ${{ inputs.runner-alt2 }}
+          python-version: ${{ inputs.python-version-alt2 }}
+        # Don't run anything tagged with "exclude"
+        - operating-system: 'exclude'
+        - python-version: 'exclude'
 
     steps:
     - uses: actions/checkout@v3
@@ -172,13 +156,15 @@ jobs:
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
+    - name: replace-dot
+      run: |
+        PYVERSION=${{ matrix.python-version }}
+        echo "PYVERSION=${PYVERSION/\./-}" >> $GITHUB_ENV
     - uses: pyiron/actions/unit-tests@main
-      if: ${{ matrix.do_run }}
-      # It would be more elegant to skip earlier, but I'm not sure how to accomplish that
       with:
         python-version: ${{ matrix.python-version }}
-        env-prefix: ${{ matrix.prefix }}
-        env-label: ${{ matrix.label }}
+        env-prefix: ${{ contains('macos', matrix.operating-system) && '/Users/runner/miniconda3/envs/my-env' || contains('windows', matrix.operating-system) && 'C:\Miniconda3\envs\my-env' || contains('ubuntu', matrix.operating-system) && '/usr/share/miniconda3/envs/my-env }}
+        env-label: ${{ matrix.operating-system }}-py-${{ PYVERSION }}
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/unit
 
