@@ -135,8 +135,8 @@ jobs:
     # Only the main for up to two more versions of python
     strategy:
       matrix:
-        operating-system: [${{ inputs.runner }}, ${{ inputs.runner-alt1 }}, ${{ inputs.runner-alt2 }}]
-        python-version: [${{ inputs.python-version }}, ${{ inputs.python-version-alt1 }}, ${{ inputs.python-version-alt2 }}]
+        operating-system: ["${{ inputs.runner }}", "${{ inputs.runner-alt1 }}", "${{ inputs.runner-alt2 }}"]
+        python-version: ["${{ inputs.python-version }}", "${{ inputs.python-version-alt1 }}", "${{ inputs.python-version-alt2 }}"]
         exclude:
           # Get rid of all combinations of alternative runners and alternative python versions
           - operating-system: ${{ inputs.runner-alt1 }}
