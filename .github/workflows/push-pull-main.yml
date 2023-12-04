@@ -131,8 +131,8 @@ jobs:
   unit-tests:
     needs: commit-updated-env
     runs-on: ${{ matrix.operating-system }}
-    # OSX, Windows, and Ubuntu for the highest python version
-    # Ubuntu for up to two more versions of python
+    # All three runners for the highest python version
+    # Only the main for up to two more versions of python
     strategy:
       matrix:
         include:
