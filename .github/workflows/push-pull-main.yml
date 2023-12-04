@@ -161,8 +161,8 @@ jobs:
             label: ${{ inputs.runner }}-py-alt2
             prefix: /usr/share/miniconda3/envs/my-env
         exclude:
-          operating-system: 'exclude'
-          python-version: 'exclude'
+          - operating-system: 'exclude'
+          - python-version: 'exclude'
 
     steps:
     - uses: actions/checkout@v3
