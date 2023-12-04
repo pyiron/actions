@@ -48,12 +48,12 @@ on:
         required: false
       runner-alt1:
         type: string
-        description: 'An alternate runner for the unit tests (only on the main python version)'
+        description: 'An alternate runner for the unit tests (only on the main python version). Set to the string exclude to skip'
         default: 'windows-latest'
         required: false
       runner-alt2:
         type: string
-        description: 'Another alternate runner for the unit tests (only on the main python version)'
+        description: 'Another alternate runner for the unit tests (only on the main python version). Set to the string exclude to skip'
         default: 'macos-latest'
         required: false
       python-version:
@@ -63,12 +63,12 @@ on:
         required: false
       python-version-alt1:
         type: string
-        description: 'An alternate  version of python to run unit tests on, used only on the main runner'
+        description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
         default: '3.10'
         required: false
       python-version-alt2:
         type: string
-        description: 'An alternate  version of python to run unit tests on, used only on the main runner'
+        description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
         default: '3.9'
         required: false
 
@@ -160,6 +160,9 @@ jobs:
             python-version: ${{ inputs.python-version-alt2 }}
             label: ${{ inputs.runner }}-py-alt2
             prefix: /usr/share/miniconda3/envs/my-env
+        exclude:
+          operating-system: 'exclude'
+          python-version: 'exclude'
 
     steps:
     - uses: actions/checkout@v3
