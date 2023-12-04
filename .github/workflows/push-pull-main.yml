@@ -158,6 +158,7 @@ jobs:
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
     - name: replace-dot
+      shell: bash -l {0}
       run: |
         pyversion_string="${{ matrix.python-version }}"
         echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
