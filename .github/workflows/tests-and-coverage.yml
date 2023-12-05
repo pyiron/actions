@@ -46,7 +46,7 @@ jobs:
       - id: replace_dot
         shell: bash -l {0}
         run: |
-          pyversion_string=${{ matrix.python-version }}
+          pyversion_string=${{ inputs.python-version }}
           echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
       - id: determine_conda_prefix
         shell: bash -l {0}
@@ -63,7 +63,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
-          env-label: ${{ matrix.operating-system }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
+          env-label: ${{ inputs.runner }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
           env-files: ${{ inputs.tests-env-files }}
           test-dir: tests
       - name: Coverage
