@@ -12,6 +12,11 @@ on:
 jobs:
   pypi-release:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/${{ github.event.repository.name }}
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -28,6 +33,3 @@ jobs:
           python setup.py sdist bdist_wheel
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_password }}
