@@ -51,7 +51,7 @@ jobs:
       - id: determine_conda_prefix
         shell: bash -l {0}
         run: |
-          os_string=${{ matrix.operating-system }}
+          os_string=${{ inputs.runner }}
           if [[ ${os_string} == "macos-"* ]]; then
             echo "env_prefix_string=/Users/runner/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
           elif [[ ${os_string} == "windows-"* ]]; then
