@@ -176,8 +176,8 @@ jobs:
     - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
-        env-prefix: ${{ steps.determine_conda_prefix.output.env_prefix_string }}
-        env-label: ${{ matrix.operating-system }}-py-${{ steps.replace_dot.output.pyversion_string }}
+        env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
+        env-label: ${{ matrix.operating-system }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
         env-files: ${{ inputs.tests-env-files }}
         test-dir: tests/unit
 
