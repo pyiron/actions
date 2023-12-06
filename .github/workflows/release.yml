@@ -12,11 +12,11 @@ on:
 jobs:
   pypi-release:
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/${{ github.event.repository.name }}
-    permissions:
-      id-token: write
+#    environment:  # Add once trusted publisher works with reusable workflows
+#      name: pypi  # Add once trusted publisher works with reusable workflows
+#      url: https://pypi.org/p/${{ github.event.repository.name }}  # Add once trusted publisher works with reusable workflows
+#    permissions:  # Add once trusted publisher works with reusable workflows
+#      id-token: write  # Add once trusted publisher works with reusable workflows
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -33,3 +33,6 @@ jobs:
           python setup.py sdist bdist_wheel
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:  # Remove once trusted publisher works with reusable workflows
+          user: __token__  # Remove once trusted publisher works with reusable workflows
+          password: ${{ secrets.pypi_password }}  # Remove once trusted publisher works with reusable workflows
