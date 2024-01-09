@@ -31,7 +31,7 @@ runs:
       channel-priority: strict
       activate-environment: my-env
       use-mamba: true
-  - name: Set cache date and number
+  - name: Set cache date
     shell: bash -l {0}
     run: |
       echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
