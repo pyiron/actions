@@ -4,3 +4,4 @@ dependencies:
   - ipykernel
   - nbsphinx
   - myst-parser
+  - sphinx-gallery
