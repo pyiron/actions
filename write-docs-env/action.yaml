@@ -7,7 +7,7 @@ inputs:
     default: .ci_support/environment.yml
     required: false
   standard-docs-env-file:
-    description: 'Env files this action thinks are useful (adds nbsphinx package)'
+    description: 'Env files this action thinks are useful (adds nbsphinx and other packages)'
     default: $GITHUB_ACTION_PATH/../.support/environment-docs.yml
     required: false
   output-env-file:
