@@ -19,14 +19,31 @@ def parse_args(argv=None):
     return parser.parse_args(argv)
 
 
+def split_dependencies(env):
+    plain = []
+    pip = []
+    for f in env:
+        if isinstance(f, dict):
+            if 'pip' not in f:
+                raise ValueError("Unrecognized section {f} in environment file.")
+            pip += f['pip']
+        else:
+            plain.append(f)
+    def _split(deps):
+        return {d.split()[0]: d for d in deps}
+    return _split(plain), _split(pip)
+
 def merge_dependencies(env_base, *envs):
-    base_dict = {f.split()[0]: f for f in env_base}
+    def _update(base, add):
+        for k, v in add.items():
+            if k not in base:
+                base[k] = v
+    base_dict, base_pip_dict = split_dependencies(env_base)
     for env_add in envs:
-        add_dict = {f.split()[0]: f for f in env_add}
-        for k,v in add_dict.items():
-            if k not in base_dict.keys():
-                base_dict[k] = v
-    return list(base_dict.values())
+        add_dict, add_pip_dict = split_dependencies(env_add)
+        _update(base_dict, add_dict)
+        _update(base_pip_dict, add_pip_dict)
+    return [*base_dict.values(), {'pip': list(base_pip_dict.values())}]
 
 
 def merge_channels(env_base, *envs):
