@@ -43,7 +43,12 @@ def merge_dependencies(env_base, *envs):
         add_dict, add_pip_dict = split_dependencies(env_add)
         _update(base_dict, add_dict)
         _update(base_pip_dict, add_pip_dict)
-    return [*base_dict.values(), {'pip': list(base_pip_dict.values())}]
+    deps = list(base_dict.values())
+    if base_pip_dict:
+        deps.append(
+                {'pip': list(base_pip_dict.values())}
+        )
+    return deps
 
 
 def merge_channels(env_base, *envs):
