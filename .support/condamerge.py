@@ -27,6 +27,8 @@ def split_dependencies(env):
             if 'pip' not in f:
                 raise ValueError("Unrecognized section {f} in environment file.")
             pip += f['pip']
+        else:
+            plain.append(f)
     def _split(deps):
         return {d.split()[0]: d for d in deps}
     return _split(plain), _split(pip)
