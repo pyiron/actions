@@ -36,7 +36,13 @@ class EnvironmentUpdater:
         with open(environment_file, 'r') as f:
             self.environment = yaml.safe_load(f)
 
-        self.package_name = self._convert_package_name(package_name)
+        is_pip_package = False
+        for dep in self.environment['dependencies']:
+            if isinstance(dep, dict) and "pip" in dep:
+                is_pip_package = any(pip_dep.startswith(package_name)
+                                          for pip_dep in dep["pip"])
+        if not is_pip_package:
+            self.package_name = self._convert_package_name(package_name)
 
     def _convert_package_name(self, name):
         if name in self._name_conversion_dict.keys():
@@ -48,12 +54,24 @@ class EnvironmentUpdater:
     def _update_dependencies(self):
         updated_dependencies = []
 
-        for dep in self.environment['dependencies']:
-            updated_dependencies.append(re.sub(
+        def bump_version(dep):
+            return re.sub(
                 r'(' + self.package_name + '.*)' + self.from_version,
                 r'\g<1>' + self.to_version,
                 dep
-            ))
+            )
+
+        for dep in self.environment['dependencies']:
+            if isinstance(dep, str):
+                updated_dependencies.append(bump_version(dep))
+            # in case the env file has a pip section, it will end up here as a
+            # dict
+            elif isinstance(dep, dict) and "pip" in dep:
+                pip = dep["pip"]
+                dep["pip"] = [bump_version(pip_dep) for pip_dep in pip]
+                updated_dependencies.append(dep)
+            else:
+                assert False, f"depencies should always be str/dict, not {dep}"
 
         self.environment['dependencies'] = updated_dependencies
 
