@@ -13,4 +13,4 @@
 PATTERN=${1:-$(git rev-parse --abbrev-ref HEAD)}
 
 # Recursive search and replace
-find .. -type f ! -name 'update_actions_tag.sh' -exec sed -i 's/\(pyiron\/actions\/[^@]*\)@[^*]*/\1@'"$PATTERN"'/g' {} +
+find .. -type f \( -name "*.yml" -o -name "*.md" \) -exec sed -i 's/\(pyiron\/actions\/[^@]*\)@[^*]*/\1@'"$PATTERN"'/g' {} +
