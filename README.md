@@ -122,3 +122,14 @@ jobs:
     uses: pyiron/actions/.github/workflows/push-pull.yml@main
     secrets: inherit
 ```
+
+## Developing these actions
+
+The actions here which are composed of other actions here and all of the reusable workflows all target `@main` on the main branch.
+If you want to develop these, and test those developments, it's not enough to have some other repo target your development branch, all these _internal_ targets need to be redirected as well! 
+For this we have a simple helper script: `.support/update_actions_tag.sh`.
+A typical use pattern should look like this:
+- Check out your branch ("foo", say)
+- Then from inside the actions home directory, invoke `.support/update_actions_tag.sh` to automatically rename all your targets to your branch name (`@foo`)
+- Target this branch from wherever for testing
+- Before merging REMEMBER to run `.support/update_actions_tag.sh main` to revert all your special targets!
