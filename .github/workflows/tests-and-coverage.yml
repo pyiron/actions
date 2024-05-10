@@ -14,10 +14,12 @@ on:
   workflow_call:
     inputs:
       test-dir:
+        type: string
         description: 'The directory containing the tests'
         default: tests
         required: false
       omit-patterns:
+        type: string
         description: 'Patterns passed to --omit for skipping coverage'
         required: false
       tests-env-files:

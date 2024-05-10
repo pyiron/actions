@@ -117,18 +117,22 @@ on:
         default: '3.12'
         required: false
       unit-test-dir:
+        type: string
         description: 'The directory containing the unit tests run on the full platform and python matrix'
         default: tests/unit
         required: false
       coveralls-and-codacy-test-dir:
+        type: string
         description: 'The directory containing the tests analyzed by coveralls'
         default: tests
         required: false
       benchmark-test-dir:
+        type: string
         description: 'The directory containing the benchmark tests'
         default: tests/benchmark
         required: false
       omit-patterns:
+        type: string
         description: 'Patterns passed to --omit for skipping coverage in all unit test calls'
         required: false
 
