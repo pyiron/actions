@@ -6,7 +6,7 @@
 #     pull_request:
 #       branches: [ main ]
 
-name: Push or Pull to main
+name: Push or Pull
 
 on:
   workflow_call:
