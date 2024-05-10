@@ -27,12 +27,9 @@ inputs:
     description: 'The directory containing the tests'
     default: tests
     required: false
-  source-dir:
-    description: 'The directory(ies) to pass as sources to coverage (default is repository name, i.e. in my_repo/my_repo'
+  omit-patterns:
+    description: 'Patterns passed to --omit for skipping coverage'
     required: false
-#  omitted-files:
-#    description: 'File(s) to omit when finding coverage'
-#    required: false
 # TODO: Allow omission of additional files with a bash for-loop over source-dir and omitted-files
 
 runs:
@@ -48,4 +45,4 @@ runs:
   - name: Test
     shell: bash -l {0}
     run: |
-      coverage run -m unittest discover ${{ inputs.test-dir }}
+      coverage run --omit==${{ inputs.omit-patterns }} -m unittest discover ${{ inputs.test-dir }}

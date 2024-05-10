@@ -13,6 +13,13 @@ name: Tests and Coverage
 on:
   workflow_call:
     inputs:
+      test-dir:
+        description: 'The directory containing the tests'
+        default: tests
+        required: false
+      omit-patterns:
+        description: 'Patterns passed to --omit for skipping coverage'
+        required: false
       tests-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -65,7 +72,8 @@ jobs:
           env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
           env-label: ${{ inputs.runner }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
           env-files: ${{ inputs.tests-env-files }}
-          test-dir: tests
+          test-dir: ${{ inputs.test-dir }}
+          omit-patterns: ${{ inputs.omit-patterns }}
       - name: Coverage
         shell: bash -l {0}
         env:
