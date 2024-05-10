@@ -11,6 +11,11 @@ name: Push or Pull
 on:
   workflow_call:
     inputs:
+      do-update-env:
+        type: boolean
+        description: 'Feature flag: controls if the commit-updated-env step does anything or gets skipped over.'
+        default: true
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -80,6 +85,7 @@ on:
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
+    if: ${{ inputs.do-update-env }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
