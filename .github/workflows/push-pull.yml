@@ -11,6 +11,11 @@ name: Push or Pull
 on:
   workflow_call:
     inputs:
+      do-update-env:
+        type: boolean
+        description: 'Feature flag: controls if the commit-updated-env step does anything or gets skipped over.'
+        default: true
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -80,6 +85,7 @@ on:
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
+    if: ${{ inputs.do-update-env }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -111,6 +117,7 @@ jobs:
 
   build-docs:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -123,6 +130,7 @@ jobs:
 
   build-notebooks:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -137,6 +145,7 @@ jobs:
 
   unit-tests:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ matrix.operating-system }}
     # All three runners for the highest python version
     # Only the main for up to two more versions of python
@@ -194,6 +203,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
+    if: always()
     uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
@@ -204,6 +214,7 @@ jobs:
 
   benchmark-tests:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
@@ -218,6 +229,7 @@ jobs:
 
   pip-check:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -229,6 +241,7 @@ jobs:
 
   black:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
