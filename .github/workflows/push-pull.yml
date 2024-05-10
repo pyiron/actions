@@ -11,7 +11,7 @@ name: Push or Pull
 on:
   workflow_call:
     inputs:
-      do-update-env:
+      do-commit-updated-env:
         type: boolean
         description: 'Feature flag: controls if the commit-updated-env step does anything or gets skipped over.'
         default: true
@@ -90,7 +90,7 @@ on:
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
-    if: ${{ inputs.do-update-env }}
+    if: ${{ inputs.do-commit-updated-env }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
