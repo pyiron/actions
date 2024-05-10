@@ -71,6 +71,10 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
+      alternate-tests-env-files:
+        type: string
+        description: 'An alternate set of (space-separated) conda environment yaml files, e.g. to test a lower-bounds environment. Skipped if empty'
+        required: false
       benchmark-timeout-minutes:
         type: number
         description: 'How many minutes to allow tests in units/benchmark to run for'
@@ -130,6 +134,11 @@ on:
         type: string
         description: 'The directory containing the benchmark tests'
         default: tests/benchmark
+        required: false
+      alternate-test-dir:
+        type: string
+        description: 'The directory containing the tests run with the alternate environment'
+        default: tests
         required: false
       omit-patterns:
         type: string
@@ -285,6 +294,20 @@ jobs:
         test-dir: ${{ inputs.benchmark-test-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
+
+  test-alternate-env:
+    if: ${{ inputs.alternate-tests-env-files != '' }}
+    runs-on: ${{ inputs.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pyiron/actions/unit-tests@main
+      with:
+        python-version: ${{ inputs.python-version }}
+        env-prefix: /usr/share/miniconda3/envs/my-env
+        env-label: ${{ inputs.runner }}-py-main
+        env-files: ${{ inputs.alternate-tests-env-files }}
+        test-dir: ${{ inputs.alternate-test-dir }}
+        omit-patterns: ${{ inputs.omit-patterns }}
 
   pip-check:
     needs: commit-updated-env
