@@ -11,9 +11,44 @@ name: Push or Pull
 on:
   workflow_call:
     inputs:
-      do-update-env:
+      do-commit-updated-env:
         type: boolean
         description: 'Feature flag: controls if the commit-updated-env step does anything or gets skipped over.'
+        default: true
+        required: false
+      do-build-docs:
+        type: boolean
+        description: 'Feature flag: controls if the build-docs job runs.'
+        default: true
+        required: false
+      do-build-notebooks:
+        type: boolean
+        description: 'Feature flag: controls if the build-notebooks job runs.'
+        default: true
+        required: false
+      do-unit-tests:
+        type: boolean
+        description: 'Feature flag: controls if the unit-tests job runs.'
+        default: true
+        required: false
+      do-coveralls-and-codacy:
+        type: boolean
+        description: 'Feature flag: controls if the coveralls-and-codacy job runs.'
+        default: true
+        required: false
+      do-benchmark-tests:
+        type: boolean
+        description: 'Feature flag: controls if the benchmark-tests job runs.'
+        default: true
+        required: false
+      do-pip-check:
+        type: boolean
+        description: 'Feature flag: controls if the pip-check job runs.'
+        default: true
+        required: false
+      do-black:
+        type: boolean
+        description: 'Feature flag: controls if the black job runs.'
         default: true
         required: false
       docs-env-files:
@@ -85,7 +120,7 @@ on:
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
-    if: ${{ inputs.do-update-env }}
+    if: ${{ inputs.do-commit-updated-env }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -117,7 +152,7 @@ jobs:
 
   build-docs:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-build-docs }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -130,7 +165,7 @@ jobs:
 
   build-notebooks:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-build-notebooks }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -145,7 +180,7 @@ jobs:
 
   unit-tests:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-unit-tests }}
     runs-on: ${{ matrix.operating-system }}
     # All three runners for the highest python version
     # Only the main for up to two more versions of python
@@ -203,7 +238,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-coveralls-and-codacy }}
     uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
@@ -214,7 +249,7 @@ jobs:
 
   benchmark-tests:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-benchmark-tests }}
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
@@ -229,7 +264,7 @@ jobs:
 
   pip-check:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-pip-check }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
@@ -241,7 +276,7 @@ jobs:
 
   black:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-black }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
