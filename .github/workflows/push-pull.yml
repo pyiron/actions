@@ -16,6 +16,11 @@ on:
         description: 'Feature flag: controls if the commit-updated-env step does anything or gets skipped over.'
         default: true
         required: false
+      do-coveralls-and-codacy:
+        type: boolean
+        description: 'Feature flag: controls if the coveralls-and-codacy step does anything or gets skipped over.'
+        default: true
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -203,7 +208,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    if: always()
+    if: ${{ inputs.do-coveralls-and-codacy }}
     uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
