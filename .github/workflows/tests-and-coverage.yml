@@ -46,7 +46,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/add-to-python-path@main
+      - uses: pyiron/actions/add-to-python-path@coverage_omission
         if: ${{ inputs.tests-in-python-path }}
         with:
           path-dirs: tests tests/benchmark tests/integration tests/unit
@@ -66,7 +66,7 @@ jobs:
           elif [[ ${os_string} == "ubuntu-"* ]]; then
             echo "env_prefix_string=/usr/share/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
           fi
-      - uses: pyiron/actions/unit-tests@main
+      - uses: pyiron/actions/unit-tests@coverage_omission
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
