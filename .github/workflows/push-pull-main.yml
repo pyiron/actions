@@ -71,6 +71,11 @@ on:
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
         default: '3.9'
         required: false
+      python-version-alt3:
+        type: string
+        description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
+        default: '3.12'
+        required: false
 
 
 jobs:
@@ -138,17 +143,21 @@ jobs:
     strategy:
       matrix:
         operating-system: ["${{ inputs.runner }}", "${{ inputs.runner-alt1 }}", "${{ inputs.runner-alt2 }}"]
-        python-version: ["${{ inputs.python-version }}", "${{ inputs.python-version-alt1 }}", "${{ inputs.python-version-alt2 }}"]
+        python-version: ["${{ inputs.python-version }}", "${{ inputs.python-version-alt1 }}", "${{ inputs.python-version-alt2 }}", "${{ inputs.python-version-alt3 }}"]
         exclude:
           # Get rid of all combinations of alternative runners and alternative python versions
           - operating-system: ${{ inputs.runner-alt1 }}
             python-version: ${{ inputs.python-version-alt1 }}
           - operating-system: ${{ inputs.runner-alt1 }}
             python-version: ${{ inputs.python-version-alt2 }}
+          - operating-system: ${{ inputs.runner-alt1 }}
+            python-version: ${{ inputs.python-version-alt3 }}
           - operating-system: ${{ inputs.runner-alt2 }}
             python-version: ${{ inputs.python-version-alt1 }}
           - operating-system: ${{ inputs.runner-alt2 }}
             python-version: ${{ inputs.python-version-alt2 }}
+          - operating-system: ${{ inputs.runner-alt2 }}
+            python-version: ${{ inputs.python-version-alt3 }}
           # Don't run anything tagged with "exclude"
           - operating-system: 'exclude'
           - python-version: 'exclude'
