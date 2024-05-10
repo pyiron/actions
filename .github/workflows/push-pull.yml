@@ -235,6 +235,7 @@ jobs:
 
   black:
     needs: commit-updated-env
+    if: always()
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
