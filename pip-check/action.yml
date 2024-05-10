@@ -19,7 +19,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-mamba@main
+  - uses: pyiron/actions/cached-mamba@extra_python_versions
     with:
       python-version: ${{ inputs.python-version }}
       env-prefix: ${{ inputs.env-prefix }}

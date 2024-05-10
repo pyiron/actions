@@ -119,6 +119,6 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull-main.yml@main
+    uses: pyiron/actions/.github/workflows/push-pull-main.yml@extra_python_versions
     secrets: inherit
 ```
