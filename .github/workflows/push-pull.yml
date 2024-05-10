@@ -71,6 +71,10 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
+      alternate-tests-env-files:
+        type: string
+        description: 'An alternate set of (space-separated) conda environment yaml files, e.g. to test a lower-bounds environment. Skipped if empty'
+        required: false
       benchmark-timeout-minutes:
         type: number
         description: 'How many minutes to allow tests in units/benchmark to run for'
@@ -131,6 +135,11 @@ on:
         description: 'The directory containing the benchmark tests'
         default: tests/benchmark
         required: false
+      alternate-test-dir:
+        type: string
+        description: 'The directory containing the tests run with the alternate environment'
+        default: tests
+        required: false
       omit-patterns:
         type: string
         description: 'Patterns passed to --omit for skipping coverage in all unit test calls'
@@ -148,10 +157,10 @@ jobs:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@alternate_env
         with:
           env-files: ${{ inputs.docs-env-files }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@alternate_env
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -176,7 +185,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-docs@main
+      - uses: pyiron/actions/build-docs@alternate_env
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -189,7 +198,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: pyiron/actions/build-notebooks@alternate_env
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -228,7 +237,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@alternate_env
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
@@ -248,7 +257,7 @@ jobs:
         elif [[ ${os_string} == "ubuntu-"* ]]; then
           echo "env_prefix_string=/usr/share/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
         fi
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@alternate_env
       with:
         python-version: ${{ matrix.python-version }}
         env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
@@ -260,7 +269,7 @@ jobs:
   coveralls-and-codacy:
     needs: commit-updated-env
     if: ${{ inputs.do-coveralls-and-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@alternate_env
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -276,7 +285,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@alternate_env
       with:
         python-version: ${{ inputs.python-version }}
         env-prefix: /usr/share/miniconda3/envs/my-env
@@ -286,13 +295,27 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
+  test-alternate-env:
+    if: ${{ inputs.alternate-tests-env-files != '' }}
+    runs-on: ${{ inputs.runner }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: pyiron/actions/unit-tests@alternate_env
+      with:
+        python-version: ${{ inputs.python-version }}
+        env-prefix: /usr/share/miniconda3/envs/my-env
+        env-label: ${{ inputs.runner }}-py-main
+        env-files: ${{ inputs.alternate-tests-env-files }}
+        test-dir: ${{ inputs.alternate-test-dir }}
+        omit-patterns: ${{ inputs.omit-patterns }}
+
   pip-check:
     needs: commit-updated-env
     if: ${{ inputs.do-pip-check }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/pip-check@main
+      - uses: pyiron/actions/pip-check@alternate_env
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
