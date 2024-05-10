@@ -6,33 +6,38 @@ inputs:
     description: 'Which version of the python interpreter to use, e.g. "3.11"'
     required: true
   env-prefix:
+    type: string
     description: 'Prefix to the path to the environment'
     required: true
   env-label:
+    type: string
     description: 'A label for the environment'
     required: true
   env-files:
+    type: string
     description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
     default: .ci_support/environment.yml
     required: false
   standard-unittests-env-file:
+    type: string
     description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
     default: $GITHUB_ACTION_PATH/../.support/environment-unittests.yml
     required: false
   coveralls-codacy-env-file:
+    type: string
     description: 'An extra env file since we usually combine this action with coverage+unittest, and called workflows cannot access their own repo'
     default: $GITHUB_ACTION_PATH/../.support/environment-coveralls-codacy.yml
     required: false
   test-dir:
+    type: string
     description: 'The directory containing the tests'
     default: tests
     required: false
-  source-dir:
-    description: 'The directory(ies) to pass as sources to coverage (default is repository name, i.e. in my_repo/my_repo'
+  omit-patterns:
+    type: string
+    description: 'Patterns passed to --omit for skipping coverage'
+    default: '*/_version.py'
     required: false
-#  omitted-files:
-#    description: 'File(s) to omit when finding coverage'
-#    required: false
 # TODO: Allow omission of additional files with a bash for-loop over source-dir and omitted-files
 
 runs:
@@ -48,4 +53,4 @@ runs:
   - name: Test
     shell: bash -l {0}
     run: |
-      coverage run -m unittest discover ${{ inputs.test-dir }}
+      coverage run --omit=${{ inputs.omit-patterns }} -m unittest discover ${{ inputs.test-dir }}

@@ -116,6 +116,26 @@ on:
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
         default: '3.12'
         required: false
+      unit-test-dir:
+        type: string
+        description: 'The directory containing the unit tests run on the full platform and python matrix'
+        default: tests/unit
+        required: false
+      coveralls-and-codacy-test-dir:
+        type: string
+        description: 'The directory containing the tests analyzed by coveralls'
+        default: tests
+        required: false
+      benchmark-test-dir:
+        type: string
+        description: 'The directory containing the benchmark tests'
+        default: tests/benchmark
+        required: false
+      omit-patterns:
+        type: string
+        description: 'Patterns passed to --omit for skipping coverage in all unit test calls'
+        default: '*/_version.py'
+        required: false
 
 
 jobs:
@@ -234,7 +254,8 @@ jobs:
         env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
         env-label: ${{ matrix.operating-system }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
         env-files: ${{ inputs.tests-env-files }}
-        test-dir: tests/unit
+        test-dir: ${{ inputs.unit-test-dir }}
+        omit-patterns: ${{ inputs.omit-patterns }}
 
   coveralls-and-codacy:
     needs: commit-updated-env
@@ -246,6 +267,8 @@ jobs:
       tests-in-python-path: ${{ inputs.tests-in-python-path }}
       runner: ${{ inputs.runner }}
       python-version: ${{ inputs.python-version }}
+      test-dir: ${{ inputs.coveralls-and-codacy-test-dir }}
+      omit-patterns: ${{ inputs.omit-patterns }}
 
   benchmark-tests:
     needs: commit-updated-env
@@ -259,7 +282,8 @@ jobs:
         env-prefix: /usr/share/miniconda3/envs/my-env
         env-label: ${{ inputs.runner }}-py-main
         env-files: ${{ inputs.tests-env-files }}
-        test-dir: tests/benchmark
+        test-dir: ${{ inputs.benchmark-test-dir }}
+        omit-patterns: ${{ inputs.omit-patterns }}
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   pip-check:
