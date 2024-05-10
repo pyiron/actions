@@ -6,3 +6,4 @@ dependencies:
   - nbsphinx
   - sphinx-gallery
   - sphinx-rtd-theme
+  - versioneer

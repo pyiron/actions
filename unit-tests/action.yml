@@ -38,13 +38,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-mamba@main
+  - uses: pyiron/actions/cached-mamba@add_versioneer_dependency
     with:
       python-version: ${{ inputs.python-version }}
       env-prefix: ${{ inputs.env-prefix }}
       env-label: ${{ inputs.env-label }}
       env-files: ${{ inputs.standard-unittests-env-file }} ${{ inputs.coveralls-codacy-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/actions/pyiron-config@main
+  - uses: pyiron/actions/pyiron-config@add_versioneer_dependency
   - name: Test
     shell: bash -l {0}
     run: |
