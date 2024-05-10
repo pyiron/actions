@@ -87,10 +87,10 @@ jobs:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@add_versioneer_dependency
         with:
           env-files: ${{ inputs.docs-env-files }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@add_versioneer_dependency
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -114,7 +114,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-docs@main
+      - uses: pyiron/actions/build-docs@add_versioneer_dependency
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -126,7 +126,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: pyiron/actions/build-notebooks@add_versioneer_dependency
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
@@ -164,7 +164,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@add_versioneer_dependency
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
@@ -184,7 +184,7 @@ jobs:
         elif [[ ${os_string} == "ubuntu-"* ]]; then
           echo "env_prefix_string=/usr/share/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
         fi
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@add_versioneer_dependency
       with:
         python-version: ${{ matrix.python-version }}
         env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
@@ -194,7 +194,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@add_versioneer_dependency
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -207,7 +207,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@add_versioneer_dependency
       with:
         python-version: ${{ inputs.python-version }}
         env-prefix: /usr/share/miniconda3/envs/my-env
@@ -221,7 +221,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/pip-check@main
+      - uses: pyiron/actions/pip-check@add_versioneer_dependency
         with:
           python-version: ${{ inputs.python-version }}
           env-prefix: /usr/share/miniconda3/envs/my-env
