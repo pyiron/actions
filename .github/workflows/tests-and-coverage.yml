@@ -21,6 +21,7 @@ on:
       omit-patterns:
         type: string
         description: 'Patterns passed to --omit for skipping coverage'
+        default: '*/_version.py'
         required: false
       tests-env-files:
         type: string

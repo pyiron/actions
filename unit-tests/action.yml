@@ -36,6 +36,7 @@ inputs:
   omit-patterns:
     type: string
     description: 'Patterns passed to --omit for skipping coverage'
+    default: '*/_version.py'
     required: false
 # TODO: Allow omission of additional files with a bash for-loop over source-dir and omitted-files
 

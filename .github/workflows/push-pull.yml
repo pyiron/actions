@@ -134,6 +134,7 @@ on:
       omit-patterns:
         type: string
         description: 'Patterns passed to --omit for skipping coverage in all unit test calls'
+        default: '*/_version.py'
         required: false
 
 
