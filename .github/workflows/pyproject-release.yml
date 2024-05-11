@@ -2,6 +2,10 @@
 # according to conda environment yaml files and rules for semantic versioning,
 # then make a pypi release.
 # For full docs cf. .support/update_pyproject_dependencies.py'
+# Usage:
+#   on:
+#     release:
+#       types: [published]
 
 name: Pyproject Release
 
