@@ -14,8 +14,18 @@ on:
     inputs:
       python-version:
         type: string
-        description: 'Version of python to use'
+        description: 'Cached mamba python versions'
         default: '3.11'
+        required: false
+      env-label:
+        type: string
+        description: 'Cached mamba environment label'
+        default: ubuntu-latest-py-3-11
+        required: false
+      env-files:
+        type: string
+        description: 'Conda environment(S)'
+        default: .ci_support/environment.yml
         required: false
       input-toml:
         type: string
@@ -69,9 +79,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: pyiron/actions/cached-mamba@main
       with:
         python-version: ${{ inputs.python-version }}
+        env-prefix: /usr/share/miniconda3/envs/my-env
+        env-label: ${{ inputs.env-label }}
+        env-files: ${{ inputs.env-files }}
     - uses: pyiron/actions/update-pyproject-dependencies@main
       with:
         input-toml: ${{ inputs.input-toml }}
@@ -83,12 +96,10 @@ jobs:
         pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
         pyyaml-version: ${{ inputs.pyyaml-version }}
         toml-version: ${{ inputs.toml-version }}
-    - name: Install dependencies
-      run: >-
-        python -m pip install --user --upgrade setuptools wheel versioneer[toml]
     - name: Build
       shell: bash -l {0}
-      run: >-
+      run: |
+        pip install versioneer[toml]==0.29
         python setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
