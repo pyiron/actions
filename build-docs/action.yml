@@ -27,13 +27,13 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-mamba@main
+  - uses: pyiron/actions/cached-mamba@v2.0.3
     with:
       python-version: ${{ inputs.python-version }}
       env-prefix: ${{ inputs.env-prefix }}
       env-label: ${{ inputs.env-label }}
       env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/actions/pyiron-config@main
+  - uses: pyiron/actions/pyiron-config@v2.0.3
   - name: Build sphinx documentation
     shell: bash -l {0}
     run: |
