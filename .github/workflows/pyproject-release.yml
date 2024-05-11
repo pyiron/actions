@@ -1,61 +1,67 @@
-name: Pyproject Release
-description: 'Take == dependencies in pyproject.toml (or equivalent) and relax them according to conda environment yaml files and rules for semantic versioning, then make a pypi release. For full docs cf. .support/update_pyproject_dependencies.py'
+# Take == dependencies in pyproject.toml (or equivalent) and relax them
+# according to conda environment yaml files and rules for semantic versioning,
+# then make a pypi release.
+# For full docs cf. .support/update_pyproject_dependencies.py'
+# Usage:
+#   on:
+#     release:
+#       types: [published]
 
+name: Pyproject Release
 
 on:
   workflow_call:
-
-inputs:
-  python-version:
-    type: string
-    description: 'Version of python to use'
-    default: '3.11'
-    required: false
-  input-toml:
-    type: string
-    description: 'Input TOML file with `project.dependencies` and `==` pinned dependencies.'
-    default: 'pyproject.toml'
-    required: false
-  lower-bound-yaml:
-    type: string
-    description: 'Optional YAML conda environment file with lower bounds for select dependencies.'
-    default: 'none'
-    required: false
-  upper-bound-yaml:
-    type: string
-    description: 'Optional YAML conda environment file with upper bounds for select dependencies.'
-    default: 'none'
-    required: false
-  semantic-upper-bound:
-    type: string
-    description: 'Upper bound policy for semantically versioned dependencies.'
-    default: 'patch'
-    required: false
-  always-pin-unstable:
-    type: string
-    description: 'Whether to always pin unstable dependencies (0.Y.Z) all the way to patch.'
-    default: 'yes'
-    required: false
-  output-toml:
-    type: string
-    description: 'Optional output destination for toml with updated dependency versions.'
-    default: 'none'
-    required: false
-  pypi-to-conda-name-map-file:
-    type: string
-    description: 'Optional JSON file to remap pypi package names in the toml file(s) to conda package names in the yaml file(s).'
-    default: $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
-    required: false
-  pyyaml-version:
-    type: string
-    description: 'Version of pyyaml to install'
-    default: '6.0.1'
-    required: false
-  toml-version:
-    type: string
-    description: 'Version of toml to install'
-    default: '0.10.2'
-    required: false
+    inputs:
+      python-version:
+        type: string
+        description: 'Version of python to use'
+        default: '3.11'
+        required: false
+      input-toml:
+        type: string
+        description: 'Input TOML file with `project.dependencies` and `==` pinned dependencies.'
+        default: 'pyproject.toml'
+        required: false
+      lower-bound-yaml:
+        type: string
+        description: 'Optional YAML conda environment file with lower bounds for select dependencies.'
+        default: 'none'
+        required: false
+      upper-bound-yaml:
+        type: string
+        description: 'Optional YAML conda environment file with upper bounds for select dependencies.'
+        default: 'none'
+        required: false
+      semantic-upper-bound:
+        type: string
+        description: 'Upper bound policy for semantically versioned dependencies.'
+        default: 'patch'
+        required: false
+      always-pin-unstable:
+        type: string
+        description: 'Whether to always pin unstable dependencies (0.Y.Z) all the way to patch.'
+        default: 'yes'
+        required: false
+      output-toml:
+        type: string
+        description: 'Optional output destination for toml with updated dependency versions.'
+        default: 'none'
+        required: false
+      pypi-to-conda-name-map-file:
+        type: string
+        description: 'Optional JSON file to remap pypi package names in the toml file(s) to conda package names in the yaml file(s).'
+        default: $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
+        required: false
+      pyyaml-version:
+        type: string
+        description: 'Version of pyyaml to install'
+        default: '6.0.1'
+        required: false
+      toml-version:
+        type: string
+        description: 'Version of toml to install'
+        default: '0.10.2'
+        required: false
 
 
 jobs:
