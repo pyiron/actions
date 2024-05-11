@@ -1,6 +1,9 @@
-name: Pyproject Release
-description: 'Take == dependencies in pyproject.toml (or equivalent) and relax them according to conda environment yaml files and rules for semantic versioning, then make a pypi release. For full docs cf. .support/update_pyproject_dependencies.py'
+# Take == dependencies in pyproject.toml (or equivalent) and relax them
+# according to conda environment yaml files and rules for semantic versioning,
+# then make a pypi release.
+# For full docs cf. .support/update_pyproject_dependencies.py'
 
+name: Pyproject Release
 
 on:
   workflow_call:
