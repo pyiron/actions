@@ -1,0 +1,87 @@
+name: Pyproject Release
+description: 'Take == dependencies in pyproject.toml (or equivalent) and relax them according to conda environment yaml files and rules for semantic versioning, then make a pypi release. For full docs cf. .support/update_pyproject_dependencies.py'
+
+
+on:
+  workflow_call:
+
+inputs:
+  python-version:
+    type: string
+    description: 'Version of python to use'
+    default: '3.11'
+    required: false
+  input-toml:
+    type: string
+    description: 'Input TOML file with `project.dependencies` and `==` pinned dependencies.'
+    default: 'pyproject.toml'
+    required: false
+  lower-bound-yaml:
+    type: string
+    description: 'Optional YAML conda environment file with lower bounds for select dependencies.'
+    default: 'none'
+    required: false
+  upper-bound-yaml:
+    type: string
+    description: 'Optional YAML conda environment file with upper bounds for select dependencies.'
+    default: 'none'
+    required: false
+  semantic-upper-bound:
+    type: string
+    description: 'Upper bound policy for semantically versioned dependencies.'
+    default: 'patch'
+    required: false
+  always-pin-unstable:
+    type: string
+    description: 'Whether to always pin unstable dependencies (0.Y.Z) all the way to patch.'
+    default: 'yes'
+    required: false
+  output-toml:
+    type: string
+    description: 'Optional output destination for toml with updated dependency versions.'
+    default: 'none'
+    required: false
+  pypi-to-conda-name-map-file:
+    type: string
+    description: 'Optional JSON file to remap pypi package names in the toml file(s) to conda package names in the yaml file(s).'
+    default: $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
+    required: false
+  pyyaml-version:
+    type: string
+    description: 'Version of pyyaml to install'
+    default: '6.0.1'
+    required: false
+  toml-version:
+    type: string
+    description: 'Version of toml to install'
+    default: '0.10.2'
+    required: false
+
+
+jobs:
+  pypi-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - uses: pyiron/actions/update-pyproject-dependencies.yml@alternate_env
+      with:
+        input-toml: ${{ inputs.input-toml }}
+        lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
+        upper-bound-yaml: ${{ inputs.upper-bound-yaml }}
+        semantic-upper-bound: ${{ inputs.semantic-upper-bound }}
+        always-pin-unstable: ${{ inputs.always-pin-unstable }}
+        output-toml: ${{ inputs.output-toml }}
+        pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
+        pyyaml-version: ${{ inputs.pyyaml-version }}
+        toml-version: ${{ inputs.toml-version }}
+    - name: Install dependencies
+      run: >-
+        python -m pip install --user --upgrade setuptools wheel
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with: # Remove once trusted publisher works with reusable workflows
+        user: __token__  # Remove once trusted publisher works with reusable workflows
+        password: ${{ secrets.pypi_password }}  # Remove once trusted publisher works with reusable workflows
