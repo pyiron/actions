@@ -72,7 +72,7 @@ jobs:
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-    - uses: pyiron/actions/update-pyproject-dependencies@main
+    - uses: pyiron/actions/update-pyproject-dependencies@v2.0.6
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
