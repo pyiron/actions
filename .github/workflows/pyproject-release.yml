@@ -101,8 +101,8 @@ jobs:
       run: |
         pip install versioneer[toml]==0.29
         python setup.py sdist bdist_wheel
-    - name: Publish distribution 📦 to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with: # Remove once trusted publisher works with reusable workflows
-        user: __token__  # Remove once trusted publisher works with reusable workflows
-        password: ${{ secrets.pypi_password }}  # Remove once trusted publisher works with reusable workflows
+#    - name: Publish distribution 📦 to PyPI
+#      uses: pypa/gh-action-pypi-publish@release/v1
+#      with: # Remove once trusted publisher works with reusable workflows
+#        user: __token__  # Remove once trusted publisher works with reusable workflows
+#        password: ${{ secrets.pypi_password }}  # Remove once trusted publisher works with reusable workflows
