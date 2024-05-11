@@ -86,6 +86,10 @@ jobs:
     - name: Install dependencies
       run: >-
         python -m pip install --user --upgrade setuptools wheel versioneer[toml]
+    - name: Build
+      shell: bash -l {0}
+      run: >-
+        python setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with: # Remove once trusted publisher works with reusable workflows
