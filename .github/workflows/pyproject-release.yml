@@ -85,7 +85,7 @@ jobs:
         toml-version: ${{ inputs.toml-version }}
     - name: Install dependencies
       run: >-
-        python -m pip install --user --upgrade setuptools wheel
+        python -m pip install --user --upgrade setuptools wheel versioneer[toml]
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with: # Remove once trusted publisher works with reusable workflows
