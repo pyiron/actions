@@ -60,7 +60,7 @@ runs:
   - name: Write updated toml file
     shell: bash -l {0}
     run: |
-      python $GITHUB_ACTION_PATH/../.support/update_pyproject_dependencies.py ${{ inputs.input-toml }} ${{ inputs.lower-bound-yaml }} ${{ inputs.upper-bound-yaml }} ${{ inputs.semantic-upper-bound }} ${{ inputs.always-pin-unstable }} ${{ inputs.output-toml }} ${{ inputs.pypi-to-conda-name-map-file }}
+      python $GITHUB_ACTION_PATH/../.support/update_pyproject_dependencies.py --input_toml=${{ inputs.input-toml }} --lower_bound_yaml=${{ inputs.lower-bound-yaml }} --upper_bound_yaml=${{ inputs.upper-bound-yaml }} --semantic_upper_bound=${{ inputs.semantic-upper-bound }} --always_pin_unstable=${{ inputs.always-pin-unstable }} --output_toml=${{ inputs.output-toml }} --pypi_to_conda_name_map_file=${{ inputs.pypi-to-conda-name-map-file }}
   - name: Build
     shell: bash -l {0}
     run: >-
