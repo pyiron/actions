@@ -79,13 +79,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-mamba@debug_release
+    - uses: pyiron/actions/cached-mamba@main
       with:
         python-version: ${{ inputs.python-version }}
         env-prefix: /usr/share/miniconda3/envs/my-env
         env-label: ${{ inputs.env-label }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@debug_release
+    - uses: pyiron/actions/update-pyproject-dependencies@main
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
