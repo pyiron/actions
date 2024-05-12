@@ -1,4 +1,5 @@
 {
+  "blosc2": "python-blosc2",
   "h5io-browser": "h5io_browser",
   "pyiron-atomistics": "pyiron_atomistics",
   "pyiron-base": "pyiron_base",
