@@ -1,11 +1,11 @@
 {
-  "tables": "pytables",
-  "pyiron-base": "pyiron_base",
+  "h5io-browser": "h5io_browser",
   "pyiron-atomistics": "pyiron_atomistics",
+  "pyiron-base": "pyiron_base",
+  "pyiron-continuum": "pyiron_continuum",
   "pyiron-contrib": "pyiron_contrib",
   "pyiron-experimental": "pyiron_experimental",
-  "pyiron-continuum": "pyiron_continuum",
   "pyiron-gpl": "pyiron_gpl",
   "pyiron-gui": "pyiron_gui",
-  "h5io-browser": "h5io_browser"
+  "tables": "pytables"
 }
