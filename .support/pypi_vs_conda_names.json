@@ -1,6 +1,7 @@
 {
   "blosc2": "python-blosc2",
   "h5io-browser": "h5io_browser",
+  "matplotlib": "matplotlib-base",
   "pyiron-atomistics": "pyiron_atomistics",
   "pyiron-base": "pyiron_base",
   "pyiron-continuum": "pyiron_continuum",
