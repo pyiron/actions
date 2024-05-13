@@ -20,5 +20,7 @@ runs:
   - name: Write environment
     shell: bash -l {0}
     run: |
+      echo $pwd
+      ls .
       python $GITHUB_ACTION_PATH/../.support/condamerge.py ${{ inputs.env-files }} > ${{ inputs.output-env-file }}
       echo WRITE_ENVIRONMENT_OUTPUT_ENV_FILE=${{ inputs.output-env-file }} >> $GITHUB_ENV
