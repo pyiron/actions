@@ -86,7 +86,7 @@ runs:
       CACHE_NUMBER: 0
     with:
       path: ${{ steps.conda-info.outputs.PREFIX }}
-      key: ${{ steps.conda-info.outputs.LABEL }}-conda-${{ steps.conda-info.outputs.HASH }}-${{ steps.get-date.outputs.TODAY }}
+      key: ${{ steps.conda-info.outputs.LABEL }}-conda-${{ steps.conda-info.outputs.HASH }}-${{ steps.get-date.outputs.TODAY }}-${{ env.CACHE_NUMBER }}
   - name: Update environment
     if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
     shell: bash -l {0}
