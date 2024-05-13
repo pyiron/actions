@@ -10,11 +10,12 @@ inputs:
     default: .ci_support/environment.yml
     required: false
   use-cache:
-    description: 'A boolean flag for whether or not to leverage environment caching'
+    description: 'A stringified boolean flag for whether or not to leverage environment caching'
     default: 'true'
     required: false
-  env-label:
-    description: 'A label for the environment. When left empty, a label is generated automatically.'
+  cache-number:
+    description: 'A stringified integer for the cache number (can be used to force-bump the cache)'
+    default: '0'
     required: false
   miniforge-variant:
     description: 'conda-incubator/setup-miniconda argument'
@@ -71,7 +72,7 @@ runs:
     id: cache
     if: ${{ inputs.use-cache == 'true' }}
     env:
-      CACHE_NUMBER: 0
+      CACHE_NUMBER: ${{ inputs.cache-number }}
     with:
       path: ${{ env.CONDA }}/envs
       key: ${{ steps.cache-info.outputs.LABEL }}-conda-${{ steps.cache-info.outputs.HASH }}-${{ steps.cache-info.outputs.TODAY }}-${{ env.CACHE_NUMBER }}
