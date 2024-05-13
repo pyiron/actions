@@ -20,11 +20,13 @@ runs:
   - name: Debug file presence
     shell: bash -l {0}
     run: |
-      echo $pwd
+      foo=`pwd`
+      echo $foo
   - name: Debug file presence
     shell: bash -l {0}
     run: |
-      ls .
+      foo=`ls .`
+      echo $foo
   - name: Write environment
     shell: bash -l {0}
     run: |
