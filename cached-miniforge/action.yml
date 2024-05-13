@@ -17,6 +17,10 @@ inputs:
     description: 'A stringified integer for the cache number (can be used to force-bump the cache)'
     default: '0'
     required: false
+  local-code-directory:
+    description: 'The location containing the code under development; targeted by pip install'
+    default: '.'
+    required: false
   miniforge-variant:
     description: 'conda-incubator/setup-miniconda argument'
     default: Mambaforge
@@ -80,3 +84,6 @@ runs:
     if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
     shell: bash -l {0}
     run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+  - name: Install local code
+    shell: bash -l {0}
+    run: pip install --no-deps ${{ inputs.local-code-directory }}
