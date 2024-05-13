@@ -60,6 +60,8 @@ runs:
     run: |
       echo ${{ inputs.runner-name }}
       echo ${{ runner.name }}
+      echo ${{ runner.os }}
+      echo ${{ runner.arch }}
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v3
     with:
