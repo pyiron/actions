@@ -79,6 +79,13 @@ runs:
       echo PREFIX=${env_prefix_string} >> $GITHUB_OUTPUT
       echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
       echo HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }} >> $GITHUB_OUTPUT
+  - name: Debug outputs
+    shell: bash -l {0}
+    run: |
+      echo PREFIX-${{ steps.conda-info.outputs.PREFIX }}
+      echo LABEL-${{ steps.conda-info.outputs.LABEL }}
+      echo HASH-${{ steps.conda-info.outputs.HASH }}
+      echo TODAY-${{ steps.get-data.outputs.TODAY }}
   - uses: actions/cache@v3
     id: cache
     if: ${{ inputs.use-cache == 'true' }}
@@ -90,4 +97,7 @@ runs:
   - name: Update environment
     if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
     shell: bash -l {0}
-    run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+    run: |
+      echo ${{ inputs.use-cache != 'true' }}
+      echo ${{ steps.cache.outputs.cache-hit != 'true' }}
+      mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
