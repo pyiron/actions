@@ -20,7 +20,7 @@ inputs:
   semantic-upper-bound:
     type: string
     description: 'Upper bound policy for semantically versioned dependencies.'
-    default: 'patch'
+    default: 'minor'
     required: false
   always-pin-unstable:
     type: string
