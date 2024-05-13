@@ -86,7 +86,6 @@ runs:
       echo ${{ steps.get-label.outputs.ENV_LABEL }}
       echo ${{ hashFiles('environment.yml') }}
       local_env_var=$${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
-      echo ${{ hashFiles('${local_env_var}') }}
-      echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }}
+      echo ${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }}
       hash_key="TODO"
-      echo ${hash_key} >> $GITHUB_OUTPUT
+      echo HASH_KEY=${hash_key} >> $GITHUB_OUTPUT#
