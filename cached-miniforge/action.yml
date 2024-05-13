@@ -1,0 +1,67 @@
+name: 'Setup cached miniforge'
+description: 'Use conda environment files to build a cached (optional) python environment with miniforge, and local code with pip install'
+
+inputs:
+  runner:
+    description: 'The CI runner you are using, e.g. "ubuntu-latest"'
+    required: true
+  python-version:
+    description: 'Which version of the python interpreter to use, e.g. "3.11"'
+    required: true
+  env-files:
+    description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
+    default: .ci_support/environment.yml
+    required: false
+  do-cache:
+    description: 'A boolean flag for whether or not to leverage environment caching'
+    default: 'true'
+    required: false
+  env-label:
+    description: 'A label for the environment. When left empty, a label is generated automatically.'
+    required: false
+  miniforge-variant:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: Mambaforge
+    required: false
+  miniforge-version:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: latest
+    required: false
+  miniforge-channels:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: conda-forge
+    required: false
+  miniforge-channel-priority:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: strict
+    required: false
+  miniforge-activate-environment:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: my-env
+    required: false
+  miniforge-use-mamba:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: 'true'
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+  - uses: pyiron/actions/write-environment@main
+    with:
+      env-files: ${{ inputs.env-files }}
+  - name: Debug
+    shell: bash -l {0}
+    run: |
+      echo "WROTE ENV TO ${ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }"
+  - name: Setup Mambaforge
+    uses: conda-incubator/setup-miniconda@v3
+    with:
+      python-version: ${{ inputs.python-version }}
+      miniforge-variant: ${{ inputs.miniforge-variant }}
+      miniforge-version: ${{ inputs.miniforge-version }}
+      channels: ${{ inputs.miniforge-channels }}
+      channel-priority: ${{ inputs.miniforge-channel-priority }}
+      activate-environment: ${{ inputs.miniforge-activate-environment }}
+      use-mamba: ${{ inputs.miniforge-use-mamba }}
