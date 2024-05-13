@@ -50,7 +50,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@main
+  - uses: pyiron/actions/write-environment@update_used_action_versions
     with:
       env-files: ${{ inputs.env-files }}
   - name: Setup Mambaforge
@@ -72,7 +72,7 @@ runs:
       echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
       echo HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }} >> $GITHUB_OUTPUT
       echo "TODAY=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-  - uses: actions/cache@v3
+  - uses: actions/cache@v4
     id: cache
     if: ${{ inputs.use-cache == 'true' }}
     env:

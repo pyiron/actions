@@ -152,15 +152,15 @@ jobs:
     if: ${{ inputs.do-commit-updated-env }}
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@update_used_action_versions
         with:
           env-files: ${{ inputs.docs-env-files }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@update_used_action_versions
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -184,8 +184,8 @@ jobs:
     if: ${{ inputs.do-build-docs }}
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-docs@main
+      - uses: actions/checkout@v4
+      - uses: pyiron/actions/build-docs@update_used_action_versions
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -195,8 +195,8 @@ jobs:
     if: ${{ inputs.do-build-notebooks }}
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: actions/checkout@v4
+      - uses: pyiron/actions/build-notebooks@update_used_action_versions
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -232,12 +232,12 @@ jobs:
           - python-version: 'exclude'
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: actions/checkout@v4
+    - uses: pyiron/actions/add-to-python-path@update_used_action_versions
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: ${{ inputs.unit-test-dir }}
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@update_used_action_versions
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -247,7 +247,7 @@ jobs:
   coveralls-and-codacy:
     needs: commit-updated-env
     if: ${{ inputs.do-coveralls-and-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@update_used_action_versions
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -262,8 +262,8 @@ jobs:
     if: ${{ inputs.do-benchmark-tests }}
     runs-on: ${{ inputs.runner }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: actions/checkout@v4
+    - uses: pyiron/actions/unit-tests@update_used_action_versions
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -275,8 +275,8 @@ jobs:
     if: ${{ inputs.alternate-tests-env-files != '' }}
     runs-on: ${{ inputs.runner }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: actions/checkout@v4
+    - uses: pyiron/actions/unit-tests@update_used_action_versions
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -288,8 +288,8 @@ jobs:
     if: ${{ inputs.do-pip-check }}
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: pyiron/actions/pip-check@main
+      - uses: actions/checkout@v4
+      - uses: pyiron/actions/pip-check@update_used_action_versions
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -298,7 +298,7 @@ jobs:
     if: ${{ inputs.do-black }}
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: psf/black@stable
         with:
           options: "--check --diff"

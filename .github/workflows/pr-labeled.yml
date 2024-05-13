@@ -20,7 +20,7 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'format_black' )
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
@@ -43,10 +43,10 @@ jobs:
 
   tests-and-coverage:
     if: contains(github.event.pull_request.labels.*.name, 'run_coverage')
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@update_used_action_versions
     secrets: inherit
 
   code-ql:
     if: contains(github.event.pull_request.labels.*.name, 'run_CodeQL')
-    uses: pyiron/actions/.github/workflows/codeql.yml@main
+    uses: pyiron/actions/.github/workflows/codeql.yml@update_used_action_versions
     secrets: inherit
