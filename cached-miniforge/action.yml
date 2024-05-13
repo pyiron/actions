@@ -2,7 +2,7 @@ name: 'Setup cached miniforge'
 description: 'Use conda environment files to build a cached (optional) python environment with miniforge, and local code with pip install'
 
 inputs:
-  runner:
+  runner-name:
     description: 'The CI runner you are using, e.g. "ubuntu-latest"'
     required: true
   python-version:
@@ -55,6 +55,10 @@ runs:
     shell: bash -l {0}
     run: |
       echo "WROTE ENV TO ${ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }"
+  - name: Check env
+    shell: bash -l {0}
+    run: |
+      echo ${{ runner.name }}
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v3
     with:
