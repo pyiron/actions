@@ -85,7 +85,8 @@ runs:
       echo ${{ steps.get-date.outputs.TODAY }}
       echo ${{ steps.get-label.outputs.ENV_LABEL }}
       echo ${{ hashFiles('environment.yml') }}
-      echo ${{ hashFiles(${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}) }}
+      local_env_var=$${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+      echo ${{ hashFiles('${local_env_var}') }}
       echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }}
       hash_key="TODO"
       echo ${hash_key} >> $GITHUB_OUTPUT
