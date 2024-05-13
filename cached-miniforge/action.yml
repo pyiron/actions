@@ -76,12 +76,16 @@ runs:
       elif [[ ${{ runner.os }} == "Linux" ]]; then
         echo env_prefix_string=/usr/share/miniconda3/envs/${{ inputs.miniforge-activate-environment }}
       fi
-      echo ${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string}
-      echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
+      echo ENV_LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
   - name: Get environment hash
     id: get-hash
     shell: bash -l {0}
     run: |
       echo ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+      echo ${{ steps.get-date.outputs.TODAY }}
+      echo ${{ steps.get-label.outputs.ENV_LABEL }}
+      echo ${{ hashFiles('environment.yml') }}
+      echo ${{ hashFiles(${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}) }}
       echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }}
-      echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }} >> $GITHUB_OUTPUT
+      hash_key="TODO"
+      echo ${hash_key} >> $GITHUB_OUTPUT
