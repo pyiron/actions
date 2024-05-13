@@ -63,6 +63,7 @@ runs:
     shell: bash -l {0}
     run: |
       echo "TODAY=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+      echo $GITHUB_OUTPUT
   - name: Get conda env info
     id: conda-info
     shell: bash -l {0}
@@ -76,16 +77,21 @@ runs:
       elif [[ ${{ runner.os }} == "Linux" ]]; then
         echo env_prefix_string=/usr/share/miniconda3/envs/${{ inputs.miniforge-activate-environment }}
       fi
+      echo OS-${{ runner.os }}
+      echo PREFIX-${env_prefix_string}
       echo PREFIX=${env_prefix_string} >> $GITHUB_OUTPUT
       echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
       echo HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }} >> $GITHUB_OUTPUT
+      echo $GITHUB_OUTPUT
   - name: Debug outputs
     shell: bash -l {0}
     run: |
+      echo ${{ steps.conda-info.outputs }}
+      echo ${{ steps.get-date.outputs }}
       echo PREFIX-${{ steps.conda-info.outputs.PREFIX }}
       echo LABEL-${{ steps.conda-info.outputs.LABEL }}
       echo HASH-${{ steps.conda-info.outputs.HASH }}
-      echo TODAY-${{ steps.get-data.outputs.TODAY }}
+      echo TODAY-${{ steps.get-date.outputs.TODAY }}
   - uses: actions/cache@v3
     id: cache
     if: ${{ inputs.use-cache == 'true' }}
