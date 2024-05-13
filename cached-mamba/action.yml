@@ -1,5 +1,5 @@
 name: 'Setup cached mamba'
-description: 'Use CI environment files to build a cached python environment with mamba, and local code with pip install'
+description: 'DEPRECATED: Use cached-miniforge instead'
 
 inputs:
   python-version:
