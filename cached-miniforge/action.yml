@@ -69,3 +69,25 @@ runs:
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ inputs.miniforge-activate-environment }}
       use-mamba: ${{ inputs.miniforge-use-mamba }}
+  - name: Get cache date
+    id: get-date
+    shell: bash -l {0}
+    run: |
+      echo "TODAY=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+  - name: Get cache label
+    id: get-label
+    shell: bash -l {0}
+    run: |
+      pyversion_string=${{ inputs.python-version }}/\./-
+      echo ${pyversion_string}
+      echo ${{ runner.name }}
+      if [[ ${{ runner.name }} == "macos" ]]; then
+        env_prefix_string=/Users/runner/miniconda3/envs/my-env
+      elif [[ ${{ runner.name }} == "windows" ]]; then
+        echo env_prefix_string=C:\Miniconda3\envs\my-env
+      elif [[ ${{ runner.name }} == "ubuntu" ]]; then
+        echo env_prefix_string=/usr/share/miniconda3/envs/my-env
+      fi
+      echo ${{ env.CONDA }}
+      echo ${ env_prefix_string }
+      echo LABEL=${{ runner.name }}-${{ runner.arch }}-py-${ pyversion_string } >> $GITHUB_OUTPUT
