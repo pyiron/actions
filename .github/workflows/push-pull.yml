@@ -154,7 +154,6 @@ on:
 
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
-    if: ${{ inputs.do-commit-updated-env }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -162,13 +161,16 @@ jobs:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
+        if: ${{ inputs.do-commit-updated-env }}
       - uses: pyiron/actions/write-docs-env@main
         with:
           env-files: ${{ inputs.docs-env-files }}
+        if: ${{ inputs.do-commit-updated-env }}
       - uses: pyiron/actions/write-environment@main
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
+        if: ${{ inputs.do-commit-updated-env }}
       - name: commit
         id: commit-docs-env
         continue-on-error: true  # Allow "failure" when there are no changes (the working tree is clean)
@@ -177,6 +179,7 @@ jobs:
           git config --local user.name "pyiron-runner"
           git add docs/environment.yml .binder/environment.yml
           git commit -m "[dependabot skip] Update env file" -a
+        if: ${{ inputs.do-commit-updated-env }}
       - name: push
         if: steps.commit-docs-env.outcome == 'success'  # But only push if we made it here without continue-on-error
         uses: ad-m/github-push-action@master
