@@ -86,4 +86,5 @@ runs:
     run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
   - name: Install local code
     shell: bash -l {0}
-    run: pip install --no-deps ${{ inputs.local-code-directory }}
+    run: |
+      pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
