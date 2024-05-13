@@ -123,7 +123,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@minimize_path_additions
+    uses: pyiron/actions/.github/workflows/push-pull.yml@main
     secrets: inherit
 ```
 

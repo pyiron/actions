@@ -49,11 +49,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/add-to-python-path@minimize_path_additions
+      - uses: pyiron/actions/add-to-python-path@main
         if: ${{ inputs.tests-in-python-path }}
         with:
           path-dirs: ${{ inputs.test-dir }}
-      - uses: pyiron/actions/unit-tests@minimize_path_additions
+      - uses: pyiron/actions/unit-tests@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.tests-env-files }}
