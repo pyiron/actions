@@ -145,7 +145,7 @@ on:
         description: 'Version of python to use with the alternate tests'
         default: '3.11'
         required: false
-      alternate-test-dir:
+      alternate-tests-dir:
         type: string
         description: 'The directory containing the tests run with the alternate environment'
         default: tests
@@ -285,7 +285,7 @@ jobs:
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
-        test-dir: ${{ inputs.alternate-test-dir }}
+        test-dir: ${{ inputs.alternate-tests-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
 
   pip-check:
