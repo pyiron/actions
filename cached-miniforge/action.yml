@@ -2,9 +2,6 @@ name: 'Setup cached miniforge'
 description: 'Use conda environment files to build a cached (optional) python environment with miniforge, and local code with pip install'
 
 inputs:
-  runner-name:
-    description: 'The CI runner you are using, e.g. "ubuntu-latest"'
-    required: true
   python-version:
     description: 'Which version of the python interpreter to use, e.g. "3.11"'
     required: true
