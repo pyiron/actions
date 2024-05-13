@@ -140,6 +140,11 @@ on:
         type: string
         description: 'An alternate set of (space-separated) conda environment yaml files, e.g. to test a lower-bounds environment. Skipped if empty'
         required: false
+      alternate-tests-python-version:
+        type: string
+        description: 'Version of python to use with the alternate tests'
+        default: '3.11'
+        required: false
       alternate-test-dir:
         type: string
         description: 'The directory containing the tests run with the alternate environment'
