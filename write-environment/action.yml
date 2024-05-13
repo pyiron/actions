@@ -17,10 +17,16 @@ runs:
     # Ubuntu works fine, but both windows and macos wind up complaining that there is no module "yaml"
     shell: bash -l {0}
     run: pip install pyyaml
-  - name: Write environment
+  - name: Debug file presence
     shell: bash -l {0}
     run: |
       echo $pwd
+  - name: Debug file presence
+    shell: bash -l {0}
+    run: |
       ls .
+  - name: Write environment
+    shell: bash -l {0}
+    run: |
       python $GITHUB_ACTION_PATH/../.support/condamerge.py ${{ inputs.env-files }} > ${{ inputs.output-env-file }}
       echo WRITE_ENVIRONMENT_OUTPUT_ENV_FILE=${{ inputs.output-env-file }} >> $GITHUB_ENV
