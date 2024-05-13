@@ -36,7 +36,7 @@ A wrapper combining `conda-incubator/setup-miniconda` and `actions/cache` along 
 
 ### `pip-check`
 
-Builds your environment with the `cached-mamba` action and then runs `pip check`.
+Builds your environment with the `cached-minforge` action and then runs `pip check`.
 
 ### `pyiron-config`
 

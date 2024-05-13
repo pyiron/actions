@@ -5,12 +5,6 @@ inputs:
   python-version:
     description: 'Which version of the python interpreter to use, e.g. "3.11"'
     required: true
-  env-prefix:
-    description: 'Prefix to the path to the environment'
-    required: true
-  env-label:
-    description: 'A label for the environment'
-    required: true
   env-files:
     description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
     default: .ci_support/environment.yml
@@ -19,11 +13,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-mamba@use_cached_miniforge
+  - uses: pyiron/actions/cached-miniforge@use_cached_miniforge
     with:
       python-version: ${{ inputs.python-version }}
-      env-prefix: ${{ inputs.env-prefix }}
-      env-label: ${{ inputs.env-label }}
       env-files: ${{ inputs.env-files }}
   - name: Check
     shell: bash -l {0}
