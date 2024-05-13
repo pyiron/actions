@@ -49,31 +49,13 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/add-to-python-path@main
+      - uses: pyiron/actions/add-to-python-path@use_cached_miniforge
         if: ${{ inputs.tests-in-python-path }}
         with:
           path-dirs: tests tests/benchmark tests/integration tests/unit
-      - id: replace_dot
-        shell: bash -l {0}
-        run: |
-          pyversion_string=${{ inputs.python-version }}
-          echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
-      - id: determine_conda_prefix
-        shell: bash -l {0}
-        run: |
-          os_string=${{ inputs.runner }}
-          if [[ ${os_string} == "macos-"* ]]; then
-            echo "env_prefix_string=/Users/runner/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
-          elif [[ ${os_string} == "windows-"* ]]; then
-            echo "env_prefix_string=C:\Miniconda3\envs\my-env" >> $GITHUB_OUTPUT
-          elif [[ ${os_string} == "ubuntu-"* ]]; then
-            echo "env_prefix_string=/usr/share/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
-          fi
-      - uses: pyiron/actions/unit-tests@main
+      - uses: pyiron/actions/unit-tests@use_cached_miniforge
         with:
           python-version: ${{ inputs.python-version }}
-          env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
-          env-label: ${{ inputs.runner }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
           env-files: ${{ inputs.tests-env-files }}
           test-dir: ${{ inputs.test-dir }}
           omit-patterns: ${{ inputs.omit-patterns }}

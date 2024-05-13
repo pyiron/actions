@@ -28,11 +28,15 @@ Notebooks are found in all sub directories of `/notebooks`.  The files listed in
 
 ### `cached-mamba`
 
-Probably one of our most generically useful actions: it uses any number (>=1) of conda environment yaml files to build a cached conda environment with mambaforge.
+DEPRECATED: Use `cached-miniforge`
+
+### `cached-miniforge`
+
+A wrapper combining `conda-incubator/setup-miniconda` and `actions/cache` along with our own `write-environment` that allows you to easily make a cached conda environment from any number (>=1) of conda environment yaml files.
 
 ### `pip-check`
 
-Builds your environment with the `cached-mamba` action and then runs `pip check`.
+Builds your environment with the `cached-minforge` action and then runs `pip check`.
 
 ### `pyiron-config`
 
@@ -119,7 +123,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@main
+    uses: pyiron/actions/.github/workflows/push-pull.yml@use_cached_miniforge
     secrets: inherit
 ```
 

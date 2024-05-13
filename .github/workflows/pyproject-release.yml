@@ -17,11 +17,6 @@ on:
         description: 'Cached mamba python versions'
         default: '3.11'
         required: false
-      env-label:
-        type: string
-        description: 'Cached mamba environment label'
-        default: ubuntu-latest-py-3-11
-        required: false
       env-files:
         type: string
         description: 'Conda environment(S)'
@@ -79,13 +74,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-mamba@main
+    - uses: pyiron/actions/cached-miniforge@use_cached_miniforge
       with:
         python-version: ${{ inputs.python-version }}
-        env-prefix: /usr/share/miniconda3/envs/my-env
-        env-label: ${{ inputs.env-label }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@main
+    - uses: pyiron/actions/update-pyproject-dependencies@use_cached_miniforge
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}

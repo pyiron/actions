@@ -157,10 +157,10 @@ jobs:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@use_cached_miniforge
         with:
           env-files: ${{ inputs.docs-env-files }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@use_cached_miniforge
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -185,11 +185,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-docs@main
+      - uses: pyiron/actions/build-docs@use_cached_miniforge
         with:
           python-version: ${{ inputs.python-version }}
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: ${{ inputs.runner }}-py-main
           env-files: ${{ inputs.docs-env-files }}
 
   build-notebooks:
@@ -198,11 +196,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: pyiron/actions/build-notebooks@use_cached_miniforge
         with:
           python-version: ${{ inputs.python-version }}
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: ${{ inputs.runner }}-py-main
           env-files: ${{ inputs.notebooks-env-files }}
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
 
@@ -237,31 +233,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@use_cached_miniforge
       if: ${{ inputs.tests-in-python-path }}
       with:
         path-dirs: tests tests/benchmark tests/integration tests/unit
-    - id: replace_dot
-      shell: bash -l {0}
-      run: |
-        pyversion_string=${{ matrix.python-version }}
-        echo "pyversion_string=${pyversion_string/\./-}" >> $GITHUB_OUTPUT
-    - id: determine_conda_prefix
-      shell: bash -l {0}
-      run: |
-        os_string=${{ matrix.operating-system }}
-        if [[ ${os_string} == "macos-"* ]]; then
-          echo "env_prefix_string=/Users/runner/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
-        elif [[ ${os_string} == "windows-"* ]]; then
-          echo "env_prefix_string=C:\Miniconda3\envs\my-env" >> $GITHUB_OUTPUT
-        elif [[ ${os_string} == "ubuntu-"* ]]; then
-          echo "env_prefix_string=/usr/share/miniconda3/envs/my-env" >> $GITHUB_OUTPUT
-        fi
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@use_cached_miniforge
       with:
         python-version: ${{ matrix.python-version }}
-        env-prefix: ${{ steps.determine_conda_prefix.outputs.env_prefix_string }}
-        env-label: ${{ matrix.operating-system }}-py-${{ steps.replace_dot.outputs.pyversion_string }}
         env-files: ${{ inputs.tests-env-files }}
         test-dir: ${{ inputs.unit-test-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
@@ -269,7 +247,7 @@ jobs:
   coveralls-and-codacy:
     needs: commit-updated-env
     if: ${{ inputs.do-coveralls-and-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@use_cached_miniforge
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -285,11 +263,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@use_cached_miniforge
       with:
         python-version: ${{ inputs.python-version }}
-        env-prefix: /usr/share/miniconda3/envs/my-env
-        env-label: ${{ inputs.runner }}-py-main
         env-files: ${{ inputs.tests-env-files }}
         test-dir: ${{ inputs.benchmark-test-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
@@ -300,11 +276,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v3
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@use_cached_miniforge
       with:
         python-version: ${{ inputs.python-version }}
-        env-prefix: /usr/share/miniconda3/envs/my-env
-        env-label: ${{ inputs.runner }}-py-main
         env-files: ${{ inputs.alternate-tests-env-files }}
         test-dir: ${{ inputs.alternate-test-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
@@ -315,11 +289,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
-      - uses: pyiron/actions/pip-check@main
+      - uses: pyiron/actions/pip-check@use_cached_miniforge
         with:
           python-version: ${{ inputs.python-version }}
-          env-prefix: /usr/share/miniconda3/envs/my-env
-          env-label: ${{ inputs.runner }}-py-main
 
   black:
     needs: commit-updated-env
