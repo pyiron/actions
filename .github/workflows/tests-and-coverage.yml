@@ -48,7 +48,7 @@ jobs:
   Tests-and-Coverage:
     runs-on: ${{ inputs.runner }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pyiron/actions/add-to-python-path@update_used_action_versions
         if: ${{ inputs.tests-in-python-path }}
         with:
