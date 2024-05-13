@@ -50,7 +50,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@main
+  - uses: pyiron/actions/write-environment@use_cached_miniforge
     with:
       env-files: ${{ inputs.env-files }}
   - name: Setup Mambaforge
