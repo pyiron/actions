@@ -54,7 +54,7 @@ runs:
   - name: Debug
     shell: bash -l {0}
     run: |
-      echo "WROTE ENV TO ${ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }"
+      echo ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
   - name: Check env
     shell: bash -l {0}
     run: |
