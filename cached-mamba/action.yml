@@ -35,7 +35,7 @@ runs:
     shell: bash -l {0}
     run: |
       echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-  - uses: actions/cache@v2
+  - uses: actions/cahce@v4
     with:
       path: ${{ inputs.env-prefix }}
       key: ${{ inputs.env-label }}-conda-${{ hashFiles('environment.yml') }}-${{ env.DATE }}
