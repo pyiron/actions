@@ -79,3 +79,10 @@ runs:
       fi
       echo ${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string}
       echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
+  - name: Get environment hash
+    id: get-hash
+    shell: bash -l {0}
+    run: |
+      echo ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+      echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }}
+      echo ${{ hashFiles('${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}') }} >> $GITHUB_OUTPUT
