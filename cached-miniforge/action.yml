@@ -88,4 +88,4 @@ runs:
     shell: bash -l {0}
     run: |
       pip install versioneer[toml]==0.29
-      pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
+      pip install --no-deps ${{ inputs.local-code-directory }}
