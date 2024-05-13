@@ -69,7 +69,6 @@ runs:
     run: |
       pyversion_string=${{ inputs.python-version }}
       pyversion_string=${pyversion_string/\./-}
-      echo ${pyversion_string}
       if [[ ${{ runner.os }} == "macOS" ]]; then
         env_prefix_string=/Users/runner/miniconda3/envs/${{ inputs.miniforge-activate-environment }}
       elif [[ ${{ runner.os }} == "Windows" ]]; then
