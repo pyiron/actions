@@ -9,7 +9,7 @@ inputs:
     description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
     default: .ci_support/environment.yml
     required: false
-  do-cache:
+  use-cache:
     description: 'A boolean flag for whether or not to leverage environment caching'
     default: 'true'
     required: false
@@ -63,8 +63,8 @@ runs:
     shell: bash -l {0}
     run: |
       echo "TODAY=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-  - name: Get cache label
-    id: get-label
+  - name: Get conda env info
+    id: conda-info
     shell: bash -l {0}
     run: |
       pyversion_string=${{ inputs.python-version }}
@@ -76,16 +76,18 @@ runs:
       elif [[ ${{ runner.os }} == "Linux" ]]; then
         echo env_prefix_string=/usr/share/miniconda3/envs/${{ inputs.miniforge-activate-environment }}
       fi
-      echo ENV_LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
-  - name: Get environment hash
-    id: get-hash
+      echo PREFIX=${env_prefix_string} >> $GITHUB_OUTPUT
+      echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
+      echo HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }} >> $GITHUB_OUTPUT
+  - uses: actions/cache@v3
+    id: cache
+    if: ${{ inputs.use-cache == 'true' }}
+    env:
+      CACHE_NUMBER: 0
+    with:
+      path: ${{ steps.conda-info.outputs.PREFIX }}
+      key: ${{ steps.conda-info.outputs.LABEL }}-conda-${{ steps.conda-info.outputs.HASH }}-${{ steps.get-data.outputs.TODAY }}
+  - name: Update environment
+    if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
     shell: bash -l {0}
-    run: |
-      echo ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
-      echo ${{ steps.get-date.outputs.TODAY }}
-      echo ${{ steps.get-label.outputs.ENV_LABEL }}
-      echo ${{ hashFiles('environment.yml') }}
-      local_env_var=$${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
-      echo ${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }}
-      hash_key="TODO"
-      echo HASH_KEY=${hash_key} >> $GITHUB_OUTPUT#
+    run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
