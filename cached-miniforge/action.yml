@@ -58,6 +58,7 @@ runs:
   - name: Check env
     shell: bash -l {0}
     run: |
+      echo ${{ inputs.runner-name }}
       echo ${{ runner.name }}
   - name: Setup Mambaforge
     uses: conda-incubator/setup-miniconda@v3
