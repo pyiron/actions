@@ -17,16 +17,6 @@ runs:
     # Ubuntu works fine, but both windows and macos wind up complaining that there is no module "yaml"
     shell: bash -l {0}
     run: pip install pyyaml
-  - name: Debug file presence
-    shell: bash -l {0}
-    run: |
-      foo=`pwd`
-      echo $foo
-  - name: Debug file presence
-    shell: bash -l {0}
-    run: |
-      foo=`ls .`
-      echo $foo
   - name: Write environment
     shell: bash -l {0}
     run: |
