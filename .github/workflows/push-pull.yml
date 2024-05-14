@@ -119,17 +119,17 @@ on:
       python-version-alt1:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.10'
+        default: '3.11'
         required: false
       python-version-alt2:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.9'
+        default: '3.10'
         required: false
       python-version-alt3:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.12'
+        default: '3.9'
         required: false
       unit-test-dir:
         type: string
