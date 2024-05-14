@@ -257,7 +257,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: pyiron/actions/add-to-python-path@free_python_path
-      if: inputs.extra-python-paths != ""
+      if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
     - uses: pyiron/actions/unit-tests@free_python_path
