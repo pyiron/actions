@@ -64,11 +64,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@main
+      - uses: pyiron/actions/add-to-python-path@free_python_path
         if: ${{ inputs.tests-in-python-path }}
         with:
           path-dirs: ${{ inputs.test-dir }}
-      - uses: pyiron/actions/unit-tests@main
+      - uses: pyiron/actions/unit-tests@free_python_path
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.tests-env-files }}
