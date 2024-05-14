@@ -92,7 +92,7 @@ on:
         default: 30
         required: false
       extra-python-paths:
-        type: str
+        type: string
         description: 'Extra paths (e.g. test dirs tests/(benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239) -- currently only seems to be an issue on windows?'
         default: ''
         required: false
