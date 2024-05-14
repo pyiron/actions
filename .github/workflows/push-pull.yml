@@ -31,9 +31,14 @@ on:
         description: 'Feature flag: controls if the unit-tests job runs.'
         default: true
         required: false
-      do-coveralls-and-codacy:
+      do-coveralls:
         type: boolean
-        description: 'Feature flag: controls if the coveralls-and-codacy job runs.'
+        description: 'Whether to use the coveralls/github-action after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
+        default: true
+        required: false
+      do-codacy:
+        type: boolean
+        description: 'Whether to push the report to codacy after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
         default: true
         required: false
       do-benchmark-tests:
@@ -254,7 +259,7 @@ jobs:
 
   coveralls-and-codacy:
     needs: commit-updated-env
-    if: ${{ inputs.do-coveralls-and-codacy }}
+    if: ${{ inputs.do-coveralls || inputs.do-codacy }}
     uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@pyiron_base_lessons
     secrets: inherit
     with:
@@ -264,6 +269,8 @@ jobs:
       python-version: ${{ inputs.python-version }}
       test-dir: ${{ inputs.coveralls-and-codacy-test-dir }}
       omit-patterns: ${{ inputs.omit-patterns }}
+      do-coveralls: ${{ inputs.do-coveralls }}
+      do-codacy: ${{ inputs.do-codacy }}
 
   benchmark-tests:
     needs: commit-updated-env
