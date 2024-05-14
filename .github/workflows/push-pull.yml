@@ -91,6 +91,11 @@ on:
         description: 'How many minutes to allow tests in units/benchmark to run for'
         default: 30
         required: false
+      alternate-tests-timeout-minutes:
+        type: number
+        description: 'How many minutes to allow tests in alternate environment tests to run for'
+        default: 15
+        required: false
       extra-python-paths:
         type: string
         description: 'Extra paths (e.g. test dirs tests/(benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
@@ -303,12 +308,17 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
+    - uses: pyiron/actions/add-to-python-path@main
+      if: inputs.extra-python-paths != ''
+      with:
+        path-dirs: ${{ inputs.extra-python-paths }}
     - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
         test-dir: ${{ inputs.alternate-tests-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
+      timeout-minutes:  ${{ inputs.alternate-tests-timeout-minutes }}
 
   pip-check:
     needs: commit-updated-env
