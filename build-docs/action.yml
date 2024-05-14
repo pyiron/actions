@@ -3,7 +3,7 @@ description: 'Use sphinx to build documentation'
 
 inputs:
   python-version:
-    description: 'Which version of the python interpreter to use, e.g. "3.11"'
+    description: 'Which version of the python interpreter to use, e.g. "3.12"'
     required: true
   env-files:
     description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'

@@ -114,7 +114,7 @@ on:
       python-version:
         type: string
         description: 'The main version of python to test on, used across all three OS for tests and in other steps'
-        default: '3.11'
+        default: '3.12'
         required: false
       python-version-alt1:
         type: string
@@ -158,7 +158,7 @@ on:
       alternate-tests-python-version:
         type: string
         description: 'Version of python to use with the alternate tests'
-        default: '3.11'
+        default: '3.12'
         required: false
       alternate-tests-dir:
         type: string

@@ -15,7 +15,7 @@ on:
       python-version:
         type: string
         description: 'Cached mamba python versions'
-        default: '3.11'
+        default: '3.12'
         required: false
       env-files:
         type: string
