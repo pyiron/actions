@@ -76,6 +76,16 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
+      unit-test-timeout-minutes:
+        type: number
+        description: 'timout-minutes to apply to running the unit tests'
+        default: 10
+        required: false
+      coveralls-and-codacy-timeout-minutes:
+        type: number
+        description: 'timout-minutes to apply to running the coveralls and codacy tests'
+        default: 15
+        required: false
       benchmark-timeout-minutes:
         type: number
         description: 'How many minutes to allow tests in units/benchmark to run for'
@@ -256,6 +266,7 @@ jobs:
         env-files: ${{ inputs.tests-env-files }}
         test-dir: ${{ inputs.unit-test-dir }}
         omit-patterns: ${{ inputs.omit-patterns }}
+      timeout-minutes: ${{ inputs.unit-test-timeout-minutes }}
 
   coveralls-and-codacy:
     needs: commit-updated-env
@@ -271,6 +282,7 @@ jobs:
       omit-patterns: ${{ inputs.omit-patterns }}
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
+      test-timeout-minutes: ${{ inputs.coveralls-and-codacy-timeout-minutes }}
 
   benchmark-tests:
     needs: commit-updated-env
