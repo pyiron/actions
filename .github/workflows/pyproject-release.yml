@@ -15,7 +15,7 @@ on:
       python-version:
         type: string
         description: 'Cached mamba python versions'
-        default: '3.11'
+        default: '3.12'
         required: false
       env-files:
         type: string
@@ -74,11 +74,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-miniforge@free_python_path
+    - uses: pyiron/actions/cached-miniforge@main
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@free_python_path
+    - uses: pyiron/actions/update-pyproject-dependencies@main
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}

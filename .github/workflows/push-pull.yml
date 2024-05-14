@@ -114,22 +114,22 @@ on:
       python-version:
         type: string
         description: 'The main version of python to test on, used across all three OS for tests and in other steps'
-        default: '3.11'
+        default: '3.12'
         required: false
       python-version-alt1:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.10'
+        default: '3.11'
         required: false
       python-version-alt2:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.9'
+        default: '3.10'
         required: false
       python-version-alt3:
         type: string
         description: 'An alternate  version of python to run unit tests on, used only on the main runner. Set to the string exclude to skip'
-        default: '3.12'
+        default: '3.9'
         required: false
       unit-test-dir:
         type: string
@@ -158,7 +158,7 @@ on:
       alternate-tests-python-version:
         type: string
         description: 'Version of python to use with the alternate tests'
-        default: '3.11'
+        default: '3.12'
         required: false
       alternate-tests-dir:
         type: string
@@ -177,11 +177,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@free_python_path
+      - uses: pyiron/actions/write-docs-env@main
         with:
           env-files: ${{ inputs.docs-env-files }}
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@free_python_path
+      - uses: pyiron/actions/write-environment@main
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -208,7 +208,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-docs@free_python_path
+      - uses: pyiron/actions/build-docs@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -219,7 +219,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-notebooks@free_python_path
+      - uses: pyiron/actions/build-notebooks@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -256,11 +256,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@free_python_path
+    - uses: pyiron/actions/add-to-python-path@main
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@free_python_path
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -271,7 +271,7 @@ jobs:
   coveralls-and-codacy:
     needs: commit-updated-env
     if: ${{ inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@free_python_path
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -290,7 +290,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/unit-tests@free_python_path
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -303,7 +303,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/unit-tests@free_python_path
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -316,7 +316,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@free_python_path
+      - uses: pyiron/actions/pip-check@main
         with:
           python-version: ${{ inputs.python-version }}
 
