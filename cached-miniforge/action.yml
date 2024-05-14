@@ -115,7 +115,7 @@ runs:
     shell: bash -l {0}
     run: |
       pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
-  - name: Install local code without build isolation
+  - name: Install local code with build isolation
     if: inputs.no-build-isolation != 'true'
     shell: bash -l {0}
     run: |
