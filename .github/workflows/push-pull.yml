@@ -91,10 +91,10 @@ on:
         description: 'How many minutes to allow tests in units/benchmark to run for'
         default: 30
         required: false
-      tests-in-python-path:
-        type: boolean
-        description: 'Whether to add the canonical test dirs (tests/( ,benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
-        default: false
+      extra-python-paths:
+        type: string
+        description: 'Extra paths (e.g. test dirs tests/(benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
+        default: ''
         required: false
       runner:
         type: string
@@ -177,11 +177,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@free_python_path
         with:
           env-files: ${{ inputs.docs-env-files }}
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@free_python_path
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -208,7 +208,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-docs@main
+      - uses: pyiron/actions/build-docs@free_python_path
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -219,7 +219,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: pyiron/actions/build-notebooks@free_python_path
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -256,11 +256,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@main
-      if: ${{ inputs.tests-in-python-path }}
+    - uses: pyiron/actions/add-to-python-path@free_python_path
+      if: inputs.extra-python-paths != ''
       with:
-        path-dirs: ${{ inputs.unit-test-dir }}
-    - uses: pyiron/actions/unit-tests@main
+        path-dirs: ${{ inputs.extra-python-paths }}
+    - uses: pyiron/actions/unit-tests@free_python_path
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -271,11 +271,11 @@ jobs:
   coveralls-and-codacy:
     needs: commit-updated-env
     if: ${{ inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@free_python_path
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
-      tests-in-python-path: ${{ inputs.tests-in-python-path }}
+      extra-python-paths: ${{ inputs.extra-python-paths }}
       runner: ${{ inputs.runner }}
       python-version: ${{ inputs.python-version }}
       test-dir: ${{ inputs.coveralls-and-codacy-test-dir }}
@@ -290,7 +290,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@free_python_path
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -303,7 +303,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@free_python_path
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -316,7 +316,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@main
+      - uses: pyiron/actions/pip-check@free_python_path
         with:
           python-version: ${{ inputs.python-version }}
 
