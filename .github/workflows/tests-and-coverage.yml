@@ -44,6 +44,7 @@ on:
         default: '3.11'
         required: false
       test-timeout-minutes:
+        type: number
         description: 'timout-minutes to apply to running the tests'
         default: 15
         required: false
