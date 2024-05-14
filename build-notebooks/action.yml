@@ -24,11 +24,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-miniforge@main
+  - uses: pyiron/actions/cached-miniforge@v3.0.1
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.standard-notebooks-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/actions/pyiron-config@main
+  - uses: pyiron/actions/pyiron-config@v3.0.1
   - name: Build notebooks
     shell: bash -l {0}
     run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }}
