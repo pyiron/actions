@@ -52,7 +52,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - name: Install dependenceis
+  - name: Install dependencies
     shell: bash -l {0}
     run: |
       pip install pyyaml==${{ inputs.pyyaml-version }}
