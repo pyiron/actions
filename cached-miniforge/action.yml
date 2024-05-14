@@ -84,6 +84,9 @@ runs:
     if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
     shell: bash -l {0}
     run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+  - name: Conda list
+    shell: bash -l {0}
+    run: conda list
   - name: Install local code
     shell: bash -l {0}
     run: |
