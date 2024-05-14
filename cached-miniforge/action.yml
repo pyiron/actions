@@ -45,7 +45,10 @@ inputs:
     description: 'conda-incubator/setup-miniconda argument'
     default: 'true'
     required: false
-
+  picky-local-install:
+    description: 'Pip-install versioneer[toml] and add --no-build-isolation to the pip install. If you get a malformed node error, try this. If you figure out why you needed it, contact @liamhuber. This was necessary for pyiron_base, and I have no idea why.'
+    default: 'false'
+    required: false
 
 runs:
   using: "composite"
@@ -88,6 +91,13 @@ runs:
     shell: bash -l {0}
     run: conda list
   - name: Install local code
+    if: inputs.picky-local-install != 'true'
     shell: bash -l {0}
     run: |
       pip install --no-deps ${{ inputs.local-code-directory }}
+  - name: Install local code, but with extra stuff for picky repositories
+    if: inputs.picky-local-install == 'true'
+    shell: bash -l {0}
+    run: |
+      pip install versioneer[toml]==0.29
+      pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
