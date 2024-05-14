@@ -28,10 +28,10 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
-      tests-in-python-path:
-        type: boolean
-        description: 'Whether to add the canonical test dirs (tests/( ,benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239).'
-        default: false
+      extra-python-paths:
+        type: str
+        description: 'Extra paths (e.g. test dirs tests/(benchmark,integration,unit)) to the PYTHONPATH. This is a required workaround for repos that use `pympipool` executors, [cf. this issue](https://github.com/pyiron/pympipool/issues/239) -- currently only seems to be an issue on windows?'
+        default: ''
         required: false
       runner:
         type: string
@@ -65,9 +65,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pyiron/actions/add-to-python-path@free_python_path
-        if: ${{ inputs.tests-in-python-path }}
+        if: inputs.extra-python-paths != ''
         with:
-          path-dirs: ${{ inputs.test-dir }}
+          path-dirs: ${{ inputs.extra-python-paths }}
       - uses: pyiron/actions/unit-tests@free_python_path
         with:
           python-version: ${{ inputs.python-version }}
