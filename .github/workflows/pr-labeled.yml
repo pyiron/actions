@@ -43,10 +43,10 @@ jobs:
 
   tests-and-coverage:
     if: contains(github.event.pull_request.labels.*.name, 'run_coverage')
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@free_python_path
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@bump_python
     secrets: inherit
 
   code-ql:
     if: contains(github.event.pull_request.labels.*.name, 'run_CodeQL')
-    uses: pyiron/actions/.github/workflows/codeql.yml@free_python_path
+    uses: pyiron/actions/.github/workflows/codeql.yml@bump_python
     secrets: inherit

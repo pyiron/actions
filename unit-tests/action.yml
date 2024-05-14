@@ -35,11 +35,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-miniforge@free_python_path
+  - uses: pyiron/actions/cached-miniforge@bump_python
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.standard-unittests-env-file }} ${{ inputs.coveralls-codacy-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/actions/pyiron-config@free_python_path
+  - uses: pyiron/actions/pyiron-config@bump_python
   - name: Test
     shell: bash -l {0}
     run: |
