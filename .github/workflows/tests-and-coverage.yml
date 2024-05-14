@@ -43,6 +43,21 @@ on:
         description: 'The version of python use'
         default: '3.11'
         required: false
+      test-timeout-minutes:
+        type: number
+        description: 'timout-minutes to apply to running the tests'
+        default: 15
+        required: false
+      do-coveralls:
+        type: boolean
+        description: 'Whether to use the coveralls/github-action after generating coverage'
+        default: true
+        required: false
+      do-codacy:
+        type: boolean
+        description: 'Whether to push the report to codacy after generating coverage'
+        default: true
+        required: false
 
 jobs:
   Tests-and-Coverage:
@@ -59,6 +74,7 @@ jobs:
           env-files: ${{ inputs.tests-env-files }}
           test-dir: ${{ inputs.test-dir }}
           omit-patterns: ${{ inputs.omit-patterns }}
+        timeout-minutes: ${{ inputs.test-timeout-minutes }}
       - name: Coverage
         shell: bash -l {0}
         env:
@@ -67,8 +83,10 @@ jobs:
           coverage combine
           coverage xml
       - name: Coveralls
+        if: ${{ inputs.do-coveralls }}
         uses: coverallsapp/github-action@v2
       - name: Codacy
+        if: ${{ inputs.do-codacy }}
         shell: bash -l {0}
         env:
           CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
