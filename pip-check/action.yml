@@ -13,7 +13,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-miniforge@extend_py2conda_map
+  - uses: pyiron/actions/cached-miniforge@main
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.env-files }}

@@ -119,7 +119,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@extend_py2conda_map
+    uses: pyiron/actions/.github/workflows/push-pull.yml@main
     secrets: inherit
 ```
 
