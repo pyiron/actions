@@ -67,6 +67,11 @@ on:
         description: 'Version of toml to install'
         default: '0.10.2'
         required: false
+      publish-to-pypi:
+        type: boolean
+        description: 'Whether to actually publish the result. Turning it off is useful for debugging new builds.'
+        default: true
+        required: false
 
 
 jobs:
@@ -89,12 +94,21 @@ jobs:
         pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
         pyyaml-version: ${{ inputs.pyyaml-version }}
         toml-version: ${{ inputs.toml-version }}
+    - name: Print output toml
+      if: inputs.output-toml != 'none'
+      shell: bash -l {0}
+      run: cat ${{ inputs.output-toml }}
+    - name: Print output toml (overwrote input)
+      if: inputs.output-toml == 'none'
+      shell: bash -l {0}
+      run: cat ${{ inputs.input-toml }}
     - name: Build
       shell: bash -l {0}
       run: |
         pip install versioneer[toml]==0.29
         python setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
+      if: inputs.publish-to-pypi
       uses: pypa/gh-action-pypi-publish@release/v1
       with: # Remove once trusted publisher works with reusable workflows
         user: __token__  # Remove once trusted publisher works with reusable workflows
