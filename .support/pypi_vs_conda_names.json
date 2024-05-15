@@ -1,5 +1,6 @@
 {
   "blosc2": "python-blosc2",
+  "graphviz": "python-graphviz",
   "h5io-browser": "h5io_browser",
   "matplotlib": "matplotlib-base",
   "pyiron-atomistics": "pyiron_atomistics",
