@@ -13,7 +13,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-miniforge@main
+  - uses: pyiron/actions/cached-miniforge@v3.1.0
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.env-files }}
