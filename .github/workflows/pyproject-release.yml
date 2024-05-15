@@ -94,6 +94,14 @@ jobs:
         pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
         pyyaml-version: ${{ inputs.pyyaml-version }}
         toml-version: ${{ inputs.toml-version }}
+    - name: Print output toml
+      if: inputs.output-toml != 'none'
+      shell: bash -l {0}
+      run: cat ${{ inputs.output-toml }}
+    - name: Print output toml (overwrote input)
+      if: inputs.output-toml == 'none'
+      shell: bash -l {0}
+      run: cat ${{ inputs.input-toml }}
     - name: Build
       shell: bash -l {0}
       run: |
