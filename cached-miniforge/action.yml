@@ -99,12 +99,6 @@ runs:
   - name: Conda list
     shell: bash -l {0}
     run: conda list
-  - name: Peek
-    shell: bash -l {0}
-    run: |
-      which pip
-      which python
-      ls
   - name: Install versioneer
     if: inputs.pip-install-versioneer == 'true'
     shell: bash -l {0}
