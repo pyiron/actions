@@ -119,7 +119,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@make_pip_optional
+    uses: pyiron/actions/.github/workflows/push-pull.yml@main
     secrets: inherit
 ```
 

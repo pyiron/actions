@@ -79,11 +79,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-miniforge@make_pip_optional
+    - uses: pyiron/actions/cached-miniforge@main
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@make_pip_optional
+    - uses: pyiron/actions/update-pyproject-dependencies@main
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}

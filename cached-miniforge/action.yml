@@ -62,7 +62,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@make_pip_optional
+  - uses: pyiron/actions/write-environment@main
     with:
       env-files: ${{ inputs.env-files }}
   - name: Setup Mambaforge
