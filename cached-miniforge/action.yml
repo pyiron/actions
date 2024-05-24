@@ -18,7 +18,7 @@ inputs:
     default: '0'
     required: false
   local-code-directory:
-    description: 'The location containing the code under development; targeted by pip install'
+    description: 'The location containing the code under development; targeted by pip install. If an empty string, local code will not be pip-installed at all!'
     default: '.'
     required: false
   miniforge-variant:
@@ -99,24 +99,18 @@ runs:
   - name: Conda list
     shell: bash -l {0}
     run: conda list
-  - name: Peek
-    shell: bash -l {0}
-    run: |
-      which pip
-      which python
-      ls
   - name: Install versioneer
-    if: inputs.pip-install-versioneer == 'true'
+    if: inputs.local-code-directory != '' && inputs.pip-install-versioneer == 'true'
     shell: bash -l {0}
     run: |
       pip install versioneer[toml]==${{ inputs.versioneer-version }}
   - name: Install local code without build isolation
-    if: inputs.no-build-isolation == 'true'
+    if: inputs.local-code-directory != '' && inputs.no-build-isolation == 'true'
     shell: bash -l {0}
     run: |
       pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
   - name: Install local code with build isolation
-    if: inputs.no-build-isolation != 'true'
+    if: inputs.local-code-directory != '' && inputs.no-build-isolation != 'true'
     shell: bash -l {0}
     run: |
       pip install --no-deps ${{ inputs.local-code-directory }}
