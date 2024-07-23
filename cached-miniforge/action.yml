@@ -1,5 +1,5 @@
 name: 'Setup cached miniforge'
-description: 'Use conda environment files to build a cached (optional) python environment with miniforge, and local code with pip install'
+description: 'Use conda environment files to build a cached (optional) python environment with miniforge, and (optionally) local code with pip install'
 
 inputs:
   python-version:
@@ -16,6 +16,10 @@ inputs:
   cache-number:
     description: 'A stringified integer for the cache number (can be used to force-bump the cache)'
     default: '0'
+    required: false
+  env-path:
+    description: 'A full path to the environment, used for miniconda activate-environment and cache path'
+    default: 'cached-miniforge/my-env'
     required: false
   local-code-directory:
     description: 'The location containing the code under development; targeted by pip install. If an empty string, local code will not be pip-installed at all!'
@@ -37,13 +41,13 @@ inputs:
     description: 'conda-incubator/setup-miniconda argument'
     default: strict
     required: false
-  miniforge-activate-environment:
-    description: 'conda-incubator/setup-miniconda argument'
-    default: my-env
-    required: false
   miniforge-use-mamba:
     description: 'conda-incubator/setup-miniconda argument'
     default: 'true'
+    required: false
+  miniforge-activate-environment:
+    description: 'DEPRECATED. Use env-path and include a path instead. If provided, will be used as the new env-path with cached-miniforge/ prepended as the path.'
+    default: ''
     required: false
   pip-install-versioneer:
     description: 'Pip-install versioneer[toml]'
@@ -65,7 +69,56 @@ runs:
   - uses: pyiron/actions/write-environment@main
     with:
       env-files: ${{ inputs.env-files }}
-  - name: Setup Mambaforge
+  - name: Env name backwards compatibility patch
+    # Can be replaced with direct usage of `inputs.env-path` after a major version bump
+    id: env-path-backwards-compatibility
+    shell: bash -l {0}
+    run: |
+      if [ -z "${{ inputs.miniforge-activate-environment }}" ]; then
+          env_path=${{ inputs.env-path }}
+      else
+          env_path=cached-miniforge/${{ inputs.miniforge-activate-environment }}
+      fi
+      echo env-path=${env_path} >> $GITHUB_OUTPUT
+  - name: Calculate cache label info
+    if: inputs.use-cache == 'true'
+    id: cache-info
+    shell: bash -l {0}
+    run: |
+      pyversion_string=${{ inputs.python-version }}
+      pyversion_string=${pyversion_string/\./-}
+      env_string=${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      env_string=${env_string//\//-}
+      LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string}-${env_string}
+      HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }}
+      TODAY=$(date +'%Y%m%d')
+      echo CASH_KEY=${LABEL}-conda-${HASH}-${TODAY}-${{ inputs.cache-number }} >> $GITHUB_OUTPUT
+  - name: Look for cached environment
+    if: inputs.use-cache == 'true'
+    uses: actions/cache/restore@v4
+    id: look-for-cache
+    with:
+      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      key: ${{ steps.cache-info.outputs.CASH_KEY }}
+      lookup-only: true
+  - name: Install using cached env
+    if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit == 'true'
+    uses: conda-incubator/setup-miniconda@v3
+    with:
+      miniforge-variant: ${{ inputs.miniforge-variant }}
+      miniforge-version: ${{ inputs.miniforge-version }}
+      channels: ${{ inputs.miniforge-channels }}
+      channel-priority: ${{ inputs.miniforge-channel-priority }}
+      activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      use-mamba: ${{ inputs.miniforge-use-mamba }}
+  - name: Load cached environment
+    if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit == 'true'
+    uses: actions/cache/restore@v4
+    with:
+      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      key: ${{ steps.cache-info.outputs.CASH_KEY }}
+  - name: Build environment from file
+    if: inputs.use-cache != 'true' || steps.look-for-cache.outputs.cache-hit != 'true'
     uses: conda-incubator/setup-miniconda@v3
     with:
       python-version: ${{ inputs.python-version }}
@@ -73,32 +126,21 @@ runs:
       miniforge-version: ${{ inputs.miniforge-version }}
       channels: ${{ inputs.miniforge-channels }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
-      activate-environment: ${{ inputs.miniforge-activate-environment }}
+      activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       use-mamba: ${{ inputs.miniforge-use-mamba }}
-  - name: Calculate cache label info
-    id: cache-info
+      environment-file: ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
+  - name: Cache new env
+    if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit != 'true'
+    uses: actions/cache/save@v4
+    id: cache-env
+    with:
+      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      key: ${{ steps.cache-info.outputs.CASH_KEY }}
+  - name: Display env info
     shell: bash -l {0}
     run: |
-      pyversion_string=${{ inputs.python-version }}
-      pyversion_string=${pyversion_string/\./-}
-      echo LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string} >> $GITHUB_OUTPUT
-      echo HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }} >> $GITHUB_OUTPUT
-      echo "TODAY=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-  - uses: actions/cache@v4
-    id: cache
-    if: ${{ inputs.use-cache == 'true' }}
-    env:
-      CACHE_NUMBER: ${{ inputs.cache-number }}
-    with:
-      path: ${{ env.CONDA }}/envs
-      key: ${{ steps.cache-info.outputs.LABEL }}-conda-${{ steps.cache-info.outputs.HASH }}-${{ steps.cache-info.outputs.TODAY }}-${{ env.CACHE_NUMBER }}
-  - name: Update environment
-    if: inputs.use-cache != 'true' || steps.cache.outputs.cache-hit != 'true'
-    shell: bash -l {0}
-    run: mamba env update -n ${{ inputs.miniforge-activate-environment }} -f ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
-  - name: Conda list
-    shell: bash -l {0}
-    run: conda list
+      conda info
+      conda list
   - name: Install versioneer
     if: inputs.local-code-directory != '' && inputs.pip-install-versioneer == 'true'
     shell: bash -l {0}
@@ -107,10 +149,8 @@ runs:
   - name: Install local code without build isolation
     if: inputs.local-code-directory != '' && inputs.no-build-isolation == 'true'
     shell: bash -l {0}
-    run: |
-      pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
+    run: pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
   - name: Install local code with build isolation
     if: inputs.local-code-directory != '' && inputs.no-build-isolation != 'true'
     shell: bash -l {0}
-    run: |
-      pip install --no-deps ${{ inputs.local-code-directory }}
+    run: pip install --no-deps ${{ inputs.local-code-directory }}
