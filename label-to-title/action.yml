@@ -19,6 +19,7 @@ runs:
 
     - name: Update Title on Label Added
       if: github.event.action == 'labeled' && steps.check_label.outputs.label != ''
+      shell: bash -l {0}
       run: |
         TITLE="${{ github.event.pull_request.title || github.event.issue.title }}"
         NEW_TITLE="${{ steps.check_label.outputs.label }} ${TITLE}"
