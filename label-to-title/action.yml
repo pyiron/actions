@@ -6,6 +6,7 @@ runs:
   steps:
     - name: Check if label is patch, minor, or major
       id: check_label
+      shell: bash -l {0}
       run: |
         if [[ "${{ github.event.label.name }}" == "patch" ]]; then
           echo "::set-output name=label::[patch]"
