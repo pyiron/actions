@@ -1,5 +1,5 @@
 name: "Label to Title"
-description: "Update the title of an issue or pull request based on the label added or removed."
+description: "Update the title of an issue or pull request to start with [patch/minor/major] on adding the label patch/minor/major"
 
  
 runs:
