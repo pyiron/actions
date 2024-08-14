@@ -34,6 +34,7 @@ runs:
 
     - name: Update Title on Label Removed
       if: github.event.action == 'unlabeled' && steps.check_label.outputs.label != ''
+      shell: bash -l {0}
       run: |
         TITLE="${{ github.event.pull_request.title || github.event.issue.title }}"
         LABEL_TO_REMOVE="${{ steps.check_label.outputs.label }}"
