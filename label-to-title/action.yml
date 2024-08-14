@@ -10,14 +10,15 @@ runs:
       shell: bash -l {0}
       run: |
         if [[ "${{ github.event.label.name }}" == "patch" ]]; then
-          echo "::set-output name=label::[patch]"
+          LABEL="[patch]"
         elif [[ "${{ github.event.label.name }}" == "minor" ]]; then
-          echo "::set-output name=label::[minor]"
+          LABEL="[minor]"
         elif [[ "${{ github.event.label.name }}" == "major" ]]; then
-          echo "::set-output name=label::[major]"
+          LABEL="[major]"
         else
-          echo "::set-output name=label::"
+          LABEL=""
         fi
+        echo label=${LABEL} >> $GITHUB_OUTPUT
 
     - name: Update Title on Label Added
       if: github.event.action == 'labeled' && steps.check_label.outputs.label != ''
