@@ -1,12 +1,6 @@
 name: "Label to Title"
 description: "Update the title of an issue or pull request based on the label added or removed."
 
-on:
-  issues:
-    types: [labeled, unlabeled]
-  pull_request:
-    types: [labeled, unlabeled]
-
 runs:
   using: 'composite'
   steps:
