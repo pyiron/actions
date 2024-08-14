@@ -8,6 +8,8 @@ description: "Update the title of an issue or pull request to start with [patch/
 #  issue:
 #    types: [labeled, unlabeled]
 
+# If you encounter a 403 error, remember to go to repository settings
+# and give workflows read and write permissions
  
 runs:
   using: 'composite'
