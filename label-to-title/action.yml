@@ -1,0 +1,61 @@
+name: "Label to Title"
+description: "Update the title of an issue or pull request to start with [patch/minor/major] on adding the label patch/minor/major"
+
+# Recommended use:
+# on:
+#  pull_request:
+#    types: [labeled, unlabeled]
+#  issue:
+#    types: [labeled, unlabeled]
+
+# If you encounter a 403 error, remember to go to repository settings
+# and give workflows read and write permissions
+ 
+runs:
+  using: 'composite'
+  steps:
+    - name: Check if label is patch, minor, or major
+      id: check_label
+      shell: bash -l {0}
+      run: |
+        if [[ "${{ github.event.label.name }}" == "patch" ]]; then
+          LABEL="[patch]"
+        elif [[ "${{ github.event.label.name }}" == "minor" ]]; then
+          LABEL="[minor]"
+        elif [[ "${{ github.event.label.name }}" == "major" ]]; then
+          LABEL="[major]"
+        else
+          LABEL=""
+        fi
+        echo label=${LABEL} >> $GITHUB_OUTPUT
+
+    - name: Update Title on Label Added
+      if: github.event.action == 'labeled' && steps.check_label.outputs.label != ''
+      shell: bash -l {0}
+      run: |
+        TITLE="${{ github.event.pull_request.title || github.event.issue.title }}"
+        NEW_TITLE="${{ steps.check_label.outputs.label }} ${TITLE}"
+        if [[ $TITLE != ${NEW_TITLE} ]]; then
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number || github.event.pull_request.number }} \
+            -d '{"title":"'"$NEW_TITLE"'"}'
+        fi
+
+    - name: Update Title on Label Removed
+      if: github.event.action == 'unlabeled' && steps.check_label.outputs.label != ''
+      shell: bash -l {0}
+      run: |
+        TITLE="${{ github.event.pull_request.title || github.event.issue.title }}"
+        LABEL_TO_REMOVE="${{ steps.check_label.outputs.label }}"
+        NEW_TITLE=$(echo "$TITLE" | perl -pe "s/\Q$LABEL_TO_REMOVE\E//")
+        NEW_TITLE=$(echo "$NEW_TITLE" | sed 's/  / /g' | sed 's/^ *//;s/ *$//') # Remove extra spaces
+        if [[ $TITLE != ${NEW_TITLE} ]]; then
+          curl -s -X PATCH \
+            -H "Authorization: Bearer ${{ github.token }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number || github.event.pull_request.number }} \
+            -d '{"title":"'"$NEW_TITLE"'"}'
+        fi
+
