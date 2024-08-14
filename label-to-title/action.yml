@@ -1,6 +1,11 @@
 name: "Label to Title"
 description: "Update the title of an issue or pull request based on the label added or removed."
 
+inputs:
+    token:
+        description: 'The github token'
+        required: true
+ 
 runs:
   using: 'composite'
   steps:
