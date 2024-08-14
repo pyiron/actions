@@ -1,10 +1,6 @@
 name: "Label to Title"
 description: "Update the title of an issue or pull request based on the label added or removed."
 
-inputs:
-    token:
-        description: 'The github token'
-        required: true
  
 runs:
   using: 'composite'
@@ -31,7 +27,7 @@ runs:
         NEW_TITLE="${{ steps.check_label.outputs.label }} ${TITLE}"
         if [[ $TITLE != ${NEW_TITLE} ]]; then
           curl -s -X PATCH \
-            -H "Authorization: Bearer ${{ inputs.token }}" \
+            -H "Authorization: Bearer ${{ github.token }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number || github.event.pull_request.number }} \
             -d '{"title":"'"$NEW_TITLE"'"}'
@@ -47,7 +43,7 @@ runs:
         NEW_TITLE=$(echo "$NEW_TITLE" | sed 's/  / /g' | sed 's/^ *//;s/ *$//') # Remove extra spaces
         if [[ $TITLE != ${NEW_TITLE} ]]; then
           curl -s -X PATCH \
-            -H "Authorization: Bearer ${{ inputs.token }}" \
+            -H "Authorization: Bearer ${{ github.token }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number || github.event.pull_request.number }} \
             -d '{"title":"'"$NEW_TITLE"'"}'
