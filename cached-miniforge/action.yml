@@ -36,6 +36,7 @@ inputs:
   miniforge-channels:
     description: 'conda-incubator/setup-miniconda argument'
     default: conda-forge
+    # default: conda-forge,nodefaults  # TODO: Use nodefaults directly once setup-miniconda is fixed
     required: false
   miniforge-channel-priority:
     description: 'conda-incubator/setup-miniconda argument'
@@ -126,7 +127,8 @@ runs:
     with:
       miniforge-variant: ${{ inputs.miniforge-variant }}
       miniforge-version: ${{ inputs.miniforge-version }}
-      channels: ${{ inputs.miniforge-channels }}
+      # channels: ${{ inputs.miniforge-channels }}
+      condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       use-mamba: ${{ inputs.miniforge-use-mamba }}
@@ -143,7 +145,8 @@ runs:
       python-version: ${{ inputs.python-version }}
       miniforge-variant: ${{ inputs.miniforge-variant }}
       miniforge-version: ${{ inputs.miniforge-version }}
-      channels: ${{ inputs.miniforge-channels }}
+      # channels: ${{ inputs.miniforge-channels }}
+      condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       use-mamba: ${{ inputs.miniforge-use-mamba }}
