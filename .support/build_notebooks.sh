@@ -13,7 +13,7 @@ fi
 # execute notebooks
 i=0;
 for notebook in $(find ${NOTEBOOKS_DIR} -type f -name '*.ipynb'); do
-    papermill ${notebook} ${notebook%.*}-out.${notebook##*.} || i=$((i+1));
+    papermill  ${notebook} ${notebook%.*}-out.${notebook##*.} -k python3 || i=$((i+1));
 done;
 
 # push error to next level
