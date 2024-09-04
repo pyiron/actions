@@ -170,6 +170,11 @@ on:
         description: 'The directory containing the tests run with the alternate environment'
         default: tests
         required: false
+      notebooks-kernel:
+        type: string
+        description: 'Name of the kernel to be used by papermill during headless execution'
+        default: python3
+        required: false
 
 
 jobs:
@@ -229,7 +234,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
-
+          kernel: ${{ inputs.notebooks-kernel }}
 
   unit-tests:
     needs: commit-updated-env
