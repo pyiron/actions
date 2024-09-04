@@ -21,11 +21,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: pyiron/actions/cached-miniforge@main
+  - uses: pyiron/actions/cached-miniforge@v3.3.1
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
-  - uses: pyiron/actions/pyiron-config@main
+  - uses: pyiron/actions/pyiron-config@v3.3.1
   - name: Build sphinx documentation
     shell: bash -l {0}
     run: |
