@@ -5,14 +5,14 @@ EXCLUSION_FILE=$2
 KERNEL=$3
 
 # Remove excluded notebooks
-if [ ${EXCLUSION_FILE} != "" ]; then
+if [ "${EXCLUSION_FILE}" != "" ]; then
   for f in $(cat ${EXCLUSION_FILE}); do
       rm "${NOTEBOOKS_DIR}/$f";
   done;
 fi
 
 # Set the kernel to be used by papermill to 'python3' if not specified otherwise
-if [ ${KERNEL} = "" ]; then
+if [ "${KERNEL}" = "" ]; then
     KERNEL=python3;
 fi
 
