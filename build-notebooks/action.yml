@@ -20,6 +20,10 @@ inputs:
   exclusion-file:
     description: 'An optional path to a file containing the names of notebooks to NOT build'
     required: false
+  kernel:
+    description: 'Name of the kernel to be used by papermill during headless execution'
+    default: python3
+    required: false
 
 runs:
   using: 'composite'
@@ -31,4 +35,4 @@ runs:
   - uses: pyiron/actions/pyiron-config@main
   - name: Build notebooks
     shell: bash -l {0}
-    run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }}
+    run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }} ${{ inputs.kernel }}
