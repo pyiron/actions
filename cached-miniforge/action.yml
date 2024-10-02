@@ -27,7 +27,7 @@ inputs:
     required: false
   miniforge-variant:
     description: 'conda-incubator/setup-miniconda argument'
-    default: Mambaforge
+    default: Miniforge3
     required: false
   miniforge-version:
     description: 'conda-incubator/setup-miniconda argument'
@@ -71,7 +71,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@main
+  - uses: pyiron/actions/write-environment@forge-variant
     with:
       env-files: ${{ inputs.env-files }}
   - name: Env name backwards compatibility patch
