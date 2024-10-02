@@ -27,7 +27,7 @@ inputs:
     required: false
   miniforge-variant:
     description: 'conda-incubator/setup-miniconda argument'
-    default: Miniforge
+    default: Miniforge3
     required: false
   miniforge-version:
     description: 'conda-incubator/setup-miniconda argument'
