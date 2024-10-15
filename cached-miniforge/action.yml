@@ -71,7 +71,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@forge-variant
+  - uses: pyiron/actions/write-environment@v3.3.2
     with:
       env-files: ${{ inputs.env-files }}
   - name: Env name backwards compatibility patch
