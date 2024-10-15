@@ -16,7 +16,7 @@ runs:
   - name: Ensure yaml module is present
     # Ubuntu works fine, but both windows and macos wind up complaining that there is no module "yaml"
     shell: bash -l {0}
-    run: pip install pyyaml
+    run: apt install python3-yaml
   - name: Write environment
     shell: bash -l {0}
     run: |
