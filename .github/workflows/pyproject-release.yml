@@ -80,7 +80,7 @@ on:
 
 jobs:
   pypi-release:
-    runs-on: {{ inputs.runner }}
+    runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
     - uses: pyiron/actions/cached-miniforge@v3.3.2
