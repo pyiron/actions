@@ -8,10 +8,16 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      runner:
+        type: string
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-latest'
+        required: false
 
 jobs:
   pypi-release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
 #    environment:  # Add once trusted publisher works with reusable workflows
 #      name: pypi  # Add once trusted publisher works with reusable workflows
 #      url: https://pypi.org/p/${{ github.event.repository.name }}  # Add once trusted publisher works with reusable workflows
