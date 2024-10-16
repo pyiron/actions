@@ -14,11 +14,16 @@ on:
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
         default: .ci_support/environment.yml
         required: false
+      runner:
+        type: string
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-latest'
+        required: false
 
 jobs:
   format-black:
     if: contains(github.event.pull_request.labels.*.name, 'format_black' )
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
         with:
