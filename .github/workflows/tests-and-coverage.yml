@@ -36,7 +36,7 @@ on:
       runner:
         type: string
         description: 'The main runner to use everywhere'
-        default: 'ubuntu-latest'
+        default: 'ubuntu-22.04'
         required: false
       python-version:
         type: string

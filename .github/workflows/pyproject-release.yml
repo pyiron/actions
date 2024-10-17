@@ -72,11 +72,15 @@ on:
         description: 'Whether to actually publish the result. Turning it off is useful for debugging new builds.'
         default: true
         required: false
-
+      runner:
+        type: string
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-22.04'
+        required: false
 
 jobs:
   pypi-release:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
     - uses: pyiron/actions/cached-miniforge@v3.3.2
