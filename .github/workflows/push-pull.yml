@@ -358,7 +358,7 @@ jobs:
 
   ruff-check:
     needs: commit-updated-env
-    if: ${{ inputs.ruff-check }}
+    if: ${{ inputs.do-ruff-check }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
