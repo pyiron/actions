@@ -56,6 +56,16 @@ on:
         description: 'Feature flag: controls if the black job runs.'
         default: true
         required: false
+      do-ruff-check:
+        type: boolean
+        description: 'Feature flag: controls if the ruff check job runs.'
+        default: false
+        required: false
+      do-ruff-sort-imports:
+        type: boolean
+        description: 'Feature flag: controls if the ruff import sorting job runs.'
+        default: false
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -345,3 +355,23 @@ jobs:
         with:
           options: "--check --diff"
           src: ./${{ github.event.repository.name }}
+
+  ruff-check:
+    needs: commit-updated-env
+    if: ${{ inputs.ruff-check }}
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v1
+        with:
+          args: check
+
+  ruff-sort-imports:
+    needs: commit-updated-env
+    if: ${{ inputs.do-ruff-sort-imports }}
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/ruff-action@v1
+        with:
+          args: check --select I --fix --diff
