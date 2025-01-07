@@ -354,7 +354,6 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --diff"
-          src: ./${{ github.event.repository.name }}
 
   ruff-check:
     needs: commit-updated-env
