@@ -39,7 +39,7 @@ on:
       do-codacy:
         type: boolean
         description: 'Whether to push the report to codacy after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
-        default: true
+        default: false
         required: false
       do-benchmark-tests:
         type: boolean
