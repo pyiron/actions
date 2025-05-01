@@ -12,5 +12,11 @@
 # Set default value for $1 if not provided
 PATTERN=${1:-$(git rev-parse --abbrev-ref HEAD)}
 
-# Recursive search and replace
-find . -type f \( -name "*.yml" -o -name "*.md" \) -exec sed -i 's/\(pyiron\/actions\/[^@]*\)@[^*]*/\1@'"$PATTERN"'/g' {} +
+# Check if we're on macOS or Linux and use appropriate sed syntax
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS version
+    find . -type f \( -name "*.yml" -o -name "*.md" \) -exec sed -i '' 's/\(pyiron\/actions\/[^@]*\)@[^*]*/\1@'"$PATTERN"'/g' {} +
+else
+    # Linux version (and others)
+    find . -type f \( -name "*.yml" -o -name "*.md" \) -exec sed -i 's/\(pyiron\/actions\/[^@]*\)@[^*]*/\1@'"$PATTERN"'/g' {} +
+fi
