@@ -36,15 +36,14 @@ inputs:
   miniforge-channels:
     description: 'conda-incubator/setup-miniconda argument'
     default: conda-forge
-    # default: conda-forge,nodefaults  # TODO: Use nodefaults directly once setup-miniconda is fixed
     required: false
   miniforge-channel-priority:
     description: 'conda-incubator/setup-miniconda argument'
     default: strict
     required: false
-  miniforge-condarc-file:
-    description: 'conda-incubator/setup-miniconda argument, BUT we change the default to resolve https://github.com/conda-incubator/setup-miniconda/issues/207'
-    default: '.condarc'
+  miniforge-conda-remove-defaults:
+    description: 'conda-incubator/setup-miniconda argument'
+    default: 'true'
     required: false
   miniforge-activate-environment:
     description: 'DEPRECATED. Use env-path and include a path instead. If provided, will be used as the new env-path with cached-miniforge/ prepended as the path.'
@@ -102,29 +101,14 @@ runs:
       path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       key: ${{ steps.cache-info.outputs.CASH_KEY }}
       lookup-only: true
-  - name: Prepopulate condarc
-    # To resolve: https://github.com/conda-incubator/setup-miniconda/issues/207
-    # Because conda behaves like this: https://github.com/conda/conda/issues/12356
-    # And now using `default` can cost money: https://www.anaconda.com/blog/is-conda-free
-    # Only necessary until conda-incubator/setup-miniconda is fixed: https://github.com/conda-incubator/setup-miniconda/pull/364
-    shell: bash -l {0}
-    run: |
-      echo "channels:" > "${{ inputs.miniforge-condarc-file }}"
-      IFS=',' read -ra CHANNELS <<< "${{ inputs.miniforge-channels }}"
-      for channel in "${CHANNELS[@]}"; do
-          channel=$(echo "$channel" | xargs)
-          echo "- $channel" >> "${{ inputs.miniforge-condarc-file }}"
-      done
-      echo "Prepopulated condarc file ${{ inputs.miniforge-condarc-file }}:"
-      cat ${{ inputs.miniforge-condarc-file }}
   - name: Install using cached env
     if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit == 'true'
     uses: conda-incubator/setup-miniconda@v3
     with:
       miniforge-variant: ${{ inputs.miniforge-variant }}
       miniforge-version: ${{ inputs.miniforge-version }}
-      # channels: ${{ inputs.miniforge-channels }}
-      condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
+      channels: ${{ inputs.miniforge-channels }}
+      conda-remove-defaults: $${ miniforge-conda-remove-defaults }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
   - name: Load cached environment
@@ -140,8 +124,8 @@ runs:
       python-version: ${{ inputs.python-version }}
       miniforge-variant: ${{ inputs.miniforge-variant }}
       miniforge-version: ${{ inputs.miniforge-version }}
-      # channels: ${{ inputs.miniforge-channels }}
-      condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
+      channels: ${{ inputs.miniforge-channels }}
+      conda-remove-defaults: $${ miniforge-conda-remove-defaults }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       environment-file: ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
