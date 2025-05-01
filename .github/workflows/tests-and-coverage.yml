@@ -64,11 +64,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@v3.3.2
+      - uses: pyiron/actions/add-to-python-path@use_miniconda
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/unit-tests@v3.3.2
+      - uses: pyiron/actions/unit-tests@use_miniconda
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.tests-env-files }}

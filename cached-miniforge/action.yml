@@ -67,7 +67,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@v3.3.2
+  - uses: pyiron/actions/write-environment@use_miniconda
     with:
       env-files: ${{ inputs.env-files }}
   - name: Env name backwards compatibility patch
