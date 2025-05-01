@@ -125,7 +125,7 @@ runs:
       miniforge-variant: ${{ inputs.miniforge-variant }}
       miniforge-version: ${{ inputs.miniforge-version }}
       channels: ${{ inputs.miniforge-channels }}
-      conda-remove-defaults: $${ miniforge-conda-remove-defaults }}
+      conda-remove-defaults: $${ inputs.miniforge-conda-remove-defaults }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
       environment-file: ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
