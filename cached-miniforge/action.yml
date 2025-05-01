@@ -42,10 +42,6 @@ inputs:
     description: 'conda-incubator/setup-miniconda argument'
     default: strict
     required: false
-  miniforge-use-mamba:
-    description: 'conda-incubator/setup-miniconda argument'
-    default: 'true'
-    required: false
   miniforge-condarc-file:
     description: 'conda-incubator/setup-miniconda argument, BUT we change the default to resolve https://github.com/conda-incubator/setup-miniconda/issues/207'
     default: '.condarc'
@@ -131,7 +127,6 @@ runs:
       condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
-      use-mamba: ${{ inputs.miniforge-use-mamba }}
   - name: Load cached environment
     if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit == 'true'
     uses: actions/cache/restore@v4
@@ -149,7 +144,6 @@ runs:
       condarc-file: ${{ inputs.miniforge-condarc-file }}  # TODO: Use channels once setup-miniconda is fixed
       channel-priority: ${{ inputs.miniforge-channel-priority }}
       activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
-      use-mamba: ${{ inputs.miniforge-use-mamba }}
       environment-file: ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
   - name: Cache new env
     if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit != 'true'
