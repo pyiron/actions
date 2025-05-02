@@ -19,7 +19,7 @@ inputs:
     required: false
   env-path:
     description: 'A full path to the environment, used for miniconda activate-environment and cache path'
-    default: 'cached-miniforge/my-env'
+    default: './cached-miniforge/my-env'
     required: false
   local-code-directory:
     description: 'The location containing the code under development; targeted by pip install. If an empty string, local code will not be pip-installed at all!'
@@ -46,7 +46,7 @@ inputs:
     default: 'true'
     required: false
   miniforge-activate-environment:
-    description: 'DEPRECATED. Use env-path and include a path instead. If provided, will be used as the new env-path with cached-miniforge/ prepended as the path.'
+    description: 'DEPRECATED. Use env-path and include a path instead. If provided, will be used as the new env-path with ./cached-miniforge/ prepended as the path.'
     default: ''
     required: false
   pip-install-versioneer:
@@ -77,7 +77,7 @@ runs:
       if [ -z "${{ inputs.miniforge-activate-environment }}" ]; then
           env_path=${{ inputs.env-path }}
       else
-          env_path=cached-miniforge/${{ inputs.miniforge-activate-environment }}
+          env_path=./cached-miniforge/${{ inputs.miniforge-activate-environment }}
       fi
       echo env-path=${env_path} >> $GITHUB_OUTPUT
   - name: Calculate cache label info
