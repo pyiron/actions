@@ -45,10 +45,6 @@ inputs:
     description: 'conda-incubator/setup-miniconda argument'
     default: 'true'
     required: false
-  miniforge-activate-environment:
-    description: 'DEPRECATED. Use env-path and include a path instead. If provided, will be used as the new env-path with ./cached-miniforge/ prepended as the path.'
-    default: ''
-    required: false
   pip-install-versioneer:
     description: 'Pip-install versioneer[toml]'
     default: 'true'
@@ -69,17 +65,6 @@ runs:
   - uses: pyiron/actions/write-environment@use_miniconda
     with:
       env-files: ${{ inputs.env-files }}
-  - name: Env name backwards compatibility patch
-    # Can be replaced with direct usage of `inputs.env-path` after a major version bump
-    id: env-path-backwards-compatibility
-    shell: bash -l {0}
-    run: |
-      if [ -z "${{ inputs.miniforge-activate-environment }}" ]; then
-          env_path=${{ inputs.env-path }}
-      else
-          env_path=./cached-miniforge/${{ inputs.miniforge-activate-environment }}
-      fi
-      echo env-path=${env_path} >> $GITHUB_OUTPUT
   - name: Calculate cache label info
     if: inputs.use-cache == 'true'
     id: cache-info
