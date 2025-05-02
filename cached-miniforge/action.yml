@@ -72,7 +72,7 @@ runs:
     run: |
       pyversion_string=${{ inputs.python-version }}
       pyversion_string=${pyversion_string/\./-}
-      env_string=${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      env_string=${{ inputs.env-path }}
       env_string=${env_string//\//-}
       LABEL=${{ runner.os }}-${{ runner.arch }}-py-${pyversion_string}-${env_string}
       HASH=${{ hashFiles(env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE) }}
@@ -83,7 +83,7 @@ runs:
     uses: actions/cache/restore@v4
     id: look-for-cache
     with:
-      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      path: ${{ inputs.env-path }}
       key: ${{ steps.cache-info.outputs.CASH_KEY }}
       lookup-only: true
   - name: Install using cached env
@@ -95,12 +95,12 @@ runs:
       channels: ${{ inputs.miniforge-channels }}
       conda-remove-defaults: $${ miniforge-conda-remove-defaults }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
-      activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      activate-environment: ${{ inputs.env-path }}
   - name: Load cached environment
     if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit == 'true'
     uses: actions/cache/restore@v4
     with:
-      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      path: ${{ inputs.env-path }}
       key: ${{ steps.cache-info.outputs.CASH_KEY }}
   - name: Build environment from file
     if: inputs.use-cache != 'true' || steps.look-for-cache.outputs.cache-hit != 'true'
@@ -112,14 +112,14 @@ runs:
       channels: ${{ inputs.miniforge-channels }}
       conda-remove-defaults: $${ inputs.miniforge-conda-remove-defaults }}
       channel-priority: ${{ inputs.miniforge-channel-priority }}
-      activate-environment: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      activate-environment: ${{ inputs.env-path }}
       environment-file: ${{ env.WRITE_ENVIRONMENT_OUTPUT_ENV_FILE }}
   - name: Cache new env
     if: inputs.use-cache == 'true' && steps.look-for-cache.outputs.cache-hit != 'true'
     uses: actions/cache/save@v4
     id: cache-env
     with:
-      path: ${{ steps.env-path-backwards-compatibility.outputs.env-path }}
+      path: ${{ inputs.env-path }}
       key: ${{ steps.cache-info.outputs.CASH_KEY }}
   - name: Display env info
     shell: bash -l {0}
