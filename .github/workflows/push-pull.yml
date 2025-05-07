@@ -305,6 +305,7 @@ jobs:
       python-version: ${{ inputs.python-version }}
       test-dir: ${{ inputs.coverage-test-dir }}
       omit-patterns: ${{ inputs.omit-patterns }}
+      do-codecov: ${{ inputs.do-codecov }}
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
       test-timeout-minutes: ${{ inputs.coverage-timeout-minutes }}
