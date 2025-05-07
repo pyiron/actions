@@ -62,7 +62,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: pyiron/actions/write-environment@use_miniconda
+  - uses: pyiron/actions/write-environment@actions-4.0.0
     with:
       env-files: ${{ inputs.env-files }}
   - name: Calculate cache label info
