@@ -31,14 +31,19 @@ on:
         description: 'Feature flag: controls if the unit-tests job runs.'
         default: true
         required: false
+      do-codecov:
+        type: boolean
+        description: 'Whether to use the codecov/codecov-action after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
+        default: false
+        required: false
       do-coveralls:
         type: boolean
-        description: 'Whether to use the coveralls/github-action after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
+        description: 'Whether to use the coveralls/github-action after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
         default: true
         required: false
       do-codacy:
         type: boolean
-        description: 'Whether to push the report to codacy after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
+        description: 'Whether to push the report to codacy after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
         default: false
         required: false
       do-benchmark-tests:
@@ -91,9 +96,9 @@ on:
         description: 'timout-minutes to apply to running the unit tests'
         default: 10
         required: false
-      coveralls-and-codacy-timeout-minutes:
+      coverage-timeout-minutes:
         type: number
-        description: 'timout-minutes to apply to running the coveralls and codacy tests'
+        description: 'timout-minutes to apply to running the coverage tests'
         default: 15
         required: false
       benchmark-timeout-minutes:
@@ -151,9 +156,9 @@ on:
         description: 'The directory containing the unit tests run on the full platform and python matrix'
         default: tests/unit
         required: false
-      coveralls-and-codacy-test-dir:
+      coverage-test-dir:
         type: string
-        description: 'The directory containing the tests analyzed by coveralls'
+        description: 'The directory containing the tests analyzed for coverage'
         default: tests
         required: false
       benchmark-test-dir:
@@ -197,11 +202,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@actions-4.0.0
+      - uses: pyiron/actions/write-docs-env@actions-4.0.1
         with:
           env-files: ${{ inputs.docs-env-files }}
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@actions-4.0.0
+      - uses: pyiron/actions/write-environment@actions-4.0.1
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -228,7 +233,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-docs@actions-4.0.0
+      - uses: pyiron/actions/build-docs@actions-4.0.1
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -239,7 +244,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/build-notebooks@actions-4.0.0
+      - uses: pyiron/actions/build-notebooks@actions-4.0.1
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -276,11 +281,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.0.0
+    - uses: pyiron/actions/add-to-python-path@actions-4.0.1
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.0.0
+    - uses: pyiron/actions/unit-tests@actions-4.0.1
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -288,21 +293,22 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
       timeout-minutes: ${{ inputs.unit-test-timeout-minutes }}
 
-  coveralls-and-codacy:
+  coverage:
     needs: commit-updated-env
-    if: ${{ inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.0.0
+    if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.0.1
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
       extra-python-paths: ${{ inputs.extra-python-paths }}
       runner: ${{ inputs.runner }}
       python-version: ${{ inputs.python-version }}
-      test-dir: ${{ inputs.coveralls-and-codacy-test-dir }}
+      test-dir: ${{ inputs.coverage-test-dir }}
       omit-patterns: ${{ inputs.omit-patterns }}
+      do-codecov: ${{ inputs.do-codecov }}
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
-      test-timeout-minutes: ${{ inputs.coveralls-and-codacy-timeout-minutes }}
+      test-timeout-minutes: ${{ inputs.coverage-timeout-minutes }}
 
   benchmark-tests:
     needs: commit-updated-env
@@ -310,7 +316,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/unit-tests@actions-4.0.0
+    - uses: pyiron/actions/unit-tests@actions-4.0.1
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -323,11 +329,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.0.0
+    - uses: pyiron/actions/add-to-python-path@actions-4.0.1
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.0.0
+    - uses: pyiron/actions/unit-tests@actions-4.0.1
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -341,7 +347,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@actions-4.0.0
+      - uses: pyiron/actions/pip-check@actions-4.0.1
         with:
           python-version: ${{ inputs.python-version }}
 
