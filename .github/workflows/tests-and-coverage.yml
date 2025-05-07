@@ -79,6 +79,8 @@ jobs:
           env-files: ${{ inputs.tests-env-files }}
           test-dir: ${{ inputs.test-dir }}
           omit-patterns: ${{ inputs.omit-patterns }}
+          add-standard-codacy-env: ${{ inputs.do-codacy }}
+          add-standard-coveralls-env: ${{ inputs.do-coveralls }}
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
       - name: Coverage
         shell: bash -l {0}
