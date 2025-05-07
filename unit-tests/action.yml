@@ -51,20 +51,20 @@ runs:
     run: |
       ENV_FILES="${{ inputs.standard-unittests-env-file }}"
       
-      SUPPORT_DIR="${GITHUB_ACTION_PATH//\\//}/../.support/"
+      SUPPORT_DIR="${GITHUB_ACTION_PATH//\\//}/../.support"
 
       # For Codacy: use the specified file if not empty, otherwise use the standard file if the flag is true
       if [[ -n "${{ inputs.standard-codacy-env-file }}" ]]; then
         ENV_FILES="$ENV_FILES ${{ inputs.standard-codacy-env-file }}"
       elif [[ "${{ inputs.add-standard-codacy-env }}" == "true" ]]; then
-        ENV_FILES="$ENV_FILES ${SUPPORT_DIR}environment-codacy.yml"
+        ENV_FILES="$ENV_FILES ${SUPPORT_DIR}/environment-codacy.yml"
       fi
 
       # For Coveralls: use the specified file if not empty, otherwise use the standard file if the flag is true
       if [[ -n "${{ inputs.standard-coveralls-env-file }}" ]]; then
         ENV_FILES="$ENV_FILES ${{ inputs.standard-coveralls-env-file }}"
       elif [[ "${{ inputs.add-standard-coveralls-env }}" == "true" ]]; then
-        ENV_FILES="$ENV_FILES ${SUPPORT_DIR}environment-coveralls.yml"
+        ENV_FILES="$ENV_FILES ${SUPPORT_DIR}/environment-coveralls.yml"
       fi
 
       ENV_FILES="$ENV_FILES ${{ inputs.env-files }}"
