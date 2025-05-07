@@ -296,7 +296,7 @@ jobs:
   coverage:
     needs: commit-updated-env
     if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.0.0
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@use_codecov
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
