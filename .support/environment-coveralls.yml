@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - coveralls >= 3.3.1

@@ -15,10 +15,15 @@ inputs:
     description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
     default: $GITHUB_ACTION_PATH/../.support/environment-unittests.yml
     required: false
-  coveralls-codacy-env-file:
+  codacy-env-file:
     type: string
     description: 'An extra env file since we usually combine this action with coverage+unittest, and called workflows cannot access their own repo'
-    default: $GITHUB_ACTION_PATH/../.support/environment-coveralls-codacy.yml
+    default: $GITHUB_ACTION_PATH/../.support/environment-codacy.yml
+    required: false
+  coveralls-env-file:
+    type: string
+    description: 'An extra env file since we usually combine this action with coverage+unittest, and called workflows cannot access their own repo'
+    default: $GITHUB_ACTION_PATH/../.support/environment-coveralls.yml
     required: false
   test-dir:
     type: string
@@ -38,7 +43,7 @@ runs:
   - uses: pyiron/actions/cached-miniforge@use_codecov
     with:
       python-version: ${{ inputs.python-version }}
-      env-files: ${{ inputs.standard-unittests-env-file }} ${{ inputs.coveralls-codacy-env-file }} ${{ inputs.env-files }}
+      env-files: ${{ inputs.standard-unittests-env-file }} ${{ inputs.codacy-env-file }} ${{ inputs.coveralls-env-file }} ${{ inputs.env-files }}
   - uses: pyiron/actions/pyiron-config@use_codecov
   - name: Test
     shell: bash -l {0}
