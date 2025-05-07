@@ -12,5 +12,6 @@
   "pyiron-gui": "pyiron_gui",
   "pyiron-ontology": "pyiron_ontology",
   "pyiron-workflow": "pyiron_workflow",
-  "tables": "pytables"
+  "tables": "pytables",
+  "landaupkg": "landau"
 }
