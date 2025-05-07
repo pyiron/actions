@@ -50,6 +50,7 @@ runs:
     shell: bash -l {0}
     run: |
       ENV_FILES="${{ inputs.standard-unittests-env-file }}"
+      ENV_FILES="${ENV_FILES//\\//}"
       
       SUPPORT_DIR="${GITHUB_ACTION_PATH//\\//}/../.support"
 
