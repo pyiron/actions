@@ -15,14 +15,9 @@ inputs:
     description: 'Env files this action thinks are useful (adds jupyter and papermill packages)'
     default: $GITHUB_ACTION_PATH/../.support/environment-unittests.yml
     required: false
-  standard-codacy-env-file:
+  coveralls-codacy-env-file:
     type: string
-    description: 'Path to the Codacy environment file. DEPRECATED: Include custom envs in env-files input, or enable the default with add-standard-codacy-env'
-    default: ''
-    required: false
-  standard-coveralls-env-file:
-    type: string
-    description: 'Path to the Coveralls environment file. DEPRECATED: Include custom envs in env-files input, or enable the default with add-standard-coveralls-env'
+    description: 'Path to the Codacy and coveralls environment file. DEPRECATED: Include custom envs in env-files input, or enable the default with add-standard-codacy-env and add-standard-coveralls-env'
     default: ''
     required: false
   add-standard-codacy-env:
