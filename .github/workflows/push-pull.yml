@@ -31,14 +31,19 @@ on:
         description: 'Feature flag: controls if the unit-tests job runs.'
         default: true
         required: false
+      do-codecov:
+        type: boolean
+        description: 'Whether to use the codecov/codecov-action after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
+        default: false
+        required: false
       do-coveralls:
         type: boolean
-        description: 'Whether to use the coveralls/github-action after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
+        description: 'Whether to use the coveralls/github-action after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
         default: true
         required: false
       do-codacy:
         type: boolean
-        description: 'Whether to push the report to codacy after generating coverage. If neither do-coveralls nor do-codacy are true, the coveralls-and-codacy job is skipped.'
+        description: 'Whether to push the report to codacy after generating coverage. If none of do-codecove, do-coveralls nor do-codacy are true, the coverage job is skipped.'
         default: false
         required: false
       do-benchmark-tests:
@@ -91,9 +96,9 @@ on:
         description: 'timout-minutes to apply to running the unit tests'
         default: 10
         required: false
-      coveralls-and-codacy-timeout-minutes:
+      coverage-timeout-minutes:
         type: number
-        description: 'timout-minutes to apply to running the coveralls and codacy tests'
+        description: 'timout-minutes to apply to running the coverage tests'
         default: 15
         required: false
       benchmark-timeout-minutes:
@@ -151,9 +156,9 @@ on:
         description: 'The directory containing the unit tests run on the full platform and python matrix'
         default: tests/unit
         required: false
-      coveralls-and-codacy-test-dir:
+      coverage-test-dir:
         type: string
-        description: 'The directory containing the tests analyzed by coveralls'
+        description: 'The directory containing the tests analyzed for coverage'
         default: tests
         required: false
       benchmark-test-dir:
@@ -288,21 +293,21 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
       timeout-minutes: ${{ inputs.unit-test-timeout-minutes }}
 
-  coveralls-and-codacy:
+  coverage:
     needs: commit-updated-env
-    if: ${{ inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@use_codecov
+    if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.0.0
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
       extra-python-paths: ${{ inputs.extra-python-paths }}
       runner: ${{ inputs.runner }}
       python-version: ${{ inputs.python-version }}
-      test-dir: ${{ inputs.coveralls-and-codacy-test-dir }}
+      test-dir: ${{ inputs.coverage-test-dir }}
       omit-patterns: ${{ inputs.omit-patterns }}
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
-      test-timeout-minutes: ${{ inputs.coveralls-and-codacy-timeout-minutes }}
+      test-timeout-minutes: ${{ inputs.coverage-timeout-minutes }}
 
   benchmark-tests:
     needs: commit-updated-env
