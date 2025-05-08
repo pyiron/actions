@@ -119,7 +119,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.0.1
+    uses: pyiron/actions/.github/workflows/push-pull.yml@limit_coverage_env
     secrets: inherit
 ```
 
