@@ -30,3 +30,4 @@ runs:
         PYTHONPATH="${PYTHONPATH%"${PATH_SEPARATOR}"}"
         
         echo "PYTHONPATH=${PYTHONPATH}" >> $GITHUB_ENV
+        echo "Updated PYTHONPATH to ${PYTHONPATH}"
