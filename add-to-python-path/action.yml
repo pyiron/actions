@@ -15,8 +15,18 @@ runs:
       if: ${{ inputs.path-dirs != '' }}
       shell: bash -l {0}
       run: |
+        if [[ "$OS" == "Windows_NT" ]]; then
+          PATH_SEPARATOR=";"
+        else
+          PATH_SEPARATOR=":"
+        fi
+        
+        
         PWD=$(pwd)
-        for dir in ${{ inputs.path-dirs }}; do
-          PYTHONPATH=${PWD}/${dir}:${PYTHONPATH}
+        for dir in tests; do
+          PYTHONPATH="${PWD}/${dir}${PATH_SEPARATOR}${PYTHONPATH}"
         done
+        
+        PYTHONPATH="${PYTHONPATH%"${PATH_SEPARATOR}"}"
+        
         echo "PYTHONPATH=${PYTHONPATH}" >> $GITHUB_ENV
