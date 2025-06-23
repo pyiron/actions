@@ -71,6 +71,11 @@ on:
         description: 'Feature flag: controls if the ruff import sorting job runs.'
         default: true
         required: false
+      do-mypy:
+        type: boolean
+        description: 'Feature flag: controls if the mypy job runs. Configure mypy at the repository-level.'
+        default: false
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -407,3 +412,18 @@ jobs:
       - uses: astral-sh/ruff-action@v1
         with:
           args: check --select I --fix --diff
+
+  mypy:
+    needs: commit-updated-env
+    if: ${{ inputs.do-mypy }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+          architecture: x64
+      - name: Install mypy
+        run: pip install mypy
+      - name: Test
+        run: mypy .
