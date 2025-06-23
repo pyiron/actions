@@ -12,6 +12,7 @@
   "pyiron-gui": "pyiron_gui",
   "pyiron-ontology": "pyiron_ontology",
   "pyiron-workflow": "pyiron_workflow",
+  "pyiron-potentialfit": "pyiron_potentialfit",
   "tables": "pytables",
   "landaupkg": "landau"
 }
