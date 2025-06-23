@@ -375,6 +375,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
       - uses: psf/black@stable
         with:
           options: "--check --diff"
@@ -385,6 +388,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
       - uses: astral-sh/ruff-action@v1
         with:
           args: check
@@ -395,6 +401,9 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
       - uses: astral-sh/ruff-action@v1
         with:
           args: check --select I --fix --diff
