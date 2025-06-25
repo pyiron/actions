@@ -1,0 +1,129 @@
+# Take == dependencies in pyproject.toml (or equivalent) and relax them
+# according to conda environment yaml files and rules for semantic versioning,
+# then make a pypi release.
+# For full docs cf. .support/update_pyproject_dependencies.py'
+#
+# Depends on the calling repository configuring hatch in the pyproject.toml
+#
+# Usage:
+#   on:
+#     release:
+#       types: [published]
+
+name: Pyproject Release
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        description: 'Cached python versions'
+        default: '3.12'
+        required: false
+      env-files:
+        type: string
+        description: 'Conda environment(S)'
+        default: .ci_support/environment.yml
+        required: false
+      input-toml:
+        type: string
+        description: 'Input TOML file with `project.dependencies` and `==` pinned dependencies.'
+        default: 'pyproject.toml'
+        required: false
+      lower-bound-yaml:
+        type: string
+        description: 'Optional YAML conda environment file with lower bounds for select dependencies.'
+        default: 'none'
+        required: false
+      upper-bound-yaml:
+        type: string
+        description: 'Optional YAML conda environment file with upper bounds for select dependencies.'
+        default: 'none'
+        required: false
+      semantic-upper-bound:
+        type: string
+        description: 'Upper bound policy for semantically versioned dependencies.'
+        default: 'patch'
+        required: false
+      always-pin-unstable:
+        type: string
+        description: 'Whether to always pin unstable dependencies (0.Y.Z) all the way to patch.'
+        default: 'yes'
+        required: false
+      output-toml:
+        type: string
+        description: 'Optional output destination for toml with updated dependency versions.'
+        default: 'none'
+        required: false
+      pypi-to-conda-name-map-file:
+        type: string
+        description: 'Optional JSON file to remap pypi package names in the toml file(s) to conda package names in the yaml file(s).'
+        default: $GITHUB_ACTION_PATH/../.support/pypi_vs_conda_names.json
+        required: false
+      pyyaml-version:
+        type: string
+        description: 'Version of pyyaml to install'
+        default: '6.0.1'
+        required: false
+      toml-version:
+        type: string
+        description: 'Version of toml to install'
+        default: '0.10.2'
+        required: false
+      publish-to-pypi:
+        type: boolean
+        description: 'Whether to actually publish the result. Turning it off is useful for debugging new builds.'
+        default: true
+        required: false
+      runner:
+        type: string
+        description: 'The main runner to use everywhere'
+        default: 'ubuntu-22.04'
+        required: false
+
+jobs:
+  pypi-release:
+    runs-on: ${{ inputs.runner }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.6
+      with:
+        python-version: ${{ inputs.python-version }}
+        env-files: ${{ inputs.env-files }}
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.6
+      with:
+        input-toml: ${{ inputs.input-toml }}
+        lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
+        upper-bound-yaml: ${{ inputs.upper-bound-yaml }}
+        semantic-upper-bound: ${{ inputs.semantic-upper-bound }}
+        always-pin-unstable: ${{ inputs.always-pin-unstable }}
+        output-toml: ${{ inputs.output-toml }}
+        pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
+        pyyaml-version: ${{ inputs.pyyaml-version }}
+        toml-version: ${{ inputs.toml-version }}
+    - name: Grab the right output toml
+      id: toml-file
+      shell: bash -l {0}
+      run: |
+        TOML_FILE=${{ inputs.output-toml != 'none' && inputs.output-toml || inputs.input-toml }}
+        echo "Produced TOML output"
+        cat $TOML_FILE
+        echo "toml=$TOML_FILE" >> "$GITHUB_OUTPUT"
+    - name: Extract version file path
+      id: version-file
+      shell: bash -l {0}
+      run: |
+        VERSION_FILE=$(tomlq -r '.tool.hatch.build.hooks.vcs.version-file' "${{ steps.toml-file.outputs.toml }}")
+        echo "Found version file ${VERSION_FILE} specified for hatch by pyproject.toml"
+        echo "vfile=$VERSION_FILE" >> "$GITHUB_OUTPUT"
+    - name: Build
+      shell: bash -l {0}
+      run: |
+        git update-index --assume-unchanged "${{ steps.toml-file.outputs.toml }}" "${{ steps.version-file.outputs.vfile }}"
+        hatchling build -t sdist -t wheel
+    - name: Publish distribution 📦 to PyPI
+      if: inputs.publish-to-pypi
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with: # Remove once trusted publisher works with reusable workflows
+        user: __token__  # Remove once trusted publisher works with reusable workflows
+        password: ${{ secrets.pypi_password }}  # Remove once trusted publisher works with reusable workflows
