@@ -17,7 +17,7 @@ on:
     inputs:
       python-version:
         type: string
-        description: 'Cached python versions'
+        description: 'Cached python versions. Must be >=3.11 for tomllib to be available.'
         default: '3.12'
         required: false
       env-files:
@@ -113,9 +113,22 @@ jobs:
       id: version-file
       shell: bash -l {0}
       run: |
-        VERSION_FILE=$(tomlq -r '.tool.hatch.build.hooks.vcs.version-file' "${{ steps.toml-file.outputs.toml }}")
-        echo "Found version file ${VERSION_FILE} specified for hatch by pyproject.toml"
-        echo "vfile=$VERSION_FILE" >> "$GITHUB_OUTPUT"
+        VFILE=$(python - <<EOF
+import sys
+import tomllib
+
+with open("${{ steps.toml-file.outputs.toml }}", "rb") as f:
+  data = tomllib.load(f)
+
+vfile = data.get("tool", {}).get("hatch", {}).get("build", {}).get("hooks", {}).get("vcs", {}).get("version-file")
+if not vfile:
+  sys.exit("version-file not found in pyproject.toml")
+
+print(vfile)
+EOF
+)
+      echo "Found version file $VFILE specified for hatch"
+      echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
     - name: Build
       shell: bash -l {0}
       run: |
