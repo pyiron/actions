@@ -2,6 +2,9 @@
 # according to conda environment yaml files and rules for semantic versioning,
 # then make a pypi release.
 # For full docs cf. .support/update_pyproject_dependencies.py'
+#
+# Depends on the calling repository configuring hatch in the pyproject.toml
+#
 # Usage:
 #   on:
 #     release:
@@ -14,7 +17,7 @@ on:
     inputs:
       python-version:
         type: string
-        description: 'Cached python versions'
+        description: 'Cached python versions. Must be >=3.11 for tomllib to be available.'
         default: '3.12'
         required: false
       env-files:
@@ -98,19 +101,30 @@ jobs:
         pypi-to-conda-name-map-file: ${{ inputs.pypi-to-conda-name-map-file }}
         pyyaml-version: ${{ inputs.pyyaml-version }}
         toml-version: ${{ inputs.toml-version }}
-    - name: Print output toml
-      if: inputs.output-toml != 'none'
+    - name: Grab the right output toml
+      id: toml-file
       shell: bash -l {0}
-      run: cat ${{ inputs.output-toml }}
-    - name: Print output toml (overwrote input)
-      if: inputs.output-toml == 'none'
+      run: |
+        TOML_FILE=${{ inputs.output-toml != 'none' && inputs.output-toml || inputs.input-toml }}
+        echo "Produced TOML output"
+        cat $TOML_FILE
+        echo "toml=$TOML_FILE" >> "$GITHUB_OUTPUT"
+    - name: Extract version file path
+      id: version-file
       shell: bash -l {0}
-      run: cat ${{ inputs.input-toml }}
+      run: |
+        VFILE=$(python -c "import tomllib; d=tomllib.load(open('${{ steps.toml-file.outputs.toml }}','rb')); print(d['tool']['hatch']['build']['hooks']['vcs']['version-file'])")
+        echo "Found version file $VFILE specified for hatch"
+        echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
     - name: Build
       shell: bash -l {0}
       run: |
-        pip install versioneer[toml]==0.29
-        python setup.py sdist bdist_wheel
+        git update-index --assume-unchanged "${{ steps.toml-file.outputs.toml }}" 
+        if [ -f "${{ steps.version-file.outputs.vfile }}"]; then
+          echo "WARNING: Hatch is automatically generating a version file, but one was found in the repository already"
+          git update-index --assume-unchanged "${{ steps.version-file.outputs.vfile }}" 
+        fi
+        hatchling build -t sdist -t wheel
     - name: Publish distribution 📦 to PyPI
       if: inputs.publish-to-pypi
       uses: pypa/gh-action-pypi-publish@release/v1
