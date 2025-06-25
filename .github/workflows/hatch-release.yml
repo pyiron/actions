@@ -113,22 +113,9 @@ jobs:
       id: version-file
       shell: bash -l {0}
       run: |
-        VFILE=$(python - <<EOF
-import sys
-import tomllib
-
-with open("${{ steps.toml-file.outputs.toml }}", "rb") as f:
-  data = tomllib.load(f)
-
-vfile = data.get("tool", {}).get("hatch", {}).get("build", {}).get("hooks", {}).get("vcs", {}).get("version-file")
-if not vfile:
-  sys.exit("version-file not found in pyproject.toml")
-
-print(vfile)
-EOF
-)
-      echo "Found version file $VFILE specified for hatch"
-      echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
+        VFILE=$(python -c "import tomllib; d=tomllib.load(open('${{ steps.toml-file.outputs.toml }}','rb')); print(d['tool']['hatch']['build']['hooks']['vcs']['version-file'])")
+        echo "Found version file $VFILE specified for hatch"
+        echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
     - name: Build
       shell: bash -l {0}
       run: |
