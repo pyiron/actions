@@ -86,11 +86,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-miniforge@actions-4.0.6
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.7
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.6
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.7
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}

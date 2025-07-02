@@ -72,11 +72,11 @@ runs:
       echo "ENV_FILES = ${ENV_FILES}"
       echo "env_files=$ENV_FILES" >> $GITHUB_OUTPUT
 
-  - uses: pyiron/actions/cached-miniforge@actions-4.0.6
+  - uses: pyiron/actions/cached-miniforge@actions-4.0.7
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ steps.prepare-env-files.outputs.env_files }}
-  - uses: pyiron/actions/pyiron-config@actions-4.0.6
+  - uses: pyiron/actions/pyiron-config@actions-4.0.7
   - name: Test
     shell: bash -l {0}
     run: |
