@@ -116,6 +116,19 @@ jobs:
         VFILE=$(python -c "import tomllib; d=tomllib.load(open('${{ steps.toml-file.outputs.toml }}','rb')); print(d['tool']['hatch']['build']['hooks']['vcs']['version-file'])")
         echo "Found version file $VFILE specified for hatch"
         echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
+    - name: Log git condition
+      shell: bash -l {0}
+      run: |
+        echo "=== Git status ==="
+        git status
+        echo "=== Git describe ==="
+        git describe --tags --long --dirty
+        echo "=== Available tags ==="
+        git tag -l
+        echo "=== Current ref ==="
+        git rev-parse HEAD
+        echo "=== Checkout ref ==="
+        echo "${{ github.ref }}"
     - name: Build
       shell: bash -l {0}
       run: |
