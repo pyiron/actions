@@ -86,11 +86,13 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-miniforge@actions-4.0.8
+      with:
+        fetch-depth: 0
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.9
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.8
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.9
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
@@ -116,13 +118,26 @@ jobs:
         VFILE=$(python -c "import tomllib; d=tomllib.load(open('${{ steps.toml-file.outputs.toml }}','rb')); print(d['tool']['hatch']['build']['hooks']['vcs']['version-file'])")
         echo "Found version file $VFILE specified for hatch"
         echo "vfile=$VFILE" >> "$GITHUB_OUTPUT"
+    - name: Log git condition
+      shell: bash -l {0}
+      run: |
+        echo "=== Git status ==="
+        git status
+        echo "=== Git describe ==="
+        git describe --tags --long --dirty
+        echo "=== Available tags ==="
+        git tag -l
+        echo "=== Current ref ==="
+        git rev-parse HEAD
+        echo "=== Checkout ref ==="
+        echo "${{ github.ref }}"
     - name: Build
       shell: bash -l {0}
       run: |
         git update-index --assume-unchanged "${{ steps.toml-file.outputs.toml }}" 
-        if [ -f "${{ steps.version-file.outputs.vfile }}"]; then
+        if [ -f "${{ steps.version-file.outputs.vfile }}" ]; then
           echo "WARNING: Hatch is automatically generating a version file, but one was found in the repository already"
-          git update-index --assume-unchanged "${{ steps.version-file.outputs.vfile }}" 
+          rm "${{ steps.version-file.outputs.vfile }}"
         fi
         hatchling build -t sdist -t wheel
     - name: Publish distribution 📦 to PyPI
