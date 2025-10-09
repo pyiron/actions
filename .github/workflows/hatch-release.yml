@@ -137,7 +137,7 @@ jobs:
         git update-index --assume-unchanged "${{ steps.toml-file.outputs.toml }}" 
         if [ -f "${{ steps.version-file.outputs.vfile }}" ]; then
           echo "WARNING: Hatch is automatically generating a version file, but one was found in the repository already"
-          git update-index --assume-unchanged "${{ steps.version-file.outputs.vfile }}" 
+          rm "${{ steps.version-file.outputs.vfile }}"
         fi
         hatchling build -t sdist -t wheel
     - name: Publish distribution 📦 to PyPI
