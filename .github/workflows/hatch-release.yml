@@ -120,7 +120,7 @@ jobs:
       shell: bash -l {0}
       run: |
         git update-index --assume-unchanged "${{ steps.toml-file.outputs.toml }}" 
-        if [ -f "${{ steps.version-file.outputs.vfile }}"]; then
+        if [ -f "${{ steps.version-file.outputs.vfile }}" ]; then
           echo "WARNING: Hatch is automatically generating a version file, but one was found in the repository already"
           git update-index --assume-unchanged "${{ steps.version-file.outputs.vfile }}" 
         fi
