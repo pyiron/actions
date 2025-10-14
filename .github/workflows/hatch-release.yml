@@ -121,6 +121,7 @@ jobs:
     - name: Log git condition
       shell: bash -l {0}
       run: |
+        set +e
         echo "=== Git status ==="
         git status
         echo "=== Git describe ==="
@@ -131,6 +132,7 @@ jobs:
         git rev-parse HEAD
         echo "=== Checkout ref ==="
         echo "${{ github.ref }}"
+        set -e
     - name: Build
       shell: bash -l {0}
       run: |
