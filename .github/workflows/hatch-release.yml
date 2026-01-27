@@ -109,7 +109,7 @@ jobs:
         node-version: ${{ inputs.node-version }}
     - name: Install npm dependencies
       if: inputs.use-node
-      run: npm ci
+      run: npm install
     - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.11
       with:
         input-toml: ${{ inputs.input-toml }}
