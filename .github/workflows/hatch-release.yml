@@ -80,6 +80,16 @@ on:
         description: 'The main runner to use everywhere'
         default: 'ubuntu-22.04'
         required: false
+      use-node:
+        type: boolean
+        description: 'Whether to setup Node.js and run npm ci before building. Required for packages with JS components.'
+        default: false
+        required: false
+      node-version:
+        type: string
+        description: 'Node.js version to use when use-node is true.'
+        default: '18'
+        required: false
 
 jobs:
   pypi-release:
@@ -88,11 +98,19 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - uses: pyiron/actions/cached-miniforge@actions-4.0.10
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.11
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.10
+    - name: Setup Node.js
+      if: inputs.use-node
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+    - name: Install npm dependencies
+      if: inputs.use-node
+      run: npm ci
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.11
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
