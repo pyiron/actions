@@ -439,4 +439,4 @@ jobs:
         run: pip install mypy
       - name: Test
         shell: bash -l {0}
-        run: mypy .
+        run: mypy . ${{ inputs.mypy-env-files != '' && '--exclude cached-miniforge' || '' }}
