@@ -76,6 +76,11 @@ on:
         description: 'Feature flag: controls if the mypy job runs. Configure mypy at the repository-level.'
         default: false
         required: false
+      mypy-env-files:
+        type: string
+        description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files.'
+        default: ''
+        required: false
       docs-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -423,6 +428,11 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           architecture: x64
+      - if: ${{ inputs.mypy-env-files != '' }}
+        uses: pyiron/actions/cached-miniforge@actions-4.0.11
+        with:
+          python-version: ${{ inputs.python-version }}
+          env-files: ${{ inputs.mypy-env-files }}
       - name: Install mypy
         run: pip install mypy
       - name: Test
