@@ -83,11 +83,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/cached-miniforge@actions-4.0.12
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.13
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.12
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.13
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
@@ -109,7 +109,7 @@ jobs:
     - name: Build
       shell: bash -l {0}
       run: |
-        pip install versioneer[toml]==0.29
+        python -m pip install versioneer[toml]==0.29
         python setup.py sdist bdist_wheel
     - name: Publish distribution 📦 to PyPI
       if: inputs.publish-to-pypi
