@@ -436,7 +436,7 @@ jobs:
           env-files: ${{ inputs.mypy-env-files }}
       - name: Install mypy
         shell: bash -l {0}
-        run: pip install mypy
+        run: python -m pip install mypy
       - name: Test
         shell: bash -l {0}
         run: mypy . ${{ inputs.mypy-env-files != '' && '--exclude cached-miniforge' || '' }}

@@ -131,12 +131,12 @@ runs:
     if: inputs.local-code-directory != '' && inputs.pip-install-versioneer == 'true'
     shell: bash -l {0}
     run: |
-      pip install versioneer[toml]==${{ inputs.versioneer-version }}
+      python -m pip install versioneer[toml]==${{ inputs.versioneer-version }}
   - name: Install local code without build isolation
     if: inputs.local-code-directory != '' && inputs.no-build-isolation == 'true'
     shell: bash -l {0}
-    run: pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
+    run: python -m pip install --no-deps ${{ inputs.local-code-directory }} --no-build-isolation
   - name: Install local code with build isolation
     if: inputs.local-code-directory != '' && inputs.no-build-isolation != 'true'
     shell: bash -l {0}
-    run: pip install --no-deps ${{ inputs.local-code-directory }}
+    run: python -m pip install --no-deps ${{ inputs.local-code-directory }}
