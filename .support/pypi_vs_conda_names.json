@@ -14,5 +14,5 @@
   "pyiron-potentialfit": "pyiron_potentialfit",
   "pyiron-workflow": "pyiron_workflow",
   "tables": "pytables",
-  "landaupkg": "landau"
+  "xxhash": "python-xxhash"
 }
