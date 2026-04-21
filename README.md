@@ -37,6 +37,19 @@ Exports a selected set of GitHub Actions secrets to the `$GITHUB_ENV` file so th
 The `secret-env-map` input accepts newline-separated entries as either `SECRET_NAME` or `ENV_NAME=SECRET_NAME`.
 This is intended for reusable workflows that receive inherited secrets, but only want to pass an explicit allowlist onward to runtime code such as notebook execution.
 
+The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
+A minimal use looks like:
+
+```yaml
+- uses: pyiron/actions/export-secret-env@actions-4.0.13
+  env:
+    PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
+  with:
+    secret-env-map: |
+      PYIRON_TOKEN
+      MP_API_KEY=MATERIALS_PROJECT_API_KEY
+```
+
 ### `pip-check`
 
 Builds your environment with the `cached-minforge` action and then runs `pip check`.
