@@ -68,13 +68,22 @@ def load_secrets() -> dict[str, str]:
     return {str(name): str(value) for name, value in secrets.items()}
 
 
+def choose_github_env_delimiter(value: str) -> str:
+    """Choose a delimiter that is not present as a complete value line."""
+    value_lines = set(value.splitlines())
+    while True:
+        delimiter = f"PYIRON_SECRET_{uuid.uuid4().hex}"
+        if delimiter not in value_lines:
+            return delimiter
+
+
 def append_github_env(env_name: str, value: str) -> None:
     """Append one environment variable using GitHub's multiline-safe format."""
     github_env = os.environ.get("GITHUB_ENV")
     if not github_env:
         fail("GITHUB_ENV is not set.")
 
-    delimiter = f"PYIRON_SECRET_{uuid.uuid4().hex}"
+    delimiter = choose_github_env_delimiter(value)
     with open(github_env, "a", encoding="utf-8") as env_file:
         env_file.write(f"{env_name}<<{delimiter}\n{value}\n{delimiter}\n")
 
