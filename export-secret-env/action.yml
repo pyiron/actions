@@ -12,7 +12,7 @@ runs:
   steps:
   - name: Export selected secret env vars
     if: ${{ inputs.secret-env-map != '' }}
-    shell: bash
+    shell: bash -l {0}
     env:
       PYIRON_SECRET_ENV_MAP: ${{ inputs.secret-env-map }}
     run: python "$GITHUB_ACTION_PATH/../.support/export_secret_env.py"
