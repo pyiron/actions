@@ -96,6 +96,11 @@ on:
         description: 'An optional path to a file containing the names of notebooks to NOT build'
         default: .ci_support/exclude
         required: false
+      notebooks-secret-env-map:
+        type: string
+        description: 'Optional newline-separated SECRET_NAME or ENV_NAME=SECRET_NAME entries to export for notebook execution'
+        default: ''
+        required: false
       tests-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -262,6 +267,12 @@ jobs:
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
+      - uses: pyiron/actions/export-secret-env@actions-4.0.13
+        if: ${{ inputs.notebooks-secret-env-map != '' }}
+        env:
+          PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
+        with:
+          secret-env-map: ${{ inputs.notebooks-secret-env-map }}
       - uses: pyiron/actions/build-notebooks@actions-4.0.13
         with:
           python-version: ${{ inputs.python-version }}
