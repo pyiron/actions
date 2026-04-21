@@ -39,7 +39,9 @@ def parse_secret_env_map(raw_map: str) -> list[tuple[str, str]]:
         if not env_name or not secret_name:
             fail(f"Invalid secret env mapping on line {line_number}.")
         if not NAME_PATTERN.fullmatch(env_name):
-            fail(f"Invalid environment variable name {env_name!r} on line {line_number}.")
+            fail(
+                f"Invalid environment variable name {env_name!r} on line {line_number}."
+            )
         if not NAME_PATTERN.fullmatch(secret_name):
             fail(f"Invalid secret name {secret_name!r} on line {line_number}.")
         if env_name in seen_env_names:
