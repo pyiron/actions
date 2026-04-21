@@ -46,8 +46,8 @@ A minimal use looks like:
     PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
   with:
     secret-env-map: |
-      PYIRON_TOKEN
-      MP_API_KEY=MATERIALS_PROJECT_API_KEY
+      SECRET_NAME
+      ENV_VAR_NAME=SECRET_NAME
 ```
 
 ### `pip-check`
