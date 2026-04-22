@@ -21,10 +21,9 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
-def parse_secret_env_map(raw_map: str) -> list[tuple[str, str]]:
-    """Parse SECRET_NAME or ENV_NAME=SECRET_NAME mapping lines."""
-    mappings: list[tuple[str, str]] = []
-    seen_env_names: set[str] = set()
+def parse_secret_env_map(raw_map: str) -> dict[str, str]:
+    """Parse mapping lines into environment-name to secret-name pairs."""
+    env_to_secret_name: dict[str, str] = {}
 
     for line_number, raw_line in enumerate(raw_map.splitlines(), start=1):
         line = raw_line.strip()
@@ -44,13 +43,12 @@ def parse_secret_env_map(raw_map: str) -> list[tuple[str, str]]:
             )
         if not NAME_PATTERN.fullmatch(secret_name):
             fail(f"Invalid secret name {secret_name!r} on line {line_number}.")
-        if env_name in seen_env_names:
+        if env_name in env_to_secret_name:
             fail(f"Duplicate environment variable mapping for {env_name!r}.")
 
-        seen_env_names.add(env_name)
-        mappings.append((env_name, secret_name))
+        env_to_secret_name[env_name] = secret_name
 
-    return mappings
+    return env_to_secret_name
 
 
 def load_secrets() -> dict[str, str]:
@@ -91,22 +89,26 @@ def append_github_env(env_name: str, value: str) -> None:
 
 
 def main() -> int:
-    mappings = parse_secret_env_map(os.environ.get("PYIRON_SECRET_ENV_MAP", ""))
-    if not mappings:
+    env_to_secret_name = parse_secret_env_map(os.environ.get("PYIRON_SECRET_ENV_MAP", ""))
+    if not env_to_secret_name:
         return 0
 
     secrets = load_secrets()
-    missing = [secret_name for _, secret_name in mappings if secret_name not in secrets]
+    missing = [
+        secret_name
+        for secret_name in env_to_secret_name.values()
+        if secret_name not in secrets
+    ]
     if missing:
         fail("Requested secret(s) are not available: " + ", ".join(sorted(missing)))
 
-    for env_name, secret_name in mappings:
+    for env_name, secret_name in env_to_secret_name.items():
         value = secrets[secret_name]
         if value:
             print(f"::add-mask::{workflow_escape(value)}")
         append_github_env(env_name, value)
 
-    print(f"Exported {len(mappings)} selected secret environment variable(s).")
+    print(f"Exported {len(env_to_secret_name)} selected secret environment variable(s).")
     return 0
 
 
