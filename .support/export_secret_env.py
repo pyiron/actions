@@ -89,7 +89,9 @@ def append_github_env(env_name: str, value: str) -> None:
 
 
 def main() -> int:
-    env_to_secret_name = parse_secret_env_map(os.environ.get("PYIRON_SECRET_ENV_MAP", ""))
+    env_to_secret_name = parse_secret_env_map(
+        os.environ.get("PYIRON_SECRET_ENV_MAP", "")
+    )
     if not env_to_secret_name:
         return 0
 
@@ -108,7 +110,9 @@ def main() -> int:
             print(f"::add-mask::{workflow_escape(value)}")
         append_github_env(env_name, value)
 
-    print(f"Exported {len(env_to_secret_name)} selected secret environment variable(s).")
+    print(
+        f"Exported {len(env_to_secret_name)} selected secret environment variable(s)."
+    )
     return 0
 
 
