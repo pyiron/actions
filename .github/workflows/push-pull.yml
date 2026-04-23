@@ -217,11 +217,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@main
+      - uses: pyiron/actions/write-docs-env@notebook-envvars
         with:
           env-files: ${{ inputs.docs-env-files }}
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@main
+      - uses: pyiron/actions/write-environment@notebook-envvars
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -248,11 +248,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@main
+      - uses: pyiron/actions/add-to-python-path@notebook-envvars
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/build-docs@main
+      - uses: pyiron/actions/build-docs@notebook-envvars
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -263,17 +263,17 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@main
+      - uses: pyiron/actions/add-to-python-path@notebook-envvars
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/export-secret-env@main
+      - uses: pyiron/actions/export-secret-env@notebook-envvars
         if: ${{ inputs.notebooks-secret-env-map != '' }}
         env:
           PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
         with:
           secret-env-map: ${{ inputs.notebooks-secret-env-map }}
-      - uses: pyiron/actions/build-notebooks@main
+      - uses: pyiron/actions/build-notebooks@notebook-envvars
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -310,11 +310,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@notebook-envvars
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@notebook-envvars
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -327,7 +327,7 @@ jobs:
   coverage:
     needs: commit-updated-env
     if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@notebook-envvars
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -347,11 +347,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@notebook-envvars
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@notebook-envvars
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -366,11 +366,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@main
+    - uses: pyiron/actions/add-to-python-path@notebook-envvars
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@main
+    - uses: pyiron/actions/unit-tests@notebook-envvars
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -386,7 +386,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@main
+      - uses: pyiron/actions/pip-check@notebook-envvars
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -441,7 +441,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
           architecture: x64
       - if: ${{ inputs.mypy-env-files != '' }}
-        uses: pyiron/actions/cached-miniforge@main
+        uses: pyiron/actions/cached-miniforge@notebook-envvars
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.mypy-env-files }}
