@@ -96,6 +96,11 @@ on:
         description: 'An optional path to a file containing the names of notebooks to NOT build'
         default: .ci_support/exclude
         required: false
+      notebooks-secret-env-map:
+        type: string
+        description: 'Optional newline-separated SECRET_NAME or ENV_NAME=SECRET_NAME entries to export for notebook execution'
+        default: ''
+        required: false
       tests-env-files:
         type: string
         description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
@@ -212,11 +217,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@actions-4.0.13
+      - uses: pyiron/actions/write-docs-env@main
         with:
           env-files: ${{ inputs.docs-env-files }}
         if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@actions-4.0.13
+      - uses: pyiron/actions/write-environment@main
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -243,11 +248,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.0.13
+      - uses: pyiron/actions/add-to-python-path@main
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/build-docs@actions-4.0.13
+      - uses: pyiron/actions/build-docs@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
@@ -258,11 +263,17 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.0.13
+      - uses: pyiron/actions/add-to-python-path@main
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/build-notebooks@actions-4.0.13
+      - uses: pyiron/actions/export-secret-env@main
+        if: ${{ inputs.notebooks-secret-env-map != '' }}
+        env:
+          PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
+        with:
+          secret-env-map: ${{ inputs.notebooks-secret-env-map }}
+      - uses: pyiron/actions/build-notebooks@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -299,11 +310,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.0.13
+    - uses: pyiron/actions/add-to-python-path@main
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.0.13
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -316,7 +327,7 @@ jobs:
   coverage:
     needs: commit-updated-env
     if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.0.13
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@main
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -336,11 +347,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.0.13
+    - uses: pyiron/actions/add-to-python-path@main
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.0.13
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -355,11 +366,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.0.13
+    - uses: pyiron/actions/add-to-python-path@main
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.0.13
+    - uses: pyiron/actions/unit-tests@main
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -375,7 +386,7 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@actions-4.0.13
+      - uses: pyiron/actions/pip-check@main
         with:
           python-version: ${{ inputs.python-version }}
 
@@ -430,7 +441,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
           architecture: x64
       - if: ${{ inputs.mypy-env-files != '' }}
-        uses: pyiron/actions/cached-miniforge@actions-4.0.13
+        uses: pyiron/actions/cached-miniforge@main
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.mypy-env-files }}

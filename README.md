@@ -30,6 +30,26 @@ Notebooks are found in all sub directories of `/notebooks`.  The files listed in
 
 A wrapper combining `conda-incubator/setup-miniconda` and `actions/cache` along with our own `write-environment` that allows you to easily make a cached conda environment from any number (>=1) of conda environment yaml files.
 
+### `export-secret-env`
+
+Exports a selected set of GitHub Actions secrets to the `$GITHUB_ENV` file so they are available in later steps of the same job.
+
+The `secret-env-map` input accepts newline-separated entries as either `SECRET_NAME` or `ENV_NAME=SECRET_NAME`.
+This is intended for reusable workflows that receive inherited secrets, but only want to pass an explicit allowlist onward to runtime code such as notebook execution.
+
+The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
+A minimal use looks like:
+
+```yaml
+- uses: pyiron/actions/export-secret-env@main
+  env:
+    PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
+  with:
+    secret-env-map: |
+      SECRET_NAME
+      ENV_VAR_NAME=SECRET_NAME
+```
+
 ### `pip-check`
 
 Builds your environment with the `cached-minforge` action and then runs `pip check`.
@@ -119,7 +139,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.0.13
+    uses: pyiron/actions/.github/workflows/push-pull.yml@main
     secrets: inherit
 ```
 
