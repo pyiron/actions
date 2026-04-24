@@ -106,11 +106,11 @@ jobs:
     - name: Install npm dependencies
       if: inputs.use-node
       run: npm install
-    - uses: pyiron/actions/cached-miniforge@actions-4.1.0
+    - uses: pyiron/actions/cached-miniforge@actions-4.0.13
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
-    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.1.0
+    - uses: pyiron/actions/update-pyproject-dependencies@actions-4.0.13
       with:
         input-toml: ${{ inputs.input-toml }}
         lower-bound-yaml: ${{ inputs.lower-bound-yaml }}
