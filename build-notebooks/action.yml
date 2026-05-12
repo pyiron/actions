@@ -17,6 +17,10 @@ inputs:
     description: 'The location of the notebooks to build'
     default: notebooks
     required: false
+  notebooks-working-directory:
+    description: 'Optional working directory passed to papermill via --cwd'
+    default: ''
+    required: false
   exclusion-file:
     description: 'An optional path to a file containing the names of notebooks to NOT build'
     required: false
@@ -35,4 +39,4 @@ runs:
   - uses: pyiron/actions/pyiron-config@actions-4.1.0
   - name: Build notebooks
     shell: bash -l {0}
-    run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh ${{ inputs.notebooks-dir }} ${{ inputs.exclusion-file }} ${{ inputs.kernel }}
+    run: $GITHUB_ACTION_PATH/../.support/build_notebooks.sh "${{ inputs.notebooks-dir }}" "${{ inputs.exclusion-file }}" "${{ inputs.kernel }}" "${{ inputs.notebooks-working-directory }}"
