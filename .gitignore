@@ -4,3 +4,5 @@
 .dir-locals.el
 .codex
 .codex/
+.notes/
+AGENTS.md

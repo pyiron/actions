@@ -25,6 +25,8 @@ These docs wind up getting discarded when the virtual machine (VM) for your job 
 Uses [papermill](https://papermill.readthedocs.io) to make sure that selected notebooks in your repository build and execute OK.
 You can exclude a notebook from this check by naming it in an exclusion file (this is empty by default, but for repos inside the pyiron organization using the workflow here that calls this action, the default location is `.ci_support/exclude`).
 Notebooks are found in all sub directories of `/notebooks`.  The files listed in the exclusion file must be given as relative paths to that folder.
+Set `notebooks-working-directory` to control the working directory used by papermill while executing notebooks.
+For example, `notebooks-working-directory: notebooks` lets notebooks under `notebooks/` refer to colocated resources as `resources/file.txt`, matching common local JupyterLab behavior.
 
 ### `cached-miniforge`
 
@@ -41,7 +43,7 @@ The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
 A minimal use looks like:
 
 ```yaml
-- uses: pyiron/actions/export-secret-env@actions-4.1.0
+- uses: pyiron/actions/export-secret-env@actions-4.2.0
   env:
     PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
   with:
@@ -139,7 +141,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.1.0
+    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.2.0
     secrets: inherit
 ```
 
