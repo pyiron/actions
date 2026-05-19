@@ -1,4 +1,6 @@
 # This runs jobs which pyiron modules should run on pushes or PRs to main
+# (Propagating env changes only happens on local PRs, so otherwise make sure the env is
+# manually synced across files)
 # Usage:
 #   on:
 #     push:
@@ -215,22 +217,23 @@ on:
 jobs:
   commit-updated-env:  # Keep envs read by external sources (binder and readthedocs) up-to-date
     runs-on: ${{ inputs.runner }}
+    if: >-
+      inputs.do-commit-updated-env
+      && github.event_name == 'pull_request'
+      && github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-        if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-docs-env@actions-4.2.0
+      - uses: pyiron/actions/write-docs-env@actions-4.2.1
         with:
           env-files: ${{ inputs.docs-env-files }}
-        if: ${{ inputs.do-commit-updated-env }}
-      - uses: pyiron/actions/write-environment@actions-4.2.0
+      - uses: pyiron/actions/write-environment@actions-4.2.1
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
-        if: ${{ inputs.do-commit-updated-env }}
       - name: commit
         id: commit-docs-env
         continue-on-error: true  # Allow "failure" when there are no changes (the working tree is clean)
@@ -239,7 +242,6 @@ jobs:
           git config --local user.name "pyiron-runner"
           git add docs/environment.yml .binder/environment.yml
           git commit -m "[dependabot skip] Update env file" -a
-        if: ${{ inputs.do-commit-updated-env }}
       - name: push
         if: steps.commit-docs-env.outcome == 'success'  # But only push if we made it here without continue-on-error
         uses: ad-m/github-push-action@master
@@ -249,36 +251,36 @@ jobs:
 
   build-docs:
     needs: commit-updated-env
-    if: ${{ inputs.do-build-docs }}
+    if: ${{ inputs.do-build-docs && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.2.0
+      - uses: pyiron/actions/add-to-python-path@actions-4.2.1
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/build-docs@actions-4.2.0
+      - uses: pyiron/actions/build-docs@actions-4.2.1
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
 
   build-notebooks:
     needs: commit-updated-env
-    if: ${{ inputs.do-build-notebooks }}
+    if: ${{ inputs.do-build-notebooks && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.2.0
+      - uses: pyiron/actions/add-to-python-path@actions-4.2.1
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/export-secret-env@actions-4.2.0
+      - uses: pyiron/actions/export-secret-env@actions-4.2.1
         if: ${{ inputs.notebooks-secret-env-map != '' }}
         env:
           PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
         with:
           secret-env-map: ${{ inputs.notebooks-secret-env-map }}
-      - uses: pyiron/actions/build-notebooks@actions-4.2.0
+      - uses: pyiron/actions/build-notebooks@actions-4.2.1
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
@@ -288,7 +290,7 @@ jobs:
 
   unit-tests:
     needs: commit-updated-env
-    if: ${{ inputs.do-unit-tests }}
+    if: ${{ inputs.do-unit-tests && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ matrix.operating-system }}
     # All three runners for the highest python version
     # Only the main for up to two more versions of python
@@ -316,11 +318,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.0
+    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.0
+    - uses: pyiron/actions/unit-tests@actions-4.2.1
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -332,8 +334,8 @@ jobs:
 
   coverage:
     needs: commit-updated-env
-    if: ${{ inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.2.0
+    if: ${{ (inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy) && !cancelled() && needs.commit-updated-env.result != 'failure' }}
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.2.1
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -349,15 +351,15 @@ jobs:
 
   benchmark-tests:
     needs: commit-updated-env
-    if: ${{ inputs.do-benchmark-tests }}
+    if: ${{ inputs.do-benchmark-tests && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.0
+    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.0
+    - uses: pyiron/actions/unit-tests@actions-4.2.1
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -372,11 +374,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.0
+    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.0
+    - uses: pyiron/actions/unit-tests@actions-4.2.1
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -388,17 +390,17 @@ jobs:
 
   pip-check:
     needs: commit-updated-env
-    if: ${{ inputs.do-pip-check }}
+    if: ${{ inputs.do-pip-check && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@actions-4.2.0
+      - uses: pyiron/actions/pip-check@actions-4.2.1
         with:
           python-version: ${{ inputs.python-version }}
 
   black:
     needs: commit-updated-env
-    if: ${{ inputs.do-black }}
+    if: ${{ inputs.do-black && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -411,7 +413,7 @@ jobs:
 
   ruff-check:
     needs: commit-updated-env
-    if: ${{ inputs.do-ruff-check }}
+    if: ${{ inputs.do-ruff-check && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -424,7 +426,7 @@ jobs:
 
   ruff-sort-imports:
     needs: commit-updated-env
-    if: ${{ inputs.do-ruff-sort-imports }}
+    if: ${{ inputs.do-ruff-sort-imports && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
@@ -437,7 +439,7 @@ jobs:
 
   mypy:
     needs: commit-updated-env
-    if: ${{ inputs.do-mypy }}
+    if: ${{ inputs.do-mypy && !cancelled() && needs.commit-updated-env.result != 'failure' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -447,7 +449,7 @@ jobs:
           python-version: ${{ inputs.python-version }}
           architecture: x64
       - if: ${{ inputs.mypy-env-files != '' }}
-        uses: pyiron/actions/cached-miniforge@actions-4.2.0
+        uses: pyiron/actions/cached-miniforge@actions-4.2.1
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.mypy-env-files }}

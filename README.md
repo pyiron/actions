@@ -43,7 +43,7 @@ The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
 A minimal use looks like:
 
 ```yaml
-- uses: pyiron/actions/export-secret-env@actions-4.2.0
+- uses: pyiron/actions/export-secret-env@actions-4.2.1
   env:
     PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
   with:
@@ -141,7 +141,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.2.0
+    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.2.1
     secrets: inherit
 ```
 
