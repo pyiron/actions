@@ -63,6 +63,11 @@ on:
         description: 'Whether to push the report to codacy after generating coverage'
         default: false
         required: false
+      miniforge-version:
+        type: string
+        description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+        default: latest
+        required: false
 
 jobs:
   Tests-and-Coverage:
@@ -81,6 +86,7 @@ jobs:
           omit-patterns: ${{ inputs.omit-patterns }}
           add-standard-codacy-env: ${{ inputs.do-codacy }}
           add-standard-coveralls-env: ${{ inputs.do-coveralls }}
+          miniforge-version: ${{ inputs.miniforge-version }}
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
       - name: Coverage
         shell: bash -l {0}

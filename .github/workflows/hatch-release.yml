@@ -90,6 +90,11 @@ on:
         description: 'Node.js version to use when use-node is true.'
         default: '18'
         required: false
+      miniforge-version:
+        type: string
+        description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+        default: latest
+        required: false
 
 jobs:
   pypi-release:
@@ -110,6 +115,7 @@ jobs:
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.env-files }}
+        miniforge-version: ${{ inputs.miniforge-version }}
     - uses: pyiron/actions/update-pyproject-dependencies@actions-4.3.0
       with:
         input-toml: ${{ inputs.input-toml }}

@@ -212,6 +212,11 @@ on:
         description: 'Name of the kernel to be used by papermill during headless execution'
         default: python3
         required: false
+      miniforge-version:
+        type: string
+        description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+        default: latest
+        required: false
 
 
 jobs:
@@ -263,6 +268,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   build-notebooks:
     needs: commit-updated-env
@@ -287,6 +293,7 @@ jobs:
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
           kernel: ${{ inputs.notebooks-kernel }}
           notebooks-working-directory: ${{ inputs.notebooks-working-directory }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   unit-tests:
     needs: commit-updated-env
@@ -330,6 +337,7 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes: ${{ inputs.unit-test-timeout-minutes }}
 
   coverage:
@@ -348,6 +356,7 @@ jobs:
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
       test-timeout-minutes: ${{ inputs.coverage-timeout-minutes }}
+      miniforge-version: ${{ inputs.miniforge-version }}
 
   benchmark-tests:
     needs: commit-updated-env
@@ -367,6 +376,7 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   test-alternate-env:
@@ -386,6 +396,7 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes:  ${{ inputs.alternate-tests-timeout-minutes }}
 
   pip-check:
@@ -397,6 +408,7 @@ jobs:
       - uses: pyiron/actions/pip-check@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   black:
     needs: commit-updated-env
@@ -453,6 +465,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.mypy-env-files }}
+          miniforge-version: ${{ inputs.miniforge-version }}
       - name: Install mypy
         shell: bash -l {0}
         run: python -m pip install mypy
