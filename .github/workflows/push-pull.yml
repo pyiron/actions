@@ -212,6 +212,11 @@ on:
         description: 'Name of the kernel to be used by papermill during headless execution'
         default: python3
         required: false
+      miniforge-version:
+        type: string
+        description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+        default: latest
+        required: false
 
 
 jobs:
@@ -227,10 +232,10 @@ jobs:
           token: ${{ secrets.DEPENDABOT_WORKFLOW_TOKEN }}
           ref: ${{ github.event.pull_request.head.ref }} # Check out the head of the actual branch, not the PR
           fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
-      - uses: pyiron/actions/write-docs-env@actions-4.2.1
+      - uses: pyiron/actions/write-docs-env@actions-4.3.0
         with:
           env-files: ${{ inputs.docs-env-files }}
-      - uses: pyiron/actions/write-environment@actions-4.2.1
+      - uses: pyiron/actions/write-environment@actions-4.3.0
         with:
           env-files: ${{ inputs.notebooks-env-files }}
           output-env-file: .binder/environment.yml
@@ -255,14 +260,15 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+      - uses: pyiron/actions/add-to-python-path@actions-4.3.0
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/build-docs@actions-4.2.1
+      - uses: pyiron/actions/build-docs@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.docs-env-files }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   build-notebooks:
     needs: commit-updated-env
@@ -270,23 +276,24 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+      - uses: pyiron/actions/add-to-python-path@actions-4.3.0
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/export-secret-env@actions-4.2.1
+      - uses: pyiron/actions/export-secret-env@actions-4.3.0
         if: ${{ inputs.notebooks-secret-env-map != '' }}
         env:
           PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
         with:
           secret-env-map: ${{ inputs.notebooks-secret-env-map }}
-      - uses: pyiron/actions/build-notebooks@actions-4.2.1
+      - uses: pyiron/actions/build-notebooks@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.notebooks-env-files }}
           exclusion-file: ${{ inputs.notebooks-exclusion-file }}
           kernel: ${{ inputs.notebooks-kernel }}
           notebooks-working-directory: ${{ inputs.notebooks-working-directory }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   unit-tests:
     needs: commit-updated-env
@@ -318,11 +325,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+    - uses: pyiron/actions/add-to-python-path@actions-4.3.0
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.1
+    - uses: pyiron/actions/unit-tests@actions-4.3.0
       with:
         python-version: ${{ matrix.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -330,12 +337,13 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes: ${{ inputs.unit-test-timeout-minutes }}
 
   coverage:
     needs: commit-updated-env
     if: ${{ (inputs.do-codecov || inputs.do-coveralls || inputs.do-codacy) && !cancelled() && needs.commit-updated-env.result != 'failure' }}
-    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.2.1
+    uses: pyiron/actions/.github/workflows/tests-and-coverage.yml@actions-4.3.0
     secrets: inherit
     with:
       tests-env-files: ${{ inputs.tests-env-files }}
@@ -348,6 +356,7 @@ jobs:
       do-coveralls: ${{ inputs.do-coveralls }}
       do-codacy: ${{ inputs.do-codacy }}
       test-timeout-minutes: ${{ inputs.coverage-timeout-minutes }}
+      miniforge-version: ${{ inputs.miniforge-version }}
 
   benchmark-tests:
     needs: commit-updated-env
@@ -355,11 +364,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+    - uses: pyiron/actions/add-to-python-path@actions-4.3.0
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.1
+    - uses: pyiron/actions/unit-tests@actions-4.3.0
       with:
         python-version: ${{ inputs.python-version }}
         env-files: ${{ inputs.tests-env-files }}
@@ -367,6 +376,7 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes: ${{ inputs.benchmark-timeout-minutes }}
 
   test-alternate-env:
@@ -374,11 +384,11 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
     - uses: actions/checkout@v4
-    - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+    - uses: pyiron/actions/add-to-python-path@actions-4.3.0
       if: inputs.extra-python-paths != ''
       with:
         path-dirs: ${{ inputs.extra-python-paths }}
-    - uses: pyiron/actions/unit-tests@actions-4.2.1
+    - uses: pyiron/actions/unit-tests@actions-4.3.0
       with:
         python-version: ${{ inputs.alternate-tests-python-version }}
         env-files: ${{ inputs.alternate-tests-env-files }}
@@ -386,6 +396,7 @@ jobs:
         omit-patterns: ${{ inputs.omit-patterns }}
         add-standard-codacy-env: false
         add-standard-coveralls-env: false
+        miniforge-version: ${{ inputs.miniforge-version }}
       timeout-minutes:  ${{ inputs.alternate-tests-timeout-minutes }}
 
   pip-check:
@@ -394,9 +405,10 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/pip-check@actions-4.2.1
+      - uses: pyiron/actions/pip-check@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
+          miniforge-version: ${{ inputs.miniforge-version }}
 
   black:
     needs: commit-updated-env
@@ -449,10 +461,11 @@ jobs:
           python-version: ${{ inputs.python-version }}
           architecture: x64
       - if: ${{ inputs.mypy-env-files != '' }}
-        uses: pyiron/actions/cached-miniforge@actions-4.2.1
+        uses: pyiron/actions/cached-miniforge@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.mypy-env-files }}
+          miniforge-version: ${{ inputs.miniforge-version }}
       - name: Install mypy
         shell: bash -l {0}
         run: python -m pip install mypy

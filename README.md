@@ -31,6 +31,8 @@ For example, `notebooks-working-directory: notebooks` lets notebooks under `note
 ### `cached-miniforge`
 
 A wrapper combining `conda-incubator/setup-miniconda` and `actions/cache` along with our own `write-environment` that allows you to easily make a cached conda environment from any number (>=1) of conda environment yaml files.
+Set `miniforge-version` (default `latest`) to pin the Miniforge installer, for example to avoid a broken release.
+The actions built on it (`build-docs`, `build-notebooks`, `pip-check`, `unit-tests`) and the reusable workflows `push-pull`, `tests-and-coverage`, `hatch-release` and `pyproject-release` accept the same input and pass it on.
 
 ### `export-secret-env`
 
@@ -43,7 +45,7 @@ The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
 A minimal use looks like:
 
 ```yaml
-- uses: pyiron/actions/export-secret-env@actions-4.2.1
+- uses: pyiron/actions/export-secret-env@actions-4.3.0
   env:
     PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
   with:
@@ -141,9 +143,11 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.2.1
+    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.3.0
     secrets: inherit
 ```
+
+Workflow inputs go under `with:`; for example, `miniforge-version: '26.7.2-1'` pins the Miniforge installer for every job that builds a conda environment.
 
 ## Developing these actions
 

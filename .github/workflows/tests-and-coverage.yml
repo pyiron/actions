@@ -63,17 +63,22 @@ on:
         description: 'Whether to push the report to codacy after generating coverage'
         default: false
         required: false
+      miniforge-version:
+        type: string
+        description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+        default: latest
+        required: false
 
 jobs:
   Tests-and-Coverage:
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: pyiron/actions/add-to-python-path@actions-4.2.1
+      - uses: pyiron/actions/add-to-python-path@actions-4.3.0
         if: inputs.extra-python-paths != ''
         with:
           path-dirs: ${{ inputs.extra-python-paths }}
-      - uses: pyiron/actions/unit-tests@actions-4.2.1
+      - uses: pyiron/actions/unit-tests@actions-4.3.0
         with:
           python-version: ${{ inputs.python-version }}
           env-files: ${{ inputs.tests-env-files }}
@@ -81,6 +86,7 @@ jobs:
           omit-patterns: ${{ inputs.omit-patterns }}
           add-standard-codacy-env: ${{ inputs.do-codacy }}
           add-standard-coveralls-env: ${{ inputs.do-coveralls }}
+          miniforge-version: ${{ inputs.miniforge-version }}
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
       - name: Coverage
         shell: bash -l {0}
