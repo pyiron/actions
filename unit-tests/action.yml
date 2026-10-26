@@ -41,6 +41,10 @@ inputs:
     default: '*/_version.py'
     required: false
 # TODO: Allow omission of additional files with a bash for-loop over source-dir and omitted-files
+  miniforge-version:
+    description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+    default: latest
+    required: false
 
 runs:
   using: 'composite'
@@ -76,6 +80,7 @@ runs:
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ steps.prepare-env-files.outputs.env_files }}
+      miniforge-version: ${{ inputs.miniforge-version }}
   - uses: pyiron/actions/pyiron-config@actions-4.3.0
   - name: Test
     shell: bash -l {0}

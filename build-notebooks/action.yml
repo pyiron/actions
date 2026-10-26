@@ -28,6 +28,10 @@ inputs:
     description: 'Name of the kernel to be used by papermill during headless execution'
     default: python3
     required: false
+  miniforge-version:
+    description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+    default: latest
+    required: false
 
 runs:
   using: 'composite'
@@ -36,6 +40,7 @@ runs:
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.standard-notebooks-env-file }} ${{ inputs.env-files }}
+      miniforge-version: ${{ inputs.miniforge-version }}
   - uses: pyiron/actions/pyiron-config@actions-4.3.0
   - name: Build notebooks
     shell: bash -l {0}

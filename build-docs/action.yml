@@ -17,6 +17,10 @@ inputs:
     description: 'The location of index.rst and conf.py files for sphinx'
     default: docs
     required: false
+  miniforge-version:
+    description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+    default: latest
+    required: false
 
 runs:
   using: 'composite'
@@ -25,6 +29,7 @@ runs:
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.standard-docs-env-file }} ${{ inputs.env-files }}
+      miniforge-version: ${{ inputs.miniforge-version }}
   - uses: pyiron/actions/pyiron-config@actions-4.3.0
   - name: Build sphinx documentation
     shell: bash -l {0}

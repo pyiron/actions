@@ -9,6 +9,10 @@ inputs:
     description: 'Paths to an arbitrary number of (space-separated) conda environment yaml files'
     default: .ci_support/environment.yml
     required: false
+  miniforge-version:
+    description: 'Miniforge installer version passed to conda-incubator/setup-miniconda via cached-miniforge'
+    default: latest
+    required: false
 
 runs:
   using: 'composite'
@@ -17,6 +21,7 @@ runs:
     with:
       python-version: ${{ inputs.python-version }}
       env-files: ${{ inputs.env-files }}
+      miniforge-version: ${{ inputs.miniforge-version }}
   - name: Check
     shell: bash -l {0}
     run: pip check
