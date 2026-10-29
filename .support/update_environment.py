@@ -90,52 +90,39 @@ def ends_in_yml(s):
     return s.endswith(".yml") or s.endswith(".yaml")
 
 
-def pattern_is_bump_from_to(list_):
-    if len(list_) < 9:
-        return False
-    return all(
-        [
-            list_[1] == "Bump",
-            list_[3] == "from",
-            list_[5] == "to",
-            ends_in_yml(list_[7]),
-        ]
-    )
-
-
-def pattern_is_update_requirement_from_to(list_):
-    if len(list_) < 10:
-        return False
-    return all(
-        [
-            list_[1] == "Update",
-            list_[3] == "requirement",
-            list_[4] == "from",
-            list_[6] == "to",
-            ends_in_yml(list_[8]),
-        ]
-    )
-
-
-if pattern_is_bump_from_to(sys.argv):
+# Dependabot may put a commit-message prefix such as "build(deps): " before the
+# (then lower-case) verb, so anything before the verb is accepted
+TITLE_PATTERNS = (
     # "bump" PR titles take the form "bump PKG from V1 to V2"
-    package_to_update = sys.argv[2]
-    from_version = sys.argv[4]
-    to_version = sys.argv[6]
-    environment_files = sys.argv[7:-1]
-    name_mapping_file = sys.argv[-1]
-elif pattern_is_update_requirement_from_to(sys.argv):
+    re.compile(r"(?:.*\s)?bump\s+(\S+)\s+from\s+(\S+)\s+to\s+(\S+)", re.IGNORECASE),
     # "update" PR titles take the form "update PKG requirement from V1 to V2"
-    package_to_update = sys.argv[2]
-    from_version = sys.argv[5]
-    to_version = sys.argv[7]
-    environment_files = sys.argv[8:-1]
-    name_mapping_file = sys.argv[-1]
-else:
+    re.compile(
+        r"(?:.*\s)?update\s+(\S+)\s+requirement\s+from\s+(\S+)\s+to\s+(\S+)",
+        re.IGNORECASE,
+    ),
+)
+
+
+def parse_title(title):
+    for pattern in TITLE_PATTERNS:
+        match = pattern.fullmatch(title)
+        if match is not None:
+            return match.groups()
     raise ValueError(
-        f"Title of a dependabot PR 'Bump <package> from <version> to <version>' expected, "
-        f"but got {' '.join(sys.argv[1:])}"
+        "Title of a dependabot PR '[<prefix>] Bump <package> from <version> to "
+        "<version>' or '[<prefix>] Update <package> requirement from <version> to "
+        f"<version>' expected, but got {title!r}"
     )
+
+
+if len(sys.argv) < 4 or not all(ends_in_yml(f) for f in sys.argv[2:-1]):
+    raise ValueError(
+        "Expected a PR title, environment file(s) and a name mapping file, "
+        f"but got {sys.argv[1:]}"
+    )
+package_to_update, from_version, to_version = parse_title(sys.argv[1])
+environment_files = sys.argv[2:-1]
+name_mapping_file = sys.argv[-1]
 
 for environment_file in environment_files:
     updater = EnvironmentUpdater(
