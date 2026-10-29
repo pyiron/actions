@@ -115,6 +115,24 @@ def load_yaml(yaml_file: str) -> dict:
 
     yaml_bounds = {}
     for dependency in data["dependencies"]:
+        if isinstance(dependency, dict):
+            # A YAML `- pip:` block (PyPI-only deps installed by conda's
+            # pip backend) parses as a dict; descend into its list and
+            # capture the `==`-pinned entries. Anything without `==` is
+            # ignored — `load_yaml` only collects exact version bounds.
+            if "pip" in dependency:
+                for pip_dependency in dependency["pip"]:
+                    if "==" in pip_dependency:
+                        package, version = split_dependency(
+                            pip_dependency, "==", allow_no_version=True
+                        )
+                        yaml_bounds[package] = version
+            else:
+                raise ValueError(
+                    f"Unsupported dict-typed dependency entry in {yaml_file!r}: "
+                    f"{dependency!r}. Only `pip:` sub-lists are recognised."
+                )
+            continue
         package, version = split_dependency(dependency, "=", allow_no_version=True)
         yaml_bounds[package] = version
     return yaml_bounds
