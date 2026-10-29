@@ -45,7 +45,7 @@ The action needs the available secrets as JSON via `PYIRON_ALL_SECRETS_JSON`.
 A minimal use looks like:
 
 ```yaml
-- uses: pyiron/actions/export-secret-env@actions-4.3.0
+- uses: pyiron/actions/export-secret-env@actions-4.3.1
   env:
     PYIRON_ALL_SECRETS_JSON: ${{ toJSON(secrets) }}
   with:
@@ -74,6 +74,7 @@ However, those elements require secrets and these actions are secret-free, so if
 
 Updates the environment file based on patterns in the PR title.
 Intended to be used in conjuction with [Dependabot](https://github.com/dependabot).
+It recognizes the titles `Bump <package> from <old> to <new>` and `Update <package> requirement from <old> to <new>`, also after a commit-message prefix such as `build(deps): bump …`.
 
 ### `write-docs-env`
 
@@ -143,7 +144,7 @@ on:
 
 jobs:
   pyiron:
-    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.3.0
+    uses: pyiron/actions/.github/workflows/push-pull.yml@actions-4.3.1
     secrets: inherit
 ```
 
