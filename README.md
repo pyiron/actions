@@ -74,6 +74,7 @@ However, those elements require secrets and these actions are secret-free, so if
 
 Updates the environment file based on patterns in the PR title.
 Intended to be used in conjuction with [Dependabot](https://github.com/dependabot).
+It recognizes the titles `Bump <package> from <old> to <new>` and `Update <package> requirement from <old> to <new>`, also after a commit-message prefix such as `build(deps): bump …`.
 
 ### `write-docs-env`
 
